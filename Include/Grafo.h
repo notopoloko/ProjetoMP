@@ -1,5 +1,21 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <grafo.h>
+#include <curses.h>
+
 #ifndef TIPO_GRAFO
 #define TIPO_GRAFO
+#define SUCCESS 1
+
+typedef struct user{
+    char Nome;
+    struct list *friends;
+}user;
+
+typedef struct list{
+    struct list *brotherhood;
+}list;
 
 //Estrutura do tipo Vertices com um inteiro representando o nome da aresta, e dois inteiros que representam o vertice de origem e o vertice de destino.
 //Apresenta tambem um ponteiro(Tipo Arestas) que aponta para proxima aresta.
@@ -106,5 +122,8 @@ void remove_Aresta(Grafo **G, int VOrig, int VDest);
 
 //Funcao atualiza_Aresta --- Recebe como Parametros um Grafo(G), dois Vertices(V1 e V2) e um Vertice Atualizado(VerticeAtualizado).
 void atualiza_Aresta(Grafo **G, int V1, int V2, int ArestaAtualizada);
+
+//Função que cria um usuário. Retorna SUCCESS caso tenha sucesso na criação. Do contrário recebe FAILED
+int cria_pessoa(void);
 
 #endif
