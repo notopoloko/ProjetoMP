@@ -26,7 +26,7 @@ int main(){
           cria_usuario();
           break;
           case(2):
-          
+          show(ini);
           break;
           case(3):
           delete(&ini, &cont);

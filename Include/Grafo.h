@@ -1,5 +1,21 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <grafo.h>
+#include <curses.h>
+
 #ifndef TIPO_GRAFO
 #define TIPO_GRAFO
+#define SUCCESS 1
+
+typedef struct user{
+    char Nome;
+    struct list *friends;
+}user;
+
+typedef struct list{
+    struct list *brotherhood;
+}list;
 
 
 typedef struct listAmigos{
@@ -104,5 +120,8 @@ void remove_amizade(Grafo **G, int VOrig, int VDest);
 
 //Funcao atualiza_amizade --- Recebe como Parametros um Grafo(G), dois Usuarios(V1 e V2) e um usuario Atualizado(usuarioAtualizado).
 void atualiza_amizade(Grafo **G, int V1, int V2, int amizadeAtualizada);
+
+//Função que cria um usuário. Retorna SUCCESS caso tenha sucesso na criação. Do contrário recebe FAILED
+int cria_pessoa(void);
 
 #endif
