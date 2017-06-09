@@ -17,111 +17,109 @@ typedef struct list{
     struct list *brotherhood;
 }list;
 
-//Estrutura do tipo Vertices com um inteiro representando o nome da aresta, e dois inteiros que representam o vertice de origem e o vertice de destino.
-//Apresenta tambem um ponteiro(Tipo Arestas) que aponta para proxima aresta.
-typedef struct Arestas{ 
-  int nomeAresta;                //Um inteiro que representa o nome da aresta.
-  struct Vertices *VerticeDest;                 //ponteiro que aponta para o vertice destino.
-  struct Vertices * VerticeOrig;                  //ponteiro que aponta para o vertice origem.
 
-  struct Arestas *proxAresta;       //Ponteiro para uma lista de arestas que aponta para proxima aresta.
-  struct Arestas *antAresta;       //Ponteiro para uma lista de arestas que aponta para aresta anterior.
-                                 // Apesar de existir um ponteiro para a aresta anterior, o Grafo é direcionado. Esse ponteiro só é usado
-                                // para melhorar o desempenho do programa.
-}Arestas;
+typedef struct listAmigos{
+    struct Usuarios *proximo, *anterior;
+}listAmigos;
 
-//Estrutura do tipo Vertices com dois inteiros representando o nome do vertice e o numero de arestas para cada vertice.
-//Apresenta tambem um ponteiro(Tipo Vertices) que aponta para proxima Vertice e um ponteira para uma estrutura do tipo Arestas.
-typedef struct Vertices{
-  int nomeVertice;               //Inteiro que representa o nome do vertice.
-  int N_ArestasdoVertice;        //Inteiro que representa o numero de arestas da vertice.
+//Estrutura do tipo Usuarios com um inteiro representando o nome da amizade, e dois inteiros que representam o usuario de origem e o usuario de destino.
+//Apresenta tambem um ponteiro(Tipo Amizades) que aponta para proxima amizade.
+typedef struct Amizades{ 
+  char nome;
+  struct Usuarios *nextFriend, *prevFriend;
+}Amizades;
 
-  struct Arestas *pontArestaInicio;     //Ponteiro para uma lista de arestas que aponta para o inicio da lista.
-  struct Arestas *pontArestaFim;     //Ponteiro para uma lista de arestas que aponta para o fim da lista.
-  struct Vertices *proxVertice;   //Ponteiro para uma lista de vertices que aponta para o proximo vertice.
-  struct Vertices *antVertice;   //Ponteiro para uma lista de vertices que aponta para o vertice anterior.
-                                 // Apesar de existir um ponteiro para o vertice anterior, o Grafo é direcionado. Esse ponteiro só é usado
-                                // para melhorar o desempenho do código.
-}Vertices;
+//Estrutura do tipo Usuarios com dois inteiros representando o nome do usuario e o numero de Amizades para cada usuario.
+//Apresenta tambem um ponteiro(Tipo Usuarios) que aponta para proxima usuario e um ponteira para uma estrutura do tipo Amizades.
+typedef struct Usuarios{
+  char nome[100];   
+  char cidade[30];
+  char cep[20];      
+  char cpf[20];
+  int numeroAmigos;             //Inteiro que representa o numero de amigos de um usuario.
+
+  struct Amizades *Amigos;
+  struct Usuarios *prox, *ant;
+}Usuarios;
 
 //Estrutura do tipo grafo com um vetor de caracteres representando o nome do grafo, um inteiro representando
-//o numero de vertices do grafo e um ponteiro para outra estrutura do tipo Vertices.
+//o numero de Usuarios do grafo e um ponteiro para outra estrutura do tipo Usuarios.
 typedef struct Grafo{
-  char *nomeGrafo;      //Vetor de caracteres que representa o nome do grafo.
-  int N_Vertices;       //Inteiro que representa o numero de vertices do grafo.
-  int N_Arestas;         //Inteiro que representa o numero de arestas do grafo.
+  int N_Usuarios;       //Inteiro que representa o numero de Usuarios do grafo.
 
-  struct Vertices *pontVerticeInicio;   //Ponteiro para uma lista de vertices que aponta para o inicio da lista.
-  struct Vertices *pontVerticeFim;     //Ponteiro para uma lista de vertices que aponta para o fim da lista.
+
+  struct Usuarios *listaAdj[23];
+  //struct Usuarios *Inicio;   //Ponteiro para uma lista de Usuarios que aponta para o inicio da lista.
+  //struct Usuarios *Fim;     //Ponteiro para uma lista de Usuarios que aponta para o fim da lista.
 }Grafo;
 
-//Funcao cria_Grafo --- Recebe como Parametro um vetor de caracteres(NomedoGrafo)
+//Funcao cria_Grafo
 //Aloca espaço de memoria para criar uma estrutura do tipo Grafo que atribui NomedoGrafo para estrutura.
-Grafo *cria_Grafo(char *NomedoGrafo);
+Grafo *cria_Grafo();
 
 //Funcao existe_Grafo --- Recebe como Parametro um Grafo(G) e retorna um valor verdadeiro,caso o grafo exista, e falso, caso nao exista grafo.
 bool existe_Grafo(Grafo *G);
 
-//Funcao destroi_Grafo --- Recebe como Parametro uma lista de vertices(ListaVertice) e
-//libera cada espaço de memoria alocado dinamicamente destinado a uma estrutura do tipo aresta.
-void destroi_ListadeAresta(Grafo **ListaVertice);
+//Funcao destroi_Grafo --- Recebe como Parametro uma lista de Usuarios(Listausuario) e
+//libera cada espaço de memoria alocado dinamicamente destinado a uma estrutura do tipo amizade.
+void destroi_Listadeamizade(Grafo **Listausuario);
 
 //Funcao destroi_Grafo --- Recebe como Parametro um Grafo(G) e
-//libera cada espaço de memoria alocado dinamicamente destinado a uma estrutura do tipo vertice.
-void destroi_ListadeVertice(Grafo **G);
+//libera cada espaço de memoria alocado dinamicamente destinado a uma estrutura do tipo usuario.
+void destroi_Listadeusuario(Grafo **G);
 
 //Funcao destroi_Grafo --- Recebe como Parametro um Grafo(G) e libera cada espaço de memoria alocado dinamicamente.
 void destroi_Grafo(Grafo **G);
 
-//Funcao PardeVertice_Existe --- Recebe como Parametros duas listas de adjacencia(ListaV1 e ListaV2).
-//Retorna true se existir aresta entre as duas e falso caso nao exista.
-bool ParDeVertice_Existe(Vertices *ListaV1, Vertices *ListaV2);
+//Funcao Pardeusuario_Existe --- Recebe como Parametros duas listas de adjacencia(ListaV1 e ListaV2).
+//Retorna true se existir amizade entre as duas e falso caso nao exista.
+bool ParDeusuario_Existe(Usuarios *ListaV1, Usuarios *ListaV2);
 
  //Funcao retorna_NomeGrafo --- Recebe como Parametro um Grafo(G) e imprime na tela um vetor de caracteres que representa o nome do grafo.
 char* retorna_NomeGrafo(Grafo *G);
 
- //Funcao imprime Grafo --- Recebe como Parametro um Grafo(G) e imprime na tela todos os vertices e arestas.
+ //Funcao imprime Grafo --- Recebe como Parametro um Grafo(G) e imprime na tela todos os Usuarios e Amizades.
 void imprime_Grafo(Grafo *G);
 
-//Funcao procura_Vertice --- Recebe como Parametros um Grafo(G) e um Vertice(V).
-//Retorna uma lista de Vertices que possui o vertice(V) ou NULL caso não encontre o vertice(V).
-Vertices *procura_Vertice(Grafo *G, int Vertice);
+//Funcao procura_usuario --- Recebe como Parametros um Grafo(G) e um usuario(V).
+//Retorna uma lista de Usuarios que possui o usuario(V) ou NULL caso não encontre o usuario(V).
+Usuarios *procura_usuario(Grafo *G, int usuario);
 
- //Funcao adiciona_Vertice --- Recebe como Parametros um Grafo(G) e um Vertice(V).
-void adiciona_Vertice(Grafo **G, int V);
+ //Funcao adiciona_usuario --- Recebe como Parametros um Grafo(G) e um usuario(V).
+void adiciona_usuario(Grafo **G, Usuarios **User);
 
- //Funcao remove_Vertice --- Recebe como Parametros um Grafo(G) e um Vertice(Vertice).
-void remove_Vertice(Grafo **G, int Vertice);
+ //Funcao remove_usuario --- Recebe como Parametros um Grafo(G) e um usuario(usuario).
+void remove_usuario(Grafo **G, Usuarios **User);
 
- //Funcao atualiza_Vertice --- Recebe como Parametros um Grafo(G), um Vertice(Vertice) e um Vertice Atualizado(VerticeAtualizado).
-void atualiza_Vertice(Grafo **G, int Vertice, int VerticeAtualizado);
+ //Funcao atualiza_usuario --- Recebe como Parametros um Grafo(G), um usuario(usuario) e um usuario Atualizado(usuarioAtualizado).
+void atualiza_usuario(Grafo **G, int usuario, int usuarioAtualizado);
 
-//Funcao retorna_Vertice --- Recebe como Parametros um Grafo(G) e um Vertice(V).
-//Que retorna o Valor de Vertice(Se o vertice for encontrado) ou retorna 0, caso não encontre o vertice.
-int retorna_Vertice(Grafo *G, int Vertice);
+//Funcao retorna_usuario --- Recebe como Parametros um Grafo(G) e um usuario(V).
+//Que retorna o Valor de usuario(Se o usuario for encontrado) ou retorna 0, caso não encontre o usuario.
+int retorna_usuario(Grafo *G, int usuario);
 
-//Funcao procura_Aresta --- Recebe como Parametros um ponteiro para Grafo(G) e dois Vertices(V1 e V2).
-//Retorna uma lista de Arestas que possui os vertices(V1 e V2) ou NULL caso não encontre o vertice(V).
-Arestas *procura_Aresta(Grafo *G, int V1, int V2);
+//Funcao procura_amizade --- Recebe como Parametros um ponteiro para Grafo(G) e dois Usuarios(V1 e V2).
+//Retorna uma lista de Amizades que possui os Usuarios(V1 e V2) ou NULL caso não encontre o usuario(V).
+Amizades *procura_amizade(Grafo *G, int V1, int V2);
 
-//Funcao adiciona_Aresta --- Recebe como Parametros um Grafo(G), um Vertice de Origem(VOrig) e um Vertice de Destino(VDest).
-void adiciona_Aresta(Grafo **G, int VOrig, int VDest);
+//Funcao adiciona_amizade --- Recebe como Parametros um Grafo(G), um usuario de Origem(VOrig) e um usuario de Destino(VDest).
+void adiciona_amizade(Grafo **G, int VOrig, int VDest);
 
-//Funcao retorna_Aresta --- Recebe como Parametros um Grafo(G) e dois Vertices(V1 e V2).
-//Que retorna o Valor da Aresta(Se o vertice for encontrado) ou retorna 0, caso não encontre o vertice.
-int retorna_Aresta(Grafo *G, int V1, int V2);
+//Funcao retorna_amizade --- Recebe como Parametros um Grafo(G) e dois Usuarios(V1 e V2).
+//Que retorna o Valor da amizade(Se o usuario for encontrado) ou retorna 0, caso não encontre o usuario.
+int retorna_amizade(Grafo *G, int V1, int V2);
 
-//Funcao verifica_Vizinhos(Dado um vertice V1 - procura todas os Vertices vizinhos de (V1) --- Recebe como Parametros um Grafo(G) e um Vertice(V1).
-Vertices *verifica_Vizinhos(Grafo *G, int V1);
+//Funcao verifica_Vizinhos(Dado um usuario V1 - procura todas os Usuarios vizinhos de (V1) --- Recebe como Parametros um Grafo(G) e um usuario(V1).
+Usuarios *verifica_Vizinhos(Grafo *G, int V1);
 
-//Funcao verifica_Adjacencia(Se existe uma aresta entre dois vertices) --- Recebe como Parametros um Grafo(G), dois Vertices(V2 e V1).
+//Funcao verifica_Adjacencia(Se existe uma amizade entre dois Usuarios) --- Recebe como Parametros um Grafo(G), dois Usuarios(V2 e V1).
 void verifica_Adjacencia(Grafo *G, int V1, int V2);
 
-//Funcao remove_Aresta --- Recebe como Parametros um Grafo(G), dois Vertices(VOrig e VDest).
-void remove_Aresta(Grafo **G, int VOrig, int VDest);
+//Funcao remove_amizade --- Recebe como Parametros um Grafo(G), dois Usuarios(VOrig e VDest).
+void remove_amizade(Grafo **G, int VOrig, int VDest);
 
-//Funcao atualiza_Aresta --- Recebe como Parametros um Grafo(G), dois Vertices(V1 e V2) e um Vertice Atualizado(VerticeAtualizado).
-void atualiza_Aresta(Grafo **G, int V1, int V2, int ArestaAtualizada);
+//Funcao atualiza_amizade --- Recebe como Parametros um Grafo(G), dois Usuarios(V1 e V2) e um usuario Atualizado(usuarioAtualizado).
+void atualiza_amizade(Grafo **G, int V1, int V2, int amizadeAtualizada);
 
 
 
