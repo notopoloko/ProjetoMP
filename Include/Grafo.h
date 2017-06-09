@@ -123,7 +123,6 @@ void remove_Aresta(Grafo **G, int VOrig, int VDest);
 //Funcao atualiza_Aresta --- Recebe como Parametros um Grafo(G), dois Vertices(V1 e V2) e um Vertice Atualizado(VerticeAtualizado).
 void atualiza_Aresta(Grafo **G, int V1, int V2, int ArestaAtualizada);
 
-//Função que cria um usuário. Retorna SUCCESS caso tenha sucesso na criação. Do contrário recebe FAILED
-int cria_pessoa(void);
+
 
 #endif
