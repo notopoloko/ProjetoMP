@@ -2,13 +2,6 @@
 #include <stdlib.h>
 #include <stdbool.h>
 
-//Estrutura do tipo usuarios com um inteiro representando o nome da amizade, e dois inteiros que representam o usuario de origem e o usuario de destino.
-//Apresenta tambem um ponteiro(Tipo Amizades) que aponta para proxima amizade.
-typedef struct amizades{ 
-  char nomeAmizade[100];
-  struct usuarios *nextFriend, *prevFriend;
-}amizades;
-
 //Estrutura do tipo usuarios com dois inteiros representando o nome do usuario e o numero de Amizades para cada usuario.
 //Apresenta tambem um ponteiro(Tipo usuarios) que aponta para proxima usuario e um ponteira para uma estrutura do tipo Amizades.
 typedef struct usuarios{
@@ -18,7 +11,7 @@ typedef struct usuarios{
   char *cpf;
   int numeroAmigos;             //Inteiro que representa o numero de amigos de um usuario.
 
-  struct Amizades *Amigos;
+  struct usuarios *Amigos[26];
   struct usuarios *prox, *ant;
 }usuarios;
 
@@ -135,7 +128,7 @@ void imprime_Grafo(Grafo *G){
   printf("Numero de usuarios = %d\n", G->N_usuarios);
   while(i < 26){
     if((G->listaAdj[i]) != NULL){
-      printf("[%c] -> %s\n", ('A'+i), (G->listaAdj[i]->nome));
+      printf("[%c] -> %s\n", ('A'+i), (G->listaAdj[i])->nome);
     }
     else{
       printf("[%c] -> Esta vazio\n", ('A'+i));
@@ -176,69 +169,136 @@ usuarios *procura_usuario(Grafo *G, int usuario){
 }
 */
 
- //Funcao adiciona_usuario --- Recebe como Parametros um Grafo(G) e um usuario(V).
-void adiciona_usuario(Grafo **G, usuarios **User){
+
+ //Funcao adiciona_amigos --- Recebe como Parametros um Grafo(G) e dois usuarios.
+void adiciona_amigos(Grafo **G, usuarios **User1, usuarios **User2, int cons){
   int cont = 0;
 
   while(cont < 26){
-    if(((*User)->nome[0]) == ('A'+cont)){
-      if(((*G)->listaAdj[cont]) == NULL){
-        ((*G)->listaAdj[cont]) = (*User);
-        (((*G)->listaAdj[cont])->prox) = NULL;
-        (((*G)->listaAdj[cont])->ant) = NULL;
+    if(((*User2)->nome[0]) == ('A'+cont)){
+      if(((*User1)->Amigos[cont]) == NULL){
+        ((*User1)->Amigos[cont]) = (*User2);
+        (*User1)->Amigos[cont]->prox = NULL;
+        (*User1)->Amigos[cont]->ant = NULL;
       }
       else{
-        printf("valor = %d %s\n", cont, (*G)->listaAdj[cont]->nome);
-        while(((*G)->listaAdj[cont])->prox != NULL){
-          ((*G)->listaAdj[cont]) = ((*G)->listaAdj[cont])->prox; 
+        while((*User1)->Amigos[cont]->prox != NULL){
+          ((*User1)->Amigos[cont]) = ((*User1)->Amigos[cont])->prox; 
         }
-        (((*G)->listaAdj[cont])->prox) = (*User);
-        ((*User)->ant) = ((*G)->listaAdj[cont]);
-        ((*User)->prox) = NULL;
+        ((*User1)->Amigos[cont]->prox) = (*User2);
+        ((*User2)->ant) = ((*User1)->Amigos[cont]);
+        ((*User2)->prox) = NULL;
       }
+      cont = 26;
+      if(cons == 0){
+        adiciona_amigos(&(*G), &(*User1), &(*User2), 1);
+      }
+    }
+    else{
+      cont++;
+    }
+  }
+  (*User1)->numeroAmigos++;
+}
+
+int verifica_letra(char nome){
+  int cont = 0, letra = -1;
+
+  while(cont < 26){
+    if((nome == ('A'+cont)) || ((nome) == ('a'+cont))){
+      letra = cont;
       cont = 26;
     }
     else{
       cont++;
     }
   }
-  (*G)->N_usuarios++;
+  return letra;
 }
 
-usuarios *cria_pessoa(){
+ //Funcao adiciona_usuario --- Recebe como Parametros um Grafo(G) e um usuario(V).
+void adiciona_usuario(Grafo **G, usuarios **User){
+ /* char nom[100];
+  int letra;
+  struct usuarios *pont;
+
+  nom = (*User)->nome;
+  letra = verifica_letra(nom[0]);
+  if(((*G)->listaAdj[letra]) == NULL){
+    ((*User)->prox) = NULL;
+    ((*User)->ant) = NULL;
+  }
+  else{
+    pont = (*User);
+    while(pont->prox != NULL){
+      pont = pont->prox; 
+    }
+    pont->prox = (User);
+    ((User)->ant) = pont;
+    ((User)->prox) = NULL;
+  }
+
+  (*G)->N_usuarios++;
+  (User)->numeroAmigos = 0;
+*/
+}
+
+usuarios *cria_pessoa(Grafo **G){
   char nom[100], cidade[30], cep[20], cpf[12];
-  struct usuarios *user;
+  int cont = 0, letra;
+  struct usuarios *pont, *user, *pant;
 
   user = (usuarios*)malloc(sizeof(usuarios));
+  printf("Digite o seu nome: ");
+  scanf(" %[^\n]", nom);
 
-  printf("Digite o seu nome\n");
-  scanf(" %[^\n]s", nom);
-  (user->nome) = nom;
-  printf("Digite o seu cpf\n");
-  scanf(" %[^\n]s", cpf);
+  printf("Digite o seu cpf: ");
+  scanf(" %[^\n]", cpf);
   user->cpf = cpf;
-  printf("Digite o sua cidade\n");
-  scanf(" %[^\n]s", cidade);
+  printf("Digite o sua cidade: ");
+  scanf(" %[^\n]", cidade);
   user->cidade = cidade;
-  printf("Digite o seu cep\n");
-  scanf(" %[^\n]s", cep);
+  printf("Digite o seu cep: ");
+  scanf(" %[^\n]", cep);
   user->cep = cep;
-  user->Amigos = NULL;
-  user->ant = NULL;
-  user->prox = NULL;
-  system("cls || clear"); 
+  
 
+  letra = verifica_letra(nom[0]);
+  if(((*G)->listaAdj[letra]) == NULL){
+    ((*G)->listaAdj[letra]) = user;
+    ((*G)->listaAdj[letra]->nome) = nom;
+
+    for (cont = 0; cont < 26; ++cont){
+      ((*G)->listaAdj[letra])->Amigos[cont] = NULL;
+    }
+    ((*G)->listaAdj[letra])->ant = NULL;
+    ((*G)->listaAdj[letra])->prox = NULL;
+    (((*G)->listaAdj[letra])->numeroAmigos) = 0;
+  }
+  else{
+    pont = ((*G)->listaAdj[letra]);
+    while(pont != NULL){
+      pant = pont;
+      pont = pont->prox; 
+    }
+    pont = (user);
+    pont->nome = nom;
+    ((user)->ant) = pant;
+    ((user)->prox) = NULL;
+    (user)->numeroAmigos = 0;
+  }
+
+  (*G)->N_usuarios++;
+
+  
   return user;
 }
 
 int main(int argc, char const *argv[]){
-  struct usuarios *user;
   Grafo *g;
 
   g = cria_Grafo();
-  user = cria_pessoa();
-  printf("Usuario %s criado com sucesso!\n\n", (user)->nome);
-  adiciona_usuario(&g, &user);
+  cria_pessoa(&g); 
   imprime_Grafo(g);
 
   return 0;
