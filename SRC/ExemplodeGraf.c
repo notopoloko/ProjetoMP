@@ -9,7 +9,7 @@ int Const = 0;
 //Estrutura do tipo grafo com um vetor de caracteres representando o nome do grafo, um inteiro representando
 //o numero de usuarios do grafo e um ponteiro para outra estrutura do tipo usuarios.
 typedef struct listaAmigos{
-  char nomeAmigo[100]; 
+  char nomeAmigo[100];
 
   struct amigos *proxAmigo, *antAmigo;
 }listaAmigos;
@@ -17,7 +17,7 @@ typedef struct listaAmigos{
 //Estrutura do tipo grafo com um vetor de caracteres representando o nome do grafo, um inteiro representando
 //o numero de usuarios do grafo e um ponteiro para outra estrutura do tipo usuarios.
 typedef struct amigos{
-  char nomeAmigo[100]; 
+  char nomeAmigo[100];
 
   struct amigos *proxAmigo, *antAmigo;
 }amigos;
@@ -25,9 +25,9 @@ typedef struct amigos{
 //Estrutura do tipo usuarios com dois inteiros representando o nome do usuario e o numero de Amizades para cada usuario.
 //Apresenta tambem um ponteiro(Tipo usuarios) que aponta para proxima usuario e um ponteira para uma estrutura do tipo Amizades.
 typedef struct usuarios{
-  char nome[100];   
+  char nome[100];
   char cidade[30];
-  char cep[20];      
+  char cep[20];
   char cpf[12];
   int numeroAmigos;             //Inteiro que representa o numero de amigos de um usuario.
 
@@ -38,7 +38,7 @@ typedef struct usuarios{
 //Estrutura do tipo grafo com um vetor de caracteres representando o nome do grafo, um inteiro representando
 //o numero de usuarios do grafo e um ponteiro para outra estrutura do tipo usuarios.
 typedef struct Grafo{
-  int N_usuarios;       
+  int N_usuarios;
   struct usuarios *listaAdj[26];
 }Grafo;
 
@@ -182,7 +182,7 @@ amigos *verifica_amizades(usuarios **User){
         if(cont == 0){
           listaAmigos = pont;
           listaAmigos->proxAmigo = NULL;
-          listaAmigos->antAmigo = NULL; 
+          listaAmigos->antAmigo = NULL;
           pont2 = listaAmigos;
         }else{
           pont2->proxAmigo = pont;
@@ -208,7 +208,7 @@ void destroi_Grafo(Grafo **G){
 
  //Funcao imprime Grafo --- Recebe como Parametro um Grafo(G) e imprime na tela todos os usuarios e Amizades.
 void imprime_Grafo(Grafo *G){
-  system("cls || clear"); 
+  system("cls || clear");
   int i = 0;
   struct usuarios *pont;
 
@@ -254,7 +254,7 @@ void imprime_amigos(usuarios *User){
 //Funcao procura_nome --- Recebe como Parametros um Grafo(G) e um nome.
 //Retorna um usuario ou NULL caso não encontre o usuario.
 usuarios *procura_nome(Grafo *G, char *nom){
-  system("cls || clear"); 
+  system("cls || clear");
   struct usuarios *User, *user1;
   bool encontrado = false;
   int letra;
@@ -281,7 +281,7 @@ usuarios *procura_nome(Grafo *G, char *nom){
 //Funcao procura_usuario --- Recebe como Parametros um Grafo(G).
 //Retorna um usuario ou NULL caso não encontre o usuario.
 usuarios *procura_usuario(Grafo *G){
-  system("cls || clear"); 
+  system("cls || clear");
   struct usuarios *User, *user1;
   bool encontrado = false;
   char nom[100];
@@ -339,7 +339,7 @@ void excluir_amigo(Grafo **G, usuarios **User, usuarios **User1){
         pont = NULL;
       }
       else{
-        pont = pont->proxAmigo; 
+        pont = pont->proxAmigo;
       }
     }
     (*User)->numeroAmigos--;
@@ -348,7 +348,7 @@ void excluir_amigo(Grafo **G, usuarios **User, usuarios **User1){
 
  //Funcao adiciona_amigos --- Recebe como Parametros um Grafo(G) e dois usuarios.
 void adiciona_amigos(Grafo **G, usuarios **User1, usuarios **User2, int cons){
-  system("cls || clear"); 
+  system("cls || clear");
   int letra;
   struct amigos *pont, *amigo;
 
@@ -365,7 +365,7 @@ void adiciona_amigos(Grafo **G, usuarios **User1, usuarios **User2, int cons){
   else{
     pont = ((*User1)->Amigos[letra]);
     while(pont->proxAmigo != NULL){
-      pont = pont->proxAmigo; 
+      pont = pont->proxAmigo;
     }
     pont->proxAmigo = (amigo);
     amigo->antAmigo = pont;
@@ -403,7 +403,7 @@ usuarios *testaUsuario(usuarios *User){
 }
 
 usuarios *editar_pessoa(Grafo **G){
-  system("cls || clear"); 
+  system("cls || clear");
   char nom[100], cidade[30], cep[20], cpf[12];
   int opc = -1, opc1 = -1;
   struct usuarios *user = NULL, *user2 = NULL;
@@ -431,7 +431,7 @@ usuarios *editar_pessoa(Grafo **G){
       case(1):
       printf("Digite o novo nome: ");
       scanf(" %[^\n]", nom);
-      strcpy(((user)->nome, nom);
+      strcpy(((user)->nome), nom);
       printf("%s\n", user->nome);
       opc = 0;
       break;
@@ -442,7 +442,7 @@ usuarios *editar_pessoa(Grafo **G){
       strcpy(user->cidade, cidade);
       opc = 0;
       break;
-      
+
       case(3):
       printf("Digite o novo cep: ");
       scanf(" %[^\n]", cep);
@@ -458,7 +458,7 @@ usuarios *editar_pessoa(Grafo **G){
       opc = 0;
       break;
 
-      case(5): 
+      case(5):
       imprime_amigos(user);
       opc = 0;
       while(opc1 != 0){
@@ -482,7 +482,7 @@ usuarios *editar_pessoa(Grafo **G){
             if(opc1 == 2){
                 excluir_amigo(&(*G), &user, &user2);
                 printf("Amigo excluido!!\n");
-            } 
+            }
           }else{
             system("clear || cls");
             printf("So e possivel excluir conta no menu anterior\n");
@@ -491,20 +491,20 @@ usuarios *editar_pessoa(Grafo **G){
           printf("Usuario nao encontrado!!\n");
         }
       }
-      break; 
+      break;
       case(6):
         exclui_usuario(&(*G), &user);
       break;
 
     }
   }
-  system("cls || clear"); 
+  system("cls || clear");
   return user;
 }
 
 
 usuarios *cria_pessoa(Grafo **G){
-  system("cls || clear"); 
+  system("cls || clear");
   char nom[100], cidade[30], cep[20], cpf[12];
   int cont = 0, letra;
   struct usuarios *pont, *user;
@@ -524,7 +524,7 @@ usuarios *cria_pessoa(Grafo **G){
   scanf(" %[^\n]", cep);
   strcpy(user->cep, cep);*/
 
- 
+
   letra = verifica_letra(nom[0]);
   if(((*G)->listaAdj[letra]) == NULL){
     ((*G)->listaAdj[letra]) = user;
@@ -539,7 +539,7 @@ usuarios *cria_pessoa(Grafo **G){
   else{
     pont = ((*G)->listaAdj[letra]);
     while(pont->prox != NULL){
-      pont = pont->prox; 
+      pont = pont->prox;
     }
     pont->prox = (user);
     ((user)->ant) = pont;
@@ -547,7 +547,7 @@ usuarios *cria_pessoa(Grafo **G){
     (user)->numeroAmigos = 0;
   }
   (*G)->N_usuarios++;
-  
+
   return user;
 }
 
@@ -571,13 +571,13 @@ void menu(Grafo **G){
 
     switch(opc){
       case(1):
-      cria_pessoa(&(*G)); 
+      cria_pessoa(&(*G));
       break;
 
       case(2):
       editar_pessoa(&(*G));
       break;
-      
+
       case(3):
       user1 = procura_usuario((*G));
       user2 = procura_usuario((*G));
