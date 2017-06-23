@@ -1,32 +1,36 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <grafo.h>
-#include <curses.h>
+#include <ncurses.h>
+#include <menu.h>
+#include <form.h>
+
+#define ARRAY_SIZE(a) (sizeof(a)/sizeof(a[0]))
 
 #ifndef TIPO_GRAFO
 #define TIPO_GRAFO
 #define SUCCESS 1
 
-typedef struct user{
+/*typedef struct user{
     char Nome;
     struct list *friends;
-}user;
+}user;*/
 
-typedef struct list{
+/*typedef struct list{
     struct list *brotherhood;
-}list;
+}list;*/
 
 
-typedef struct listAmigos{
+/*typedef struct listAmigos{
     struct Usuarios *proximo, *anterior;
-}listAmigos;
+}listAmigos;*/
 
 //Estrutura do tipo Usuarios com um inteiro representando o nome da amizade, e dois inteiros que representam o usuario de origem e o usuario de destino.
 //Apresenta tambem um ponteiro(Tipo Amizades) que aponta para proxima amizade.
 typedef struct Amizades{ 
-  char nome;
-  struct Usuarios *nextFriend, *prevFriend;
+  struct Amizades *prox;
+  struct Usuarios *list[20];
+  int number_of_friends;
 }Amizades;
 
 //Estrutura do tipo Usuarios com dois inteiros representando o nome do usuario e o numero de Amizades para cada usuario.
@@ -38,7 +42,7 @@ typedef struct Usuarios{
   char cpf[20];
   int numeroAmigos;             //Inteiro que representa o numero de amigos de um usuario.
 
-  struct Amizades *Amigos;
+  struct Usuarios **Amigos;
   struct Usuarios *prox, *ant;
 }Usuarios;
 
@@ -46,9 +50,7 @@ typedef struct Usuarios{
 //o numero de Usuarios do grafo e um ponteiro para outra estrutura do tipo Usuarios.
 typedef struct Grafo{
   int N_Usuarios;       //Inteiro que representa o numero de Usuarios do grafo.
-
-
-  struct Usuarios *listaAdj[23];
+  struct Usuarios *listaAdj;
   //struct Usuarios *Inicio;   //Ponteiro para uma lista de Usuarios que aponta para o inicio da lista.
   //struct Usuarios *Fim;     //Ponteiro para uma lista de Usuarios que aponta para o fim da lista.
 }Grafo;
@@ -62,7 +64,7 @@ bool existe_Grafo(Grafo *G);
 
 //Funcao destroi_Grafo --- Recebe como Parametro uma lista de Usuarios(Listausuario) e
 //libera cada espaço de memoria alocado dinamicamente destinado a uma estrutura do tipo amizade.
-void destroi_Listadeamizade(Grafo **Listausuario);
+void destroi_Listadeamizade(Grafo *Listausuario);
 
 //Funcao destroi_Grafo --- Recebe como Parametro um Grafo(G) e
 //libera cada espaço de memoria alocado dinamicamente destinado a uma estrutura do tipo usuario.
@@ -86,7 +88,7 @@ void imprime_Grafo(Grafo *G);
 Usuarios *procura_usuario(Grafo *G, int usuario);
 
  //Funcao adiciona_usuario --- Recebe como Parametros um Grafo(G) e um usuario(V).
-void adiciona_usuario(Grafo **G, Usuarios **User);
+void adiciona_usuario(Grafo *G, Usuarios *User);
 
  //Funcao remove_usuario --- Recebe como Parametros um Grafo(G) e um usuario(usuario).
 void remove_usuario(Grafo **G, Usuarios **User);
@@ -121,6 +123,8 @@ void remove_amizade(Grafo **G, int VOrig, int VDest);
 //Funcao atualiza_amizade --- Recebe como Parametros um Grafo(G), dois Usuarios(V1 e V2) e um usuario Atualizado(usuarioAtualizado).
 void atualiza_amizade(Grafo **G, int V1, int V2, int amizadeAtualizada);
 
+int cria_pessoa(void);
 
+int login_user(void);
 
 #endif

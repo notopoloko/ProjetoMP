@@ -1,7 +1,4 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <stdbool.h>
-#include "Grafo.h"
+#include <Grafo.h>
 
 //ERRO = -1 O erro em todo este programa recebe o valor de -1.
 char Erro[] = "Erro"; // Vetor de caracteres que é retornado na funcao retorna nome, caso um grafo seja inexistente.
@@ -9,14 +6,11 @@ char Erro[] = "Erro"; // Vetor de caracteres que é retornado na funcao retorna 
 //Funcao cria_Grafo --- Recebe como Parametro um Grafo(G) e aloca espaço de memoria para criar uma estrutura do tipo Grafo.
 Grafo *cria_Grafo(){
   struct Grafo *G;
-  int i = 0;
 
-  G = (Grafo *)malloc(sizeof(*G));
+  G = (Grafo *)malloc(sizeof(Grafo));
   G->N_Usuarios = 0;
-  while(i < 24){
-    G->listaAdj[i] = NULL;
-    i++;
-  }
+  G->listaAdj = (Usuarios *)malloc(sizeof(Usuarios));//aloca um elemento para a cabeça da lista
+  return G;
 }
 
 //Funcao existe_Grafo --- Recebe como Parametro um Grafo(G) e retorna um valor verdadeiro,caso o grafo exista, e falso, caso nao exista grafo.
@@ -30,23 +24,23 @@ bool existe_Grafo(Grafo *G){
   }
 }
 
-void destroi_Listadeamizade(Usuarios **Lusuario){
+void destroi_Listadeamizade(Usuarios *Lusuario){
   struct Amizades *amizadeAtual;
   int cont;
 
-  cont = (*Lusuario)->N_Amizadesdousuario;
+  cont = Lusuario -> numeroAmigos + 1;
   while(cont--){
-    amizadeAtual = (*Lusuario)->pontamizadeFim;
-    if(amizadeAtual->antamizade != NULL){
-      (*Lusuario)->pontamizadeFim = amizadeAtual->antamizade;
+    amizadeAtual = Lusuario->Amigos;
+    if(amizadeAtual->prevFriend != NULL){
+      Lusuario->Amigos = amizadeAtual->prevFriend;
       free(amizadeAtual);
-      amizadeAtual->proxamizade = NULL;
-      amizadeAtual->antamizade = NULL;
+      amizadeAtual->nextFriend = NULL;
+      amizadeAtual->prevFriend = NULL;
       amizadeAtual = NULL;
     }
     else{
-      (*Lusuario)->pontamizadeFim = NULL;
-      (*Lusuario)->pontamizadeInicio = NULL;
+      Lusuario->Amigos = NULL;
+      Lusuario->Amigos = NULL;
     }
   }
 }
@@ -137,32 +131,13 @@ Usuarios *procura_usuario(Grafo *G, int usuario){
 }
 
  //Funcao adiciona_usuario --- Recebe como Parametros um Grafo(G) e um usuario(V).
-void adiciona_usuario(Grafo **G, Usuarios **User){
+void adiciona_usuario(Grafo *G, Usuarios *user){
   struct Usuarios *pont;
-  int cont = 0;
 
-  while(cont < 24){
-    if(((*User)->nome[0]) == ('A'+cont)){
-      if(((*G)->listaAdj[cont]) == NULL){
-        ((*G)->listaAdj[cont]) = (*User);
-        (((*G)->listaAdj[cont])->prox) = NULL;
-        (((*G)->listaAdj[cont])->ant) = NULL;
-      }
-      else{
-        pont = ((*G)->listaAdj[cont]);
-        while(pont->prox != NULL){
-          pont = pont->prox; 
-        }
-        (pont->prox) = (*User);
-        ((*User)->ant) = pont;
-        ((*User)->prox) = NULL;
-      }
-      cont = 24;
-    }
-    else{
-      cont++;
-    }
-  }
+  pont = G->listaAdj;
+  while(pont->prox != NULL)pont = pont->prox;
+  pont->prox = user;
+  G->N_Usuarios++;
 }
 /*
  //Funcao remove_usuario --- Recebe como Parametros um Grafo(G) e um usuario(usuario).

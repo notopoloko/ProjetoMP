@@ -5,14 +5,13 @@ CXXFLAGS=-I$(IDIR) -g -D_TEST -ftest-coverage -fprofile-arcs
 ODIR=../obj
 LDIR=../lib
 
-LIBS= -lgtest -lpthread -lgtest_main -lcurses --coverage -lgcov
+LIBS= -lgtest -lpthread -lgtest_main -lcurses --coverage -lgcov -lncurses
 
 _DEPS= grafo.h
 DEPS= $(patsubst %,$(IDIR)/%,$(_DEPS))
 
-_OBJ= main.o MyNetwork.o 
+_OBJ= Main.o MyNetwork.o 
 OBJ= $(patsubst %,$(ODIR)/%,$(_OBJ))
-
 
 $(ODIR)/%.o: %.c $(DEPS)
 	$(CXX) -c -o $@ $< $(CXXFLAGS) $(LIBS)
