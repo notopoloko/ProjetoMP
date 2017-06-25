@@ -1,6 +1,8 @@
 #include <Grafo.h>
 
-char *choices[] = {"Criar usuario", "Login", "Editar usuario","Excluir usuario","Procurar transacao","Fazer transacao","Sair",(char *)NULL};
+#define ARRAY_SIZE(a) (sizeof(a)/sizeof(a[0]))
+
+char *choices[] = {"Criar usuario", "Login", "Editar usuario","Excluir usuario","Procurar transacao","Sair",(char *)NULL};
 
 int main(){
     WINDOW *tela;
@@ -8,7 +10,6 @@ int main(){
     int ch,width;
     MENU *menu;
     int numero,i;
-    ITEM *cur_item;
 
     initscr();
     start_color();
@@ -54,9 +55,9 @@ int main(){
                     for(i=0; i<numero;i++)free_item(itens[i]);
                     free_menu(menu);
                     endwin();
-                    cria_pessoa();
+                    //cria_pessoa();
                 }else if(!strcmp("Login",item_name(current_item(menu)))){
-                    login_user();
+                    //login_user();
                 }
 
                 break;

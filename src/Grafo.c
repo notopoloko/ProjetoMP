@@ -1,21 +1,27 @@
 #include <Grafo.h>
 
+int K = 0;
+
 //ERRO = -1 O erro em todo este programa recebe o valor de -1.
 char Erro[] = "Erro"; // Vetor de caracteres que é retornado na funcao retorna nome, caso um grafo seja inexistente.
 
 //Funcao cria_Grafo --- Recebe como Parametro um Grafo(G) e aloca espaço de memoria para criar uma estrutura do tipo Grafo.
 Grafo *cria_Grafo(){
   struct Grafo *G;
+  int i = 0;
 
-  G = (Grafo *)malloc(sizeof(Grafo));
-  G->N_Usuarios = 0;
-  G->listaAdj = (Usuarios *)malloc(sizeof(Usuarios));//aloca um elemento para a cabeça da lista
+  G = (Grafo *)malloc(sizeof(*G));
+  G->N_usuarios = 0;
+  while(i < 26){
+    G->listaAdj[i] = NULL;
+    i++;
+  }
   return G;
 }
 
 //Funcao existe_Grafo --- Recebe como Parametro um Grafo(G) e retorna um valor verdadeiro,caso o grafo exista, e falso, caso nao exista grafo.
 bool existe_Grafo(Grafo *G){
-  if(G->N_Usuarios != 0){
+  if(G->N_usuarios != 0){
     return true;
   }
   else{
@@ -23,510 +29,450 @@ bool existe_Grafo(Grafo *G){
     return false;
   }
 }
-
-void destroi_Listadeamizade(Usuarios *Lusuario){
+/*
+void destroi_Listadeamizade(usuarios **Lusuario){
   struct Amizades *amizadeAtual;
   int cont;
-
-  cont = Lusuario -> numeroAmigos + 1;
+  cont = (*Lusuario)->N_Amizadesdousuario;
   while(cont--){
-    amizadeAtual = Lusuario->Amigos;
-    if(amizadeAtual->prevFriend != NULL){
-      Lusuario->Amigos = amizadeAtual->prevFriend;
+    amizadeAtual = (*Lusuario)->pontamizadeFim;
+    if(amizadeAtual->antamizade != NULL){
+      (*Lusuario)->pontamizadeFim = amizadeAtual->antamizade;
       free(amizadeAtual);
-      amizadeAtual->nextFriend = NULL;
-      amizadeAtual->prevFriend = NULL;
+      amizadeAtual->proxamizade = NULL;
+      amizadeAtual->antamizade = NULL;
       amizadeAtual = NULL;
     }
     else{
-      Lusuario->Amigos = NULL;
-      Lusuario->Amigos = NULL;
+      (*Lusuario)->pontamizadeFim = NULL;
+      (*Lusuario)->pontamizadeInicio = NULL;
+    }
+  }
+}
+*/
+
+//Funcao exclui_usuario --- Recebe como Parametro um Grafo(G), libera o espaço de memoria alocado para um usuario.
+void exclui_usuario(Grafo **G, usuarios **User){
+  int letra;
+  struct amigos *amigo, *pont;
+  struct usuarios *User2;
+
+  if((*User) != NULL){
+    amigo = (verifica_amizades(&(*User)));
+    if(amigo != NULL){
+      pont = amigo;
+      User2 = procura_nome((*G), amigo->nomeAmigo);
+      while(pont != NULL){
+        excluir_amigo(&(*G), &(*User), &User2);
+        pont = pont->proxAmigo;
+        free(amigo);
+        amigo = pont;
+      }
+      amigo = NULL;
+    }else{
+      if((*User)->ant != NULL && (*User)->prox != NULL){
+        (*User)->ant->prox = (*User)->prox;
+        (*User)->prox->ant = (*User)->ant;
+      }
+      else{
+        letra = verifica_letra((*User)->nome[0]);
+        if((*User)->ant == NULL && (*User)->prox != NULL){
+          (*User)->prox->ant = NULL;
+          (*User)->prox->ant = (*User)->ant;
+          ((*G)->listaAdj[letra]) = (*User)->prox;
+          free((*User));
+          (*User) = NULL;
+        }
+        if((*User)->ant == NULL && (*User)->prox == NULL){
+          free((*User));
+          (*User) = NULL;
+          ((*G)->listaAdj[letra]) = (*User);
+        }
+      }
     }
   }
 }
 
-void destroi_Listadeusuario(Grafo **G){
-  struct Usuarios *usuarioAnt, *usuarioAtual;
-  int cont;
+//Funcao verifica_amizades --- Recebe como Parametro um usuario(User) e retorna uma lista de amigos de User.
+amigos *verifica_amizades(usuarios **User){
+  int cont = 0, i = 0;
+  struct amigos *listaAmigos, *pont, *pont2;
 
-  cont = (*G)->N_Usuarios;
-  while(cont--){
-    usuarioAtual = (*G)->pontusuarioFim;
-    destroi_Listadeamizade(&usuarioAtual);
-    if(usuarioAtual->antusuario != NULL){
-      (*G)->pontusuarioFim = usuarioAtual->antusuario;
-      free(usuarioAtual);
-      usuarioAtual->proxusuario = NULL;
-      usuarioAtual->antusuario = NULL;
-      usuarioAtual = NULL;
-    }
-    else{
-      (*G)->pontusuarioInicio = NULL;
-      (*G)->pontusuarioFim = NULL;
+  listaAmigos = (amigos*)malloc(sizeof(amigos));
+  listaAmigos = NULL;
+
+  if((*User)->numeroAmigos != 0){
+    while(/*i < 26 &&*/(cont != ((*User)->numeroAmigos))){
+      pont = ((*User)->Amigos[i]);
+      while(pont != NULL){
+        if(cont == 0){
+          listaAmigos = pont;
+          listaAmigos->proxAmigo = NULL;
+          listaAmigos->antAmigo = NULL;
+          pont2 = listaAmigos;
+        }else{
+          pont2->proxAmigo = pont;
+          pont->antAmigo = pont2;
+          pont2 = pont;
+        }
+        pont2->proxAmigo = NULL;
+        pont2->antAmigo = NULL;
+        pont = pont->proxAmigo;
+        cont++;
+      }
+      i++;
     }
   }
+  return listaAmigos;
 }
 
 //Funcao destroi_Grafo --- Recebe como Parametro um Grafo(G) e libera cada espaço de memoria alocado dinamicamente.
 void destroi_Grafo(Grafo **G){
   if(existe_Grafo(*G)){
-    destroi_Listadeusuario(G);
-    free((*G));
-    (*G) = NULL;
   }
 }
 
- //Funcao imprime Grafo --- Recebe como Parametro um Grafo(G) e imprime na tela todos os Usuarios e Amizades.
+ //Funcao imprime Grafo --- Recebe como Parametro um Grafo(G) e imprime na tela todos os usuarios e Amizades.
 void imprime_Grafo(Grafo *G){
-  struct Usuarios *LAux;
-  struct Amizades *amizadeAux;
+  system("cls || clear");
+  int i = 0;
+  struct usuarios *pont;
 
-  if(existe_Grafo(G)){
-    printf("\n%s", G->nomeGrafo);
-    LAux = G->pontusuarioInicio;
-    printf("\n\n");
-    while(LAux != NULL){
-      printf("[%d] ", LAux->nomeusuario);
-      amizadeAux = LAux->pontamizadeInicio;
-      while(amizadeAux != NULL){
-        printf("---> (%d) ", amizadeAux->nomeamizade);
-        amizadeAux = amizadeAux->proxamizade;
-      }
-      printf("\n");
-      LAux = LAux->proxusuario;
-    }
-    printf("\n");
-  }
-}
-
-//Funcao procura_usuario --- Recebe como Parametros um Grafo(G) e um usuario(V).
-//Retorna uma lista de Usuarios que possui o usuario(V) ou NULL caso não encontre o usuario(V).
-Usuarios *procura_usuario(Grafo *G, int usuario){
-  struct Usuarios *Lista, *Lista2, *LErro;
-  bool encontrado = false;
-  int cont;
-  
-  LErro = (Usuarios *)malloc(sizeof(*LErro)); // alocando memoria para uma estrutura que reprensenta um erro.
-  LErro->nomeusuario = -1; //Valor fixado para erro.
-  LErro->proxusuario = LErro; //Aponta o ponteiro de proximo para si mesmo para evitar o que o erro seja ligado a outra estrutura.
-  LErro->antusuario = LErro;//Aponta o ponteiro de anterior para si mesmo para evitar o que o erro seja ligado a outra estrutura.
-
-  Lista = (G->pontusuarioInicio);
-  cont = G->N_Usuarios;
-  while(cont--){
-    if(Lista->nomeusuario == usuario){
-      encontrado = true;
-      Lista2 = Lista;
-      cont = 0;
-    }
-    Lista = Lista->proxusuario;
-  }
-  if(encontrado){
-    return Lista2;
-  }
-  else{
-        printf("\nERRO : usuario %d Nao Encontrado!!\n", usuario);
-    return LErro;
-  }
-}
-
- //Funcao adiciona_usuario --- Recebe como Parametros um Grafo(G) e um usuario(V).
-void adiciona_usuario(Grafo *G, Usuarios *user){
-  struct Usuarios *pont;
-
-  pont = G->listaAdj;
-  while(pont->prox != NULL)pont = pont->prox;
-  pont->prox = user;
-  G->N_Usuarios++;
-}
-/*
- //Funcao remove_usuario --- Recebe como Parametros um Grafo(G) e um usuario(usuario).
-void remove_usuario(Grafo **G, Usuarios **User){
-  struct Usuarios *pont;
-  int cont = 0;
-
-  while(cont < 24){
-    pont = ((*G)->listaAdj[cont]);
-    if(((*User)->nome[0]) == ('A'+cont)){
-      if(pont->ant == NULL){
-        pont = NULL;
-        pont = (pont->prox);
-        pont->ant = NULL;
+  if(G->N_usuarios > 0){
+    printf("Numero de usuarios = %d\n", G->N_usuarios);
+    while(i < 26){
+      if((G->listaAdj[i]) != NULL){
+        printf("\n[%c] ->\n", ('A'+i));
+        pont = G->listaAdj[i];
+        while(pont != NULL){
+          printf("        %s", pont->nome);
+          imprime_amigos(pont);
+          pont = pont->prox;
+        }
       }
       else{
-        while(pont->prox != NULL){
-          pont = pont->prox; 
-        }
-        if(pont->prox == NULL){
-          pont = NULL;
-          pont = (pont->prox);
-          pont->ant = NULL;
-        }
-        (pont->prox) = (*User);
-        ((*User)->ant) = pont;
-        ((*User)->prox) = NULL;
+        printf("\n[%c] -> Esta vazio\n", ('A'+i));
       }
-      cont = 24;
+      i++;
+    }
+  }else{
+    printf("Rede Social sem usuarios\n");
+  }
+}
+
+ //Funcao imprime Grafo --- Recebe como Parametro um Grafo(G) e imprime na tela todos os usuarios e Amizades.
+void imprime_amigos(usuarios *User){
+  int j;
+
+  for(j = 0; j < 26; j++){
+    if(j == 0){
+      printf("\nAmigos %s = {", User->nome);
+    }
+    if((User->Amigos[j]) != NULL){
+      printf(" %s ", User->Amigos[j]->nomeAmigo);
+    }
+    if(j == 25){
+      printf("}\n\n");
+    }
+  }
+}
+
+//Funcao procura_nome --- Recebe como Parametros um Grafo(G) e um nome.
+//Retorna um usuario ou NULL caso não encontre o usuario.
+usuarios *procura_nome(Grafo *G, char *nom){
+  system("cls || clear");
+  struct usuarios *User, *user1;
+  bool encontrado = false;
+  int letra;
+
+  letra = verifica_letra(nom[0]);
+  User = ((G->listaAdj[letra]));
+  while(User != NULL){
+    if(strcmp(nom, User->nome) == 0){
+      encontrado = true;
+      user1 = User;
+    }
+    User = User->prox;
+  }
+  if(encontrado){
+    printf("Usuario %s encontrado!\n", user1->nome);
+    return user1;
+  }
+  else{
+        printf("\nUsuario %s Nao Encontrado!!\n", nom);
+    return NULL;
+  }
+}
+
+//Funcao procura_usuario --- Recebe como Parametros um Grafo(G).
+//Retorna um usuario ou NULL caso não encontre o usuario.
+usuarios *procura_usuario(Grafo *G){
+  system("cls || clear");
+  struct usuarios *User, *user1;
+  bool encontrado = false;
+  char nom[100];
+  int letra;
+
+  printf("Digite o nome do usuario:\n");
+  getchar();
+  scanf(" %[^\n]", nom);
+
+  letra = verifica_letra(nom[0]);
+  User = ((G->listaAdj[letra]));
+  while(User != NULL){
+    if(strcmp(nom, User->nome) == 0){
+      encontrado = true;
+      user1 = User;
+    }
+    User = User->prox;
+  }
+  if(encontrado){
+    //printf("Usuario %s encontrado!\n", user1->nome);
+    return user1;
+  }
+  else{
+       // printf("\nUsuario %s Nao Encontrado!!\n", nom);
+    return NULL;
+  }
+}
+
+ //Funcao excluir_amigo --- Recebe como Parametros um Grafo(G) e um usuario.
+void excluir_amigo(Grafo **G, usuarios **User, usuarios **User1){
+  int letra;
+  struct amigos *pont;
+
+  if((*User1) != NULL){
+    letra = verifica_letra(((*User1)->nome[0]));
+    pont = ((*User)->Amigos[letra]);
+    while(pont != NULL){
+      if(strcmp(pont->nomeAmigo, (*User1)->nome) == 0){
+        if(pont->proxAmigo == NULL && pont->antAmigo == NULL){
+          free(((*User)->Amigos[letra]));
+          ((*User)->Amigos[letra]) = NULL;
+          ((*User)->Amigos[letra])->proxAmigo = NULL;
+          ((*User)->Amigos[letra])->antAmigo = NULL;
+        }
+        if(pont->antAmigo == NULL && pont->proxAmigo != NULL){
+          ((*User)->Amigos[letra]) = pont->proxAmigo;
+          pont->proxAmigo->antAmigo = NULL;
+          free(pont);
+        }
+        if(pont->antAmigo != NULL && pont->proxAmigo != NULL){
+          pont->antAmigo->proxAmigo = pont->proxAmigo;
+          pont->proxAmigo->antAmigo = pont->antAmigo;
+          free(pont);
+        }
+        pont = NULL;
+      }
+      else{
+        pont = pont->proxAmigo;
+      }
+    }
+    (*User)->numeroAmigos--;
+  }
+}
+
+ //Funcao adiciona_amigos --- Recebe como Parametros um Grafo(G) e dois usuarios.
+void adiciona_amigos(Grafo **G, usuarios **User1, usuarios **User2, int cons){
+  system("cls || clear");
+  int letra;
+  struct amigos *pont, *amigo;
+
+  amigo = (amigos*)malloc(sizeof(amigos));
+  strcpy(amigo->nomeAmigo, (*User2)->nome);
+  amigo->proxAmigo = NULL;
+  amigo->antAmigo = NULL;
+
+
+  letra = verifica_letra(((*User2)->nome[0]));
+  if(((*User1)->Amigos[letra]) == NULL){
+    ((*User1)->Amigos[letra]) = (amigo);
+  }
+  else{
+    pont = ((*User1)->Amigos[letra]);
+    while(pont->proxAmigo != NULL){
+      pont = pont->proxAmigo;
+    }
+    pont->proxAmigo = (amigo);
+    amigo->antAmigo = pont;
+    amigo->proxAmigo = NULL;
+  }
+  (*User1)->numeroAmigos++;
+  if(cons == 0){
+    adiciona_amigos(&(*G), &(*User2), &(*User1), 1);
+  }
+}
+
+int verifica_letra(char nome){
+  int cont = 0, letra = -1;
+
+  while(cont < 26){
+    if((nome == ('A'+cont)) || ((nome) == ('a'+cont))){
+      letra = cont;
+      cont = 26;
     }
     else{
       cont++;
     }
   }
-
-  if(existe_Grafo(*G)){
-    LAux = procura_usuario((*G), usuario);
-    if((*G)->pontusuarioInicio != (*G)->pontusuarioFim){
-      if(LAux != NULL){
-        if(LAux->antusuario != NULL && LAux->proxusuario != NULL){
-          LAux->antusuario->proxusuario = LAux->proxusuario;
-          LAux->proxusuario->antusuario = LAux->antusuario; 
-        }
-        else{
-          if(LAux->antusuario == NULL){ 
-            (*G)->pontusuarioInicio = LAux->proxusuario;
-            LAux->antusuario = NULL;
-          }
-          if(LAux->proxusuario == NULL){ 
-            (*G)->pontusuarioFim = LAux->antusuario;   
-            LAux->proxusuario = NULL; 
-          }
-        }
-        destroi_Listadeamizade(&LAux);
-        free(LAux);
-        LAux->proxusuario = NULL;
-        LAux->antusuario = NULL;
-        LAux = NULL;
-        (*G)->N_Usuarios-= 1;
-        // printf("\nMostra Grafo:\n");
-        //printf("\nusuario [%d] Removido!!", usuario);
-      }
-      else{
-        printf("\nERRO : usuario %d Nao Encontrado!!\n", usuario);
-      }  
-    }  
-    else{
-      free(LAux);
-      LAux->proxusuario = NULL;
-      LAux->antusuario = NULL;
-      LAux = NULL;
-      (*G)->pontusuarioInicio = NULL;
-      (*G)->pontusuarioFim = NULL;
-      (*G)->N_Usuarios-= 1;
-    }
-  }
+  return letra;
 }
 
-//Funcao procura_amizade --- Recebe como Parametros um Lista de Usuarios(ListaV1) e dois Usuarios(VOrig e VDest).
-//Retorna uma lista de Amizades que possui os Usuarios(VOrig e VDest) ou NULL caso não encontre o usuario(V).
-Amizades *procura_amizade(Grafo *G, int VOrig, int VDest){
-  struct Amizades *apontaArst, *LErro;
-  struct Usuarios *ListaV1, *ListaV2, *apontaVert;
-  bool encontrado = false;
- 
-  LErro = (Amizades *)malloc(sizeof(*LErro)); // alocando memoria para uma estrutura que reprensenta um erro.
-  LErro->nomeamizade = -1; //Valor fixado para erro.
-  LErro->proxamizade = LErro; //Aponta o ponteiro de proximo para si mesmo para evitar o que o erro seja ligado a outra estrutura.
-  LErro->antamizade = LErro;//Aponta o ponteiro de anterior para si mesmo para evitar o que o erro seja ligado a outra estrutura.
-  ListaV1 = procura_usuario(G, VOrig);
-  ListaV2 = procura_usuario(G, VDest);
+usuarios *testaUsuario(usuarios *User){
+  if(User == NULL){
+    printf("Usuario nao encontrado\n");
+  }else{
+    printf("Usuario %s encontrado!\n", User->nome);
+  }
 
-  apontaVert = G->pontusuarioInicio;
-  apontaArst = ListaV1->pontamizadeInicio;
-  if(ParDeusuario_Existe(ListaV1, ListaV2)){
-  
-  while(apontaArst != NULL){
-      if(apontaArst->usuarioOrig == ListaV1 && apontaArst->usuarioDest == ListaV2){
-        encontrado = true;
-        return apontaArst;
-      }
-      apontaArst = apontaArst->proxamizade;
-    }
-    if(!encontrado){
-      printf("ERRO : Nao existe amizade entre os Usuarios. Retorna Valor -1.\n");
-      return LErro;
-    }
-  }
-  else{
-      printf("ERRO : Nao existe amizade entre os Usuarios. Retorna Valor -1.\n");
-  return LErro;
-  }
+  return User;
 }
 
-//Funcao atualiza_amizade --- Recebe como Parametros um Grafo(G), dois Usuarios(V1 e V2) e um usuario Atualizado(usuarioAtualizado).
-void atualiza_amizade(Grafo **G, int V1, int V2, int amizadeAtualizada){
-  struct Amizades *amizadeAux;
+usuarios *editar_pessoa(Grafo **G){
+  system("cls || clear");
+  char nom[100], cidade[30], cep[20], cpf[12];
+  int opc = -1, opc1 = -1;
+  struct usuarios *user = NULL, *user2 = NULL;
 
-  amizadeAux = procura_amizade(*G ,V2, V1);
-   // printf("\nNome da amizade Antiga = %d\n", amizadeV1->nomeamizade); 
-   if(amizadeAux != NULL){ 
-     amizadeAux->nomeamizade = amizadeAtualizada; 
-     amizadeAux->nomeamizade = amizadeAtualizada;   
-    //printf("Nome da amizade Nova = %d\n", amizadeV1->nomeamizade);  
-   }
-   else{
-    printf("ERRO : Nao existe amizade entre os Usuarios %d e %d.\n", V1, V2);
-   }  
-}
+  while(user == NULL){
+    getchar();
+    printf("\nAlterar usuario\n\n");
+    printf("Digite o nome do usuario:\n");
+    scanf(" %[^\n]", nom);
+    user = procura_nome((*G), nom);
+  }
+  while(opc != 0){
+    printf(" -------------------------------------------------------\n");
+    printf("|              Alterar configuracoes de %s              | \n", user->nome);
+    printf("|1 - Nome                                               | \n");
+    printf("|2 - Cidade                                             | \n");
+    printf("|3 - Cep                                                | \n");
+    printf("|4 - Cpf                                                | \n");
+    printf("|5 - Amizades                                           | \n");
+    printf("|6 - Excluir conta                                      | \n");
+    printf("|0 - Sair                                               | \n");
+    printf(" -------------------------------------------------------\n");
+    scanf(" %d", &opc);
+    switch(opc){
+      case(1):
+      printf("Digite o novo nome: ");
+      scanf(" %[^\n]", nom);
+      strcpy(((user)->nome), nom);
+      printf("%s\n", user->nome);
+      opc = 0;
+      break;
 
- //Funcao atualiza_usuario --- Recebe como Parametros um Grafo(G), um usuario(usuario) e um usuario Atualizado(usuarioAtualizado).
-void atualiza_usuario(Grafo **G, int usuario, int usuarioAtualizado){
-  struct Usuarios *LAux, *apontaVert, *LAux2;
-  struct Amizades *amizadeAux, *apontaArst;
-  bool encontrado = false;
-  
-  if(existe_Grafo(*G)){
-    LAux = procura_usuario(*G, usuario);
-    apontaVert = (*G)->pontusuarioInicio;
-    apontaArst = apontaVert->pontamizadeInicio;
+      case(2):
+      printf("Digite a nova cidade: ");
+      scanf(" %[^\n]", cidade);
+      strcpy(user->cidade, cidade);
+      opc = 0;
+      break;
 
-    if(LAux !=  NULL){
-      while(apontaVert != NULL){
-        if(apontaVert->nomeusuario == usuario){
-          apontaVert->nomeusuario = usuarioAtualizado;
+      case(3):
+      printf("Digite o novo cep: ");
+      scanf(" %[^\n]", cep);
+      strcpy(user->cep, cep);
+      opc = 0;
+      break;
+
+      case(4):
+      strcpy(user->nome, nom);
+      printf("Digite o novo cpf: ");
+      scanf(" %[^\n]", cpf);
+      strcpy(user->cpf, cpf);
+      opc = 0;
+      break;
+
+      case(5):
+      imprime_amigos(user);
+      opc = 0;
+      while(opc1 != 0){
+        printf(" -------------------------------------------------------\n");
+        printf("|                 Escolha uma acao                      | \n");
+        printf("|1 - Adiciona amigo                                     | \n");
+        printf("|2 - Exclui amigo                                       | \n");
+        printf("|0 - Sair                                               | \n");
+        printf(" -------------------------------------------------------\n");
+        scanf("%d", &opc1);
+        if(opc1 != 0){
+          printf("Usuario que sera excluido\n");
+          user2 = procura_usuario((*G));
         }
-        while(apontaArst != NULL){
-          if(apontaArst->usuarioDest == LAux || apontaArst->usuarioOrig == LAux){
-            apontaArst->nomeamizade = usuarioAtualizado;
-            if(apontaArst->usuarioDest == LAux){
-              apontaArst->usuarioDest == LAux;
+        if(user2 != NULL){
+          if(user->nome != user2->nome){
+            if(opc1 == 1){
+                adiciona_amigos(&(*G), &user, &user2, K);
+                printf("Amigo adicionado!!\n");
             }
-            if(apontaArst->usuarioOrig == LAux){
-              apontaArst->usuarioOrig == LAux;
+            if(opc1 == 2){
+                excluir_amigo(&(*G), &user, &user2);
+                printf("Amigo excluido!!\n");
             }
+          }else{
+            system("clear || cls");
+            printf("So e possivel excluir conta no menu anterior\n");
           }
-          apontaArst = apontaArst->proxamizade;
-        }
-        apontaVert = apontaVert->proxusuario;
-      }
-    }
-  }
-  else{
-    printf("ERRO: Grafo Inexistente!!\n");
-  }
-}
-
-
-//Funcao retorna_usuario --- Recebe como Parametros um Grafo(G) e um usuario(V).
-//Que retorna o Valor de usuario(Se o usuario for encontrado) ou retorna 0, caso não encontre o usuario.
-int retorna_usuario(Grafo *G, int usuario){
-  struct Usuarios *Lista, *Lista2;
-  bool encontrado = false;
-  int VarAux;
-  
-  if(existe_Grafo(G)){
-    Lista = (G->pontusuarioInicio);  
-    while(Lista != NULL){
-      if(Lista->nomeusuario == usuario){
-        encontrado = true;
-        Lista2 = Lista;
-      }
-      Lista = Lista->proxusuario;
-    }
-    if(encontrado){
-      //printf("\nusuario [%d]\n", Lista2->nomeusuario);
-      VarAux = Lista2->nomeusuario;
-    }
-    else{
-        printf("ERRO : usuario %d Nao Encontrado!!\n", usuario);
-      VarAux = -1; 
-    }
-  }
-  return VarAux;
-}
-
-//Funcao Pardeusuario_Existe --- Recebe como Parametros duas listas de adjacencia(ListaV1 e ListaV2).
-//Retorna true se existir amizade entre as duas e falso caso nao exista.
-bool ParDeusuario_Existe(Usuarios *ListaV1, Usuarios *ListaV2){
-  if(ListaV2 != NULL && ListaV1 != NULL){
-    return true;
-  }
-  else{
-    if(ListaV1 == NULL && ListaV2 == NULL){
-      printf("ERRO : Nenhum usuario existe!!\n");
-      return false;    
-    }
-    if(ListaV1 != NULL){
-      printf("ERRO : Unico usuario existente = [%d]\n", ListaV1->nomeusuario);
-      return false;    
-    }
-    if(ListaV2 != NULL){
-      printf("ERRO : Unico usuario existente = [%d]\n", ListaV2->nomeusuario);
-      return false;    
-    }
-  }
-}
-
-//Funcao adiciona_amizade --- Recebe como Parametros um Grafo(G), um usuario de Origem(VOrig) e um usuario de Destino(VDest).
-void adiciona_amizade(Grafo **G, int VOrig, int VDest){
-  struct Usuarios *ListaOrig, *ListaDest, *apontaVizinhosOrig, *apontaVizinhosDest;;
-  struct Amizades *amizadeAux, *amizadeAux2;
- 
-  if(existe_Grafo(*G)){
-    //printf("\nTestando existencia dos Usuarios %d e %d ......\n", VOrig, VDest);
-    ListaOrig = procura_usuario(*G, VOrig);
-    ListaDest = procura_usuario(*G, VDest);
-
-    if(ParDeusuario_Existe(ListaOrig, ListaDest)){
-      amizadeAux = (Amizades *)malloc(sizeof(*amizadeAux));
-      amizadeAux->nomeamizade = VDest;
-      amizadeAux->usuarioOrig = ListaOrig;
-      amizadeAux->usuarioDest = ListaDest;
-      amizadeAux->proxamizade = NULL;
-      amizadeAux->antamizade = NULL;
-
-      if(ListaOrig->pontamizadeInicio == NULL){
-        ListaOrig->pontamizadeInicio = amizadeAux;
-        ListaOrig->pontamizadeFim = amizadeAux;
-      }
-      else{
-        ListaOrig->pontamizadeFim->proxamizade = amizadeAux; 
-        amizadeAux->antamizade = ListaOrig->pontamizadeFim;
-        ListaOrig->pontamizadeFim = amizadeAux;
-      }
-      ListaOrig->N_Amizadesdousuario+= 1;
-      (*G)->N_Amizades+= 1;
-      //printf("amizade Adicionada com Sucesso!!\n");
-    }
-  }
-}
-
-//Funcao retorna_amizade --- Recebe como Parametros um Grafo(G) e dois Usuarios(V1 e V2).
-//Que retorna o Valor da amizade(Se o usuario for encontrado) ou retorna 0, caso não encontre o usuario.
-int retorna_amizade(Grafo *G, int V1, int V2){
-  struct Amizades *amizadeAux;
-  struct Usuarios *ListaAux, *ListaAux2;
-  bool encontrado = false;
-
-  if(existe_Grafo(G)){
-    ListaAux = procura_usuario(G, V1);
-    ListaAux2 = procura_usuario(G, V2);
-    if(ParDeusuario_Existe(ListaAux, ListaAux2)){
-      amizadeAux = procura_amizade(G, V1, V2);
-      if(amizadeAux->nomeamizade != -1){
-        return amizadeAux->nomeamizade;
-      }
-      else{
-        printf("ERRO: amizade nao encontrada!\n");
-        return -1;
-      }
-    }
-  }
-  else{
-    printf("ERRO: amizade nao encontrada!\n");
-    return -1;
-  }
-}
-
-//Funcao verifica_Vizinhos(Dado um usuario V1 - procura todas as Amizades de V1) --- Recebe como Parametros um Grafo(G) e um usuario(V1).
-//Retorna Null se nao houver vizinhos ou retorna uma lista de Amizades se houver vizinhos
-Usuarios *verifica_Vizinhos(Grafo *G, int V1){
-  struct Usuarios *ListaV1, *LErro;
-  struct Amizades *apontaArst;
-  bool encontrado = false;
-
-  LErro = (Usuarios *)malloc(sizeof(*LErro)); // alocando memoria para uma estrutura que reprensenta um erro.
-  LErro->nomeusuario = -1; //Valor fixado para erro.
-  LErro->proxusuario = LErro; //Aponta o ponteiro de proximo para si mesmo para evitar o que o erro seja ligado a outra estrutura.
-  LErro->antusuario = LErro;//Aponta o ponteiro de anterior para si mesmo para evitar o que o erro seja ligado a outra estrutura.
-  
-  ListaV1 = procura_usuario(G, V1);
-
-  if(ListaV1 != NULL){
-    if(ListaV1->pontamizadeInicio){
-      printf("Os vizinhos do usuario %d São: ", V1);
-      if(ListaV1->pontamizadeInicio != NULL){
-        apontaArst = ListaV1->pontamizadeInicio;
-        while(apontaArst != NULL){
-        printf("[%d] ", apontaArst->nomeamizade);
-        apontaArst = apontaArst->proxamizade;
-       }
-        printf("\n");
-        return ListaV1;
-      }
-    }
-    else{
-      return LErro;
-    }
-  }
-  else{
-    printf("ERRO : usuario %d Inexistente!!\n", V1);
-    return LErro;
-  }     
-}
-
-//Funcao verifica_Adjacencia(Se existe uma amizade entre dois Usuarios) --- Recebe como Parametros um Grafo(G), dois Usuarios(V2 e V1).
-void verifica_Adjacencia(Grafo *G, int V1, int V2){
-  struct Usuarios *ListaV1, *ListaV2;
-  struct Amizades *apontaArst;
-  bool encontrado = false;
-
-  ListaV1 = procura_usuario(G, V1);
-  ListaV2 = procura_usuario(G, V2);
-  apontaArst = ListaV1->pontamizadeInicio;
-  while(apontaArst != NULL){
-      if(apontaArst->usuarioDest == ListaV2 || apontaArst->usuarioOrig == ListaV2){
-        encontrado = true;
-      }
-      apontaArst = apontaArst->proxamizade;
-  
-  }
-  if(!encontrado){
-    printf("\nOs Usuarios %d e %d nao sao Adjacentes\n", V1, V2);     
-  } 
-  else{
-    printf("\nOs Usuarios %d e %d sao Adjacentes\n", V1, V2);
-  }
-}
-
-//Funcao remove_amizade --- Recebe como Parametros um Grafo(G), dois Usuarios(VOrig e VDest).
-void remove_amizade(Grafo **G, int VOrig, int VDest){
-  struct Usuarios *ListaOrig, *ListaDest;
-  struct Amizades *amizadeV1;
-
-  if(existe_Grafo(*G)){
-    ListaOrig = procura_usuario(*G, VOrig);
-    ListaDest = procura_usuario(*G, VDest);
-    if(ParDeusuario_Existe(ListaOrig, ListaDest)){
-      amizadeV1 = procura_amizade(*G, VOrig, VDest);
-      if(ListaOrig->pontamizadeFim != ListaOrig->pontamizadeInicio){
-        if(amizadeV1 != NULL){
-          if(amizadeV1->antamizade != NULL && amizadeV1->proxamizade != NULL){
-            amizadeV1->antamizade->proxamizade = amizadeV1->proxamizade;
-            amizadeV1->proxamizade->antamizade = amizadeV1->antamizade; 
-          }
-          else{
-            if(amizadeV1->antamizade == NULL){ 
-              ListaOrig->pontamizadeInicio = amizadeV1->proxamizade;
-              amizadeV1->antamizade = NULL;
-            }
-            if(amizadeV1->proxamizade == NULL){ 
-              ListaOrig->pontamizadeFim = amizadeV1->antamizade;   
-              amizadeV1->proxamizade = NULL; 
-            }
-          }
-          free(amizadeV1);
-          amizadeV1->proxamizade = NULL;
-          amizadeV1->antamizade = NULL;
-          amizadeV1 = NULL;
-          (*G)->N_Amizades-= 1;
-          ListaOrig->N_Amizadesdousuario-= 1;
-        }
-        //printf("\nA amizade entre %d e %d foi removida!!\n", VOrig, VDest);
-        else{
-          printf("\nERRO : Nao existe amizade entre %d e %d\n", VOrig, VDest);     
+        }else{
+          printf("Usuario nao encontrado!!\n");
         }
       }
-      else{
-        free(amizadeV1);
-        amizadeV1->proxamizade = NULL;
-        amizadeV1->antamizade = NULL;
-        amizadeV1 = NULL;
-        ListaOrig->pontamizadeInicio = NULL;
-        ListaOrig->pontamizadeFim = NULL;
-        ListaOrig->N_Amizadesdousuario-= 1;
-        (*G)->N_Amizades-= 1;
-      }
+      break;
+      case(6):
+        exclui_usuario(&(*G), &user);
+      break;
+
     }
   }
+  system("cls || clear");
+  return user;
 }
-*/
+
+
+usuarios *cria_pessoa(Grafo **G){
+  system("cls || clear");
+  char nom[100], cidade[30], cep[20], cpf[12];
+  int cont = 0, letra;
+  struct usuarios *pont, *user;
+
+  user = (usuarios*)malloc(sizeof(usuarios));
+  printf("Digite o seu nome: ");
+  scanf(" %[^\n]", nom);
+  getchar();
+  strcpy(user->nome, nom);
+  /*printf("Digite o seu cpf: ");
+  scanf(" %[^\n]", cpf);
+  strcpy(user->cpf, cpf);
+  printf("Digite a sua cidade: ");
+  scanf(" %[^\n]", cidade);
+  strcpy(user->cidade, cidade);
+  printf("Digite o seu cep: ");
+  scanf(" %[^\n]", cep);
+  strcpy(user->cep, cep);*/
+
+
+  letra = verifica_letra(nom[0]);
+  if(((*G)->listaAdj[letra]) == NULL){
+    ((*G)->listaAdj[letra]) = user;
+
+    for (cont = 0; cont < 26; ++cont){
+      ((*G)->listaAdj[letra])->Amigos[cont] = NULL;
+    }
+    ((*G)->listaAdj[letra])->ant = NULL;
+    ((*G)->listaAdj[letra])->prox = NULL;
+    (((*G)->listaAdj[letra])->numeroAmigos) = 0;
+  }
+  else{
+    pont = ((*G)->listaAdj[letra]);
+    while(pont->prox != NULL){
+      pont = pont->prox;
+    }
+    pont->prox = (user);
+    ((user)->ant) = pont;
+    ((user)->prox) = NULL;
+    (user)->numeroAmigos = 0;
+  }
+  (*G)->N_usuarios++;
+
+  return user;
+}

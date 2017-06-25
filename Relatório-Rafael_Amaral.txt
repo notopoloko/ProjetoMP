@@ -1,0 +1,26 @@
+Data | Horas Trabalhadas | Tipo Tarefa | Descrição da Tarefa Realizada
+- estudar aulas e laboratórios relacionados
+- especificar os módulos
+- especificar as funções
+- revisar especificações
+- projetar
+- fazer diagramas
+- revisar projetos
+- codificar módulo
+- Rodar os CPPCheck e retirar warnings
+- revisar código do módulo
+- redigir casos de teste
+- revisar casos de teste
+- realizar os testes
+- instrumentar via gcov
+- documentar com Doxygen
+
+
+05/06/2017 |~6 horas| estudar aulas e laboratórios relacionados | Estudando a biblioteca gráfica NCURSES
+06/06/2017 |~3 horas| estudar aulas e laboratórios relacionados | Estudando a biblioteca gráfica NCURSES
+16/06/2017 |~6 horas| Codificando módulos | Desenvolvendo pré-interfaces para o projeto
+17/06/2017 |~2 horas| Codificando módulos | Desenvolvendo pré-interfaces para o projeto
+18/06/2017 |~8 horas| Codificando módulos | Corrigindo bugs que aparecerem nas pré-interfaces
+23/06/2017 |~8 horas| Codificando módulos | Corrigindo bugs que aparecerem nas pré-interfaces e nos módulos
+
+
