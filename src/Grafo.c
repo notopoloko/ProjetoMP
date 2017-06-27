@@ -6,16 +6,17 @@ int K = 0;
 char Erro[] = "Erro"; // Vetor de caracteres que é retornado na funcao retorna nome, caso um grafo seja inexistente.
 
 //Funcao cria_Grafo --- Recebe como Parametro um Grafo(G) e aloca espaço de memoria para criar uma estrutura do tipo Grafo.
+//Os if's ajudam caso haja alguma falha na alocação de memória. A falha será propagada para a função que a chama
+//A lista de usuários possui uma cabeça para ajudar nas operações e vai de acordo com a especificação
 Grafo *cria_Grafo(){
   struct Grafo *G;
+  struct usuarios *user;
   int i = 0;
 
-  G = (Grafo *)malloc(sizeof(*G));
+  if((G = (Grafo *)malloc(sizeof(Grafo))) == NULL)return NULL;
+  if((user = (usuarios*)malloc(sizeof(usuarios))) == NULL)return NULL;
+  G->lista = user;
   G->N_usuarios = 0;
-  while(i < 26){
-    G->listaAdj[i] = NULL;
-    i++;
-  }
   return G;
 }
 
@@ -52,7 +53,7 @@ void destroi_Listadeamizade(usuarios **Lusuario){
 */
 
 //Funcao exclui_usuario --- Recebe como Parametro um Grafo(G), libera o espaço de memoria alocado para um usuario.
-void exclui_usuario(Grafo **G, usuarios **User){
+void exclui_usuario(Grafo *G, usuarios *User){//verificar depois da função criar usuário
   int letra;
   struct amigos *amigo, *pont;
   struct usuarios *User2;
@@ -428,51 +429,104 @@ usuarios *editar_pessoa(Grafo **G){
   return user;
 }
 
+void cria_pessoa(usuarios user){
 
-usuarios *cria_pessoa(Grafo **G){
-  system("cls || clear");
-  char nom[100], cidade[30], cep[20], cpf[12];
-  int cont = 0, letra;
-  struct usuarios *pont, *user;
+  FILE *fp;
+  fp = fopen("../Allusers/Alluserinfo","ab");
+  fwrite(&user,sizeof(usuarios),1,fp);
+  fclose(fp);
+}
 
-  user = (usuarios*)malloc(sizeof(usuarios));
-  printf("Digite o seu nome: ");
-  scanf(" %[^\n]", nom);
-  getchar();
-  strcpy(user->nome, nom);
-  /*printf("Digite o seu cpf: ");
-  scanf(" %[^\n]", cpf);
-  strcpy(user->cpf, cpf);
-  printf("Digite a sua cidade: ");
-  scanf(" %[^\n]", cidade);
-  strcpy(user->cidade, cidade);
-  printf("Digite o seu cep: ");
-  scanf(" %[^\n]", cep);
-  strcpy(user->cep, cep);*/
+int cria_pessoa_interface(Grafo *G){
+  FIELD *field[7];
+  FORM *my_form;
+  int ch,i,number=0, position = 0;
+  char *nome,*cidade,*endereco,*cep,*cpf,*email;
+  usuarios user;
 
+  initscr();
+  start_color();
+  cbreak();
+  noecho();
+  keypad(stdscr,true);
 
-  letra = verifica_letra(nom[0]);
-  if(((*G)->listaAdj[letra]) == NULL){
-    ((*G)->listaAdj[letra]) = user;
+  init_pair(1,COLOR_WHITE, COLOR_BLUE);
+  init_pair(2,COLOR_WHITE, COLOR_BLUE);
 
-    for (cont = 0; cont < 26; ++cont){
-      ((*G)->listaAdj[letra])->Amigos[cont] = NULL;
-    }
-    ((*G)->listaAdj[letra])->ant = NULL;
-    ((*G)->listaAdj[letra])->prox = NULL;
-    (((*G)->listaAdj[letra])->numeroAmigos) = 0;
+  field[0] = new_field(1,30,4,18,0,0);
+  field[1] = new_field(1,15,6,18,0,0);
+  field[2] = new_field(1,20,8,18,0,0);
+  field[3] = new_field(1,20,10,18,0,0);
+  field[4] = new_field(1,20,12,18,0,0);
+  field[5] = new_field(1,20,14,18,0,0);
+
+  field[6] = NULL;
+  for(i=0;i<6;++i){
+    set_field_fore(field[i],COLOR_PAIR(1));
+    set_field_back(field[i],COLOR_PAIR(2));
+    field_opts_off(field[i],O_AUTOSKIP);
   }
-  else{
-    pont = ((*G)->listaAdj[letra]);
-    while(pont->prox != NULL){
-      pont = pont->prox;
-    }
-    pont->prox = (user);
-    ((user)->ant) = pont;
-    ((user)->prox) = NULL;
-    (user)->numeroAmigos = 0;
-  }
-  (*G)->N_usuarios++;
+  my_form = new_form(field);
+  form_opts_off(my_form, O_BS_OVERLOAD);
+  post_form(my_form);
+  refresh();
+  mvprintw(LINES - 2, 0, "Use as setas para para trocar entre os campos. Para terminar digite ENTER");
+  mvprintw(4,9,"Nome:");
+  mvprintw(6,9,"Cidade:");
+  mvprintw(8,9,"Endereço:");
+  mvprintw(10,9,"Cep:");
+  mvprintw(12,9,"CPF:");
+  mvprintw(14,9,"E-mail:");
 
-  return user;
+  set_current_field(my_form,field[0]);
+  refresh();
+
+  while(ch = getch()){
+    switch(ch){
+      case KEY_DOWN:
+        if(number!=3)number++;
+        form_driver(my_form, REQ_NEXT_FIELD);
+        break;
+      case KEY_UP:
+        if(number!=0)number--;
+        form_driver(my_form, REQ_PREV_FIELD);
+        break;
+      case KEY_LEFT:
+        if(position != 0) position--;
+        form_driver(my_form, REQ_LEFT_CHAR);
+        break;
+      case KEY_RIGHT:
+        form_driver(my_form, REQ_RIGHT_CHAR);
+        break;
+      case KEY_BACKSPACE:
+        form_driver(my_form, REQ_DEL_PREV);
+        break;
+      case 10:
+        form_driver(my_form, REQ_NEXT_FIELD);
+        nome = field_buffer(field[0], 0);
+        cidade = field_buffer(field[1], 0);
+        endereco = field_buffer(field[2], 0);
+        cep = field_buffer(field[3], 0);
+        cpf = field_buffer(field[4], 0);
+        email = field_buffer(field[5], 0);
+
+        strcpy(user.nome,nome);
+        strcpy(user.cidade,cidade);
+        strcpy(user.endereco,endereco);
+        strcpy(user.cep,cep);
+        strcpy(user.cpf,cpf);
+        strcpy(user.email,email);
+        cria_pessoa(user,G);
+        mvprintw(LINES - 3, 0, "%s %s %s %s",nome,cidade,cep,cpf);
+        getch();
+        unpost_form(my_form);
+        free_form(my_form);
+        for(i=0;i<4;++i)free_field(field[i]);
+        endwin();
+        return 1;//sucesso ao criar um usuário
+      default:
+        form_driver(my_form, ch);
+        break;
+    }
+  }
 }
