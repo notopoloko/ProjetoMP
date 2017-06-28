@@ -36,7 +36,7 @@ int main(){
     mvwprintw(tela, 1,(40-width)/2, "BEM-VINDO");
     post_menu(menu);
     wrefresh(tela);
-    //graph = cria_Grafo();
+    graph = cria_Grafo();
     while(ch = wgetch(tela)){
         switch(ch){
             case KEY_DOWN:
@@ -57,7 +57,7 @@ int main(){
                     for(i=0; i<numero;i++)free_item(itens[i]);
                     free_menu(menu);
                     endwin();
-                    cria_pessoa_interface();
+                    cria_pessoa_interface(graph);
                     return 0;
                 }else if(!strcmp("Login",item_name(current_item(menu)))){
                     //login_user();
