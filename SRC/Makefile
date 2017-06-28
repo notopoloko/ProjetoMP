@@ -1,16 +1,16 @@
-IDIR =../include
+IDIR =../Include
 CXX=g++
 CXXFLAGS=-I$(IDIR) -g -D_TEST -ftest-coverage -fprofile-arcs
 
-ODIR=../obj
-LDIR=../lib
+ODIR=../OBJ
+LDIR=../LIB
 
-LIBS= -lgtest -lpthread -lgtest_main -lcurses --coverage -lgcov -lncurses
+LIBS= -lgtest -lpthread -lgtest_main --coverage -lgcov
 
-_DEPS= grafo.h
+_DEPS= Grafo.h
 DEPS= $(patsubst %,$(IDIR)/%,$(_DEPS))
 
-_OBJ= main.o MyNetwork.o 
+_OBJ= main.o RedeSocial.o
 OBJ= $(patsubst %,$(ODIR)/%,$(_OBJ))
 
 
