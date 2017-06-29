@@ -8,6 +8,14 @@ int Const = 0;
 
 //Estrutura do tipo grafo com um vetor de caracteres representando o nome do grafo, um inteiro representando
 //o numero de usuarios do grafo e um ponteiro para outra estrutura do tipo usuarios.
+typedef struct listaAmigos{
+  char nomeAmigo[100];
+
+  struct amigos *proxAmigo, *antAmigo;
+}listaAmigos;
+
+//Estrutura do tipo grafo com um vetor de caracteres representando o nome do grafo, um inteiro representando
+//o numero de usuarios do grafo e um ponteiro para outra estrutura do tipo usuarios.
 typedef struct amigos{
   char nomeAmigo[100];
 

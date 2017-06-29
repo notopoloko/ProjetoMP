@@ -114,24 +114,21 @@ void exclui_usuario(Grafo **G, usuarios **User){
     if((*User)->ant != NULL && (*User)->prox != NULL){
       (*User)->ant->prox = (*User)->prox;
       (*User)->prox->ant = (*User)->ant;
-      free((*User));
-      (*User) = NULL;
     }
-    else{
-      if((*User)->ant == NULL && (*User)->prox != NULL){
-        (*User)->prox->ant = NULL;
-        ((*G)->listaAdj[letra]) = (*User)->prox;
-        free((*User));
-      }
-      if((*User)->ant == NULL && (*User)->prox == NULL){
-        ((*G)->listaAdj[letra]) = NULL;
-        free((*User));
-      }
+    if((*User)->ant == NULL && (*User)->prox != NULL){
+      (*User)->prox->ant = NULL;
+      ((*G)->listaAdj[letra]) = (*User)->prox;
     }
+    if((*User)->ant == NULL && (*User)->prox == NULL){
+      ((*G)->listaAdj[letra]) = NULL;
+    }
+    if((*User)->ant != NULL && (*User)->prox == NULL){
+      (*User)->ant->prox = NULL;
+    }
+    free((*User));
     (*G)->N_usuarios--;
   }
 } 
-
 //Funcao verifica_amizades --- Recebe como Parametro um usuario(User) e retorna uma lista de amigos de User.
 amigos *verifica_amizades(usuarios **User){
   int cont = 0, i = 0;
@@ -170,19 +167,22 @@ amigos *verifica_amizades(usuarios **User){
 void destroi_Grafo(Grafo **G){
   int i;
   FILE *fp;
+  struct usuarios *pont;
 
   if(existe_Grafo(*G)){
     for(i = 0; i < 26; i++){
-      while((*G)->listaAdj[i] != NULL){
-        exclui_usuario(&(*G), &((*G)->listaAdj[i]));
+      pont = (*G)->listaAdj[i];
+      while(pont != NULL){
+        exclui_usuario(&(*G), &(pont));
+        pont = pont->prox;
       }
     }
     fp = fopen("BancodeDados.txt","w+");
     fclose(fp);
     free(*G);
+    cria_Grafo();
   }
 }
-
  //Funcao imprime Grafo --- Recebe como Parametro um Grafo(G) e imprime na tela todos os usuarios e Amizades.
 void imprime_Grafo(Grafo *G){
   int i = 0;
@@ -621,20 +621,16 @@ void menu(Grafo **G){
   int opc = -1;
 
   while(opc != 0){
+    system("clear || cls");
     printf(" -------------------------------------------------------\n");
     printf("|                           MENU                        | \n");
     printf("|1 - Criar pessoa                                       | \n");
     printf("|2 - Editar pessoa                                      | \n");
-    printf("|3 - Adicionar amigo                                    | \n");
-    printf("|4 - Imprimir rede social                               | \n");
-    printf("|5 - Destroi rede social                                | \n");
+    printf("|3 - Imprimir rede social                               | \n");
+    printf("|4 - Destroi rede social                                | \n");
     printf("|0 - Sair                                               | \n");
     printf(" -------------------------------------------------------\n");
     scanf(" %d", &opc);
-    if(opc < 0 && opc > 4){
-      printf("Valor invalido\n");
-    }
-
     switch(opc){
       case(1):
       cria_pessoa(&(*G));
@@ -645,20 +641,10 @@ void menu(Grafo **G){
       break;
 
       case(3):
-      user1 = procura_usuario((*G));
-      user2 = procura_usuario((*G));
-      if(user1 != NULL && user2 != NULL){
-        adiciona_amigos(&(*G), &user1, &user2, Const);
-      }else{
-        printf("Usuarios invalidos\n");
-      }
-      break;
-
-      case(4):
       imprime_Grafo((*G));
       break;
 
-      case(5):
+      case(4):
       destroi_Grafo(&(*G));
       break;
     }
