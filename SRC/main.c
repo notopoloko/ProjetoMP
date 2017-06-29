@@ -6,7 +6,8 @@
 #include "Grafo.h"
 
 Grafo *G;
-usuarios *User, *User1, *User2, *User3, *User4;
+usuarios *User, *User1, *User2, *User3, *User4, *User5;
+amigos *aux;	
 int NumeroUsuarios, NumeroAmigos;
 char nom[] = "Rafael", nom1[] = "Marcelo", nom2[] = "Paula", nom3[] = "Andre", nom4[] = "Leandro", nom5[] = "Joao";
 char cidade[] = "Aguas", cidade1[] = "Taguatinga", cidade2[] = "Ceilandia", cidade3[] = "Marajo", cidade4[] = "Olinda", cidade5[] = "Maceio";
@@ -33,7 +34,7 @@ TEST(TestaInsercao, TestInsert){ // Testando inserção de elementos do grafo.
 	G = cria_Grafo();
 	ASSERT_TRUE(G->N_usuarios == 0);
 	User = cria_pessoaAuto(&G, nom, cpf, cep, cidade);
-	ASSERT_TRUE(User->Amigos[verifica_letra(User1->nome[0])] == NULL);
+	ASSERT_TRUE(User->numeroAmigos == 0);
 	ASSERT_TRUE(G->N_usuarios == 1);
 	User1 = cria_pessoaAuto(&G, nom1, cpf1, cep1, cidade1);
 	adiciona_amigos(&G, &User, &User1, 0);
@@ -146,6 +147,35 @@ TEST(TestaArquivo, TestFile){ // Testando erros no arquivo criado.
 	destroi_Grafo(&G);
 	ASSERT_TRUE(tamanho_Arquivo(nomeArquivo) <= 0);
 }
+
+
+TEST(TestaCirculoAmigos, TestFriends){ // Testando erros no circulo de amigos.
+	printf("\n");
+	G = cria_Grafo();
+	User = cria_pessoaAuto(&G, nom, cpf, cep, cidade);
+	User1 = cria_pessoaAuto(&G, nom1, cpf1, cep1, cidade1);
+	User2 = cria_pessoaAuto(&G, nom2, cpf2, cep2, cidade2);
+	User3 = cria_pessoaAuto(&G, nom3, cpf3, cep3, cidade3);
+	User4 = cria_pessoaAuto(&G, nom4, cpf4, cep4, cidade4);
+	User5 = cria_pessoaAuto(&G, nom5, cpf5, cep5, cidade5);
+	adiciona_amigos(&G, &User, &User1, 0); // Rafael - Marcelo
+	adiciona_amigos(&G, &User1, &User2, 0); // Marcelo - Paula
+	adiciona_amigos(&G, &User, &User2, 0); // Rafael - Paula
+	adiciona_amigos(&G, &User3, &User2, 0); // Paula- Andre
+	aux = circulo_amigosLista(&G, &User); // Nesse caso, circulo_amigosLista precisa retorna a seguinta lista: [ Andre ]
+
+	ASSERT_TRUE(strcmp(aux->nomeAmigo, User3->nome) == 0);
+	ASSERT_TRUE(aux->idAmigo == User3->id);
+
+	adiciona_amigos(&G, &User4, &User2, 0); // Paula - Leandro
+	aux = circulo_amigosLista(&G, &User); // Nesse caso, circulo_amigosLista precisa retorna a seguinta lista: [ Andre Leandro ]
+
+	ASSERT_TRUE(strcmp(aux->proxAmigo->nomeAmigo, User4->nome) == 0);
+	ASSERT_TRUE(aux->proxAmigo->idAmigo == User4->id);
+
+	destroi_Grafo(&G);
+}
+
 
 int main(int argc, char **argv) {
   	::testing::InitGoogleTest(&argc, argv);

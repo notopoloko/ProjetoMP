@@ -10,6 +10,7 @@ int Const = 0;
 //o numero de usuarios do grafo e um ponteiro para outra estrutura do tipo usuarios.
 typedef struct amigos{
   char nomeAmigo[100];
+  int idAmigo;
 
   struct amigos *proxAmigo, *antAmigo;
 }amigos;
@@ -43,6 +44,12 @@ usuarios *testaUsuario(usuarios *User);
 
 amigos *verifica_amizades(usuarios **User);
 
+//Funcao circulo_amigosArq --- Recebe como Parametro um usuario(User) e retorna um arquivo com uma lista de amigos de amigos.
+FILE *circulo_amigosArq(Grafo **G, usuarios **User);
+
+//Funcao circulo_amigos --- Recebe como Parametro um usuario(User); e retorna uma lista de amigos de amigos.
+amigos *circulo_amigosLista(Grafo **G, usuarios **User);
+
 usuarios *procura_usuario(Grafo *G);
 
 usuarios *procura_nome(Grafo *G, char *nom);
@@ -54,6 +61,8 @@ usuarios *cria_pessoa(Grafo **G);
 usuarios *cria_pessoaAuto(Grafo **G, char *nome, char *cpf, char *cep, char *cidade);
 
 void menu(Grafo **G);
+
+bool eh_amigo(usuarios *User, usuarios *User2);
 
 FILE *salva_Arquivo(Grafo **G);
 
@@ -200,6 +209,7 @@ void exclui_usuario(Grafo **G, usuarios **User){
     (*G)->N_usuarios--;
   }
 } 
+
 //Funcao verifica_amizades --- Recebe como Parametro um usuario(User) e retorna uma lista de amigos de User.
 amigos *verifica_amizades(usuarios **User){
   int cont = 0, i = 0;
@@ -212,6 +222,7 @@ amigos *verifica_amizades(usuarios **User){
       while(pont != NULL){
         pont2 = (amigos*)malloc(sizeof(amigos));
         strcpy(pont2->nomeAmigo, pont->nomeAmigo);
+        pont2->idAmigo = pont->idAmigo;
         if(cont == 0){
           listaAmigos = pont2;
           listaAmigos->proxAmigo = NULL;
@@ -233,6 +244,60 @@ amigos *verifica_amizades(usuarios **User){
   }
   return listaAmigos;
 }
+
+//Funcao eh_amigo --- Recebe como Parametro dois usuarios(User e User2) e retorna um valor booleano.
+bool eh_amigo(usuarios *User, usuarios *User2){
+  struct amigos *pont;
+  bool encontrado = false;
+
+  pont = verifica_amizades(&(User));
+  while(pont != NULL){
+    if(pont->idAmigo == (User2)->id){
+      encontrado = true;
+    }
+    pont = pont->proxAmigo;
+  }
+  return encontrado;
+}
+
+//Funcao circulo_amigos --- Recebe como Parametro um usuario(User) e retorna uma lista de amigos de amigos.
+amigos *circulo_amigosLista(Grafo **G, usuarios **User){
+  struct usuarios *user2;
+  struct amigos *pont, *pont2, *lista, *aux, *pont3;
+
+  pont = verifica_amizades(&(*User));
+  lista = NULL;
+  while(pont != NULL){
+    user2 = procura_nome((*G), pont->nomeAmigo);
+    pont2 = verifica_amizades(&user2);  
+    while(pont2 != NULL){
+      if((eh_amigo((*User), (procura_nome((*G), pont2->nomeAmigo))) == false)){
+        if((*User)->id != pont2->idAmigo){
+          pont3 = (amigos*)malloc(sizeof(amigos));
+          strcpy(pont3->nomeAmigo, pont2->nomeAmigo);
+          pont3->idAmigo = pont2->idAmigo;
+          if(lista == NULL){
+            lista = pont3;
+            lista->proxAmigo = NULL;
+            lista->antAmigo = NULL;
+          }else{
+            aux = lista;
+            while(aux->proxAmigo != NULL){
+                aux = aux->proxAmigo;
+            }
+            aux->proxAmigo = pont3;
+            pont3->antAmigo = aux;
+            pont3->proxAmigo = NULL;
+          }
+        }
+      }
+      pont2 = pont2->proxAmigo;
+    }
+    pont = pont->proxAmigo;
+  }
+  return lista;
+}
+
 
 //Funcao destroi_Grafo --- Recebe como Parametro um Grafo(G) e libera cada espaço de memoria alocado dinamicamente.
 void destroi_Grafo(Grafo **G){
@@ -406,6 +471,7 @@ void adiciona_amigos(Grafo **G, usuarios **User1, usuarios **User2, int cons){
 
   if((*User1)->id != (*User2)->id){
     amigo = (amigos*)malloc(sizeof(amigos));
+    amigo->idAmigo = (*User2)->id;
     strcpy(amigo->nomeAmigo, (*User2)->nome);
 
     letra = verifica_letra(((*User2)->nome[0]));
@@ -547,12 +613,16 @@ usuarios *editar_pessoa(Grafo **G){
       opc = 0;
       break;
 
-      case(4):
+      case(22):
       strcpy(user->nome, nom);
       printf("Digite o novo cpf: ");
       scanf(" %[^\n]", cpf);
       strcpy(user->cpf, cpf);
       opc = 0;
+      break;
+
+      case(4):
+      circulo_amigosLista(&(*G), &user);
       break;
 
       case(5):

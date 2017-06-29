@@ -7,6 +7,58 @@ int Const = 0;
 //ERRO = -1 O erro em todo este programa recebe o valor de -1.
 char Erro[] = "Erro"; // Vetor de caracteres que é retornado na funcao retorna nome, caso um grafo seja inexistente.
 
+//Funcao eh_amigo --- Recebe como Parametro dois usuarios(User e User2) e retorna um valor booleano.
+bool eh_amigo(usuarios *User, usuarios *User2){
+  struct amigos *pont;
+  bool encontrado = false;
+
+  pont = verifica_amizades(&(User));
+  while(pont != NULL){
+    if(pont->idAmigo == (User2)->id){
+      encontrado = true;
+    }
+    pont = pont->proxAmigo;
+  }
+  return encontrado;
+}
+
+//Funcao circulo_amigos --- Recebe como Parametro um usuario(User) e retorna uma lista de amigos de amigos.
+amigos *circulo_amigosLista(Grafo **G, usuarios **User){
+  struct usuarios *user2;
+  struct amigos *pont, *pont2, *lista, *aux, *pont3;
+
+  pont = verifica_amizades(&(*User));
+  lista = NULL;
+  while(pont != NULL){
+    user2 = procura_nome((*G), pont->nomeAmigo);
+    pont2 = verifica_amizades(&user2);  
+    while(pont2 != NULL){
+      if((eh_amigo((*User), (procura_nome((*G), pont2->nomeAmigo))) == false)){
+        if((*User)->id != pont2->idAmigo){
+          pont3 = (amigos*)malloc(sizeof(amigos));
+          strcpy(pont3->nomeAmigo, pont2->nomeAmigo);
+          pont3->idAmigo = pont2->idAmigo;
+          if(lista == NULL){
+            lista = pont3;
+            lista->proxAmigo = NULL;
+            lista->antAmigo = NULL;
+          }else{
+            aux = lista;
+            while(aux->proxAmigo != NULL){
+                aux = aux->proxAmigo;
+            }
+            aux->proxAmigo = pont3;
+            pont3->antAmigo = aux;
+            pont3->proxAmigo = NULL;
+          }
+        }
+      }
+      pont2 = pont2->proxAmigo;
+    }
+    pont = pont->proxAmigo;
+  }
+  return lista;
+}
 
 //Funcao salva_Arquivo --- Recebe como Parametros um Grafo(G) e armazena os dados do grafo em um arquivo.
 FILE *salva_Arquivo(Grafo **G){
@@ -61,11 +113,40 @@ Grafo *cria_Grafo(){
 
   G = (Grafo *)malloc(sizeof(*G));
   G->N_usuarios = 0;
+  G->listaT = NULL;
+  G->N_transacoes = 0;
   while(i < 26){
     G->listaAdj[i] = NULL;
     i++;
   }
   return G;
+}
+
+transacoes *cria_transacao(Grafo **G, usuarios *user){
+  struct transacoes *Tr, *pont;
+  char nomeT[100];
+  
+  Tr = (transacoes*)malloc(sizeof(transacoes));
+  
+  printf("Digite o nome da transacao: \n");
+  scanf(" %[^\n]", nomeT);
+  strcpy(Tr->objeto, nomeT);
+  Tr->idT = (*G)->N_transacoes;
+  Tr->criador = user;
+  if((*G)->N_transacoes == 0){
+    (*G)->listaT = Tr;
+    (*G)->listaT->antT = NULL;
+    (*G)->listaT->proxT = NULL;
+  }else{
+    pont = (*G)->listaT;
+    while(pont->proxT != NULL){
+      pont = pont->proxT;
+    }
+    pont->proxT = Tr;
+    Tr->antT = pont;
+    Tr->proxT = NULL;
+  }
+  (*G)->N_transacoes++;
 }
 
 int tamanho_Arquivo(char *nomeArquivo){
@@ -129,6 +210,7 @@ void exclui_usuario(Grafo **G, usuarios **User){
     (*G)->N_usuarios--;
   }
 } 
+
 //Funcao verifica_amizades --- Recebe como Parametro um usuario(User) e retorna uma lista de amigos de User.
 amigos *verifica_amizades(usuarios **User){
   int cont = 0, i = 0;
@@ -141,6 +223,7 @@ amigos *verifica_amizades(usuarios **User){
       while(pont != NULL){
         pont2 = (amigos*)malloc(sizeof(amigos));
         strcpy(pont2->nomeAmigo, pont->nomeAmigo);
+        pont2->idAmigo = pont->idAmigo;
         if(cont == 0){
           listaAmigos = pont2;
           listaAmigos->proxAmigo = NULL;
@@ -195,7 +278,7 @@ void imprime_Grafo(Grafo *G){
         printf("\n[%c] ->\n", ('A'+i));
         pont = G->listaAdj[i];
         while(pont != NULL){
-          printf("        %s\n", pont->nome);
+          printf("        %s (%d)\n", pont->nome, pont->id);
           imprime_amigos(pont);
           pont = pont->prox;
         }
@@ -221,7 +304,7 @@ void imprime_amigos(usuarios *User){
   else{
     printf("Amigos %s = {", (User)->nome);
     while(pontAmigos != NULL){
-      printf(" %s ", pontAmigos->nomeAmigo);
+      printf(" %s  (%d)", pontAmigos->nomeAmigo, pontAmigos->idAmigo);
       pontAmigos = pontAmigos->proxAmigo;
     }
     printf("}\n\n");
@@ -334,6 +417,7 @@ void adiciona_amigos(Grafo **G, usuarios **User1, usuarios **User2, int cons){
 
   if((*User1)->id != (*User2)->id){
     amigo = (amigos*)malloc(sizeof(amigos));
+    amigo->idAmigo = (*User2)->id;
     strcpy(amigo->nomeAmigo, (*User2)->nome);
 
     letra = verifica_letra(((*User2)->nome[0]));
@@ -419,6 +503,7 @@ usuarios *edita_cpf(Grafo **G, usuarios **user, char *cpf){
 
   return (*user);
 }
+
 usuarios *editar_pessoa(Grafo **G){
   system("cls || clear");
   char nom[100], cidade[30], cep[20], cpf[12];
@@ -440,8 +525,9 @@ usuarios *editar_pessoa(Grafo **G){
     printf("|2 - Cidade                                             | \n");
     printf("|3 - Cep                                                | \n");
     printf("|4 - Cpf                                                | \n");
-    printf("|5 - Amizades                                           | \n");
-    printf("|6 - Excluir conta                                      | \n");
+    printf("|5 - Transacoes                                         | \n");
+    printf("|6 - Amizades                                           | \n");
+    printf("|7 - Excluir conta                                      | \n");
     printf("|0 - Sair                                               | \n");
     printf(" -------------------------------------------------------\n");
     scanf(" %d", &opc);
@@ -476,7 +562,6 @@ usuarios *editar_pessoa(Grafo **G){
       break;
 
       case(4):
-      strcpy(user->nome, nom);
       printf("Digite o novo cpf: ");
       scanf(" %[^\n]", cpf);
       strcpy(user->cpf, cpf);
@@ -521,6 +606,10 @@ usuarios *editar_pessoa(Grafo **G){
       break;
       case(6):
         exclui_usuario(&(*G), &user);
+        opc = 0;
+      break;
+      case(7):
+        cria_transacao(&(*G), user);
         opc = 0;
       break;
 
