@@ -42,6 +42,7 @@ Grafo *cria_Grafo();
 
 usuarios *testaUsuario(usuarios *User);
 
+//Funcao verifica_amizades --- Recebe como Parametro um usuario(User) e retorna uma lista de amigos de User.
 amigos *verifica_amizades(usuarios **User);
 
 usuarios *procura_usuario(Grafo *G);
@@ -54,10 +55,20 @@ usuarios *cria_pessoa(Grafo **G);
 
 usuarios *cria_pessoaAuto(Grafo **G, char *nom, char *cpf, char *cep, char *cidade);
 
-void menu(Grafo **G);
+usuarios *edita_cidade(Grafo **G, usuarios **user, char *cidade);
+
+usuarios *edita_cep(Grafo **G, usuarios **user, char *cep);
+
+usuarios *edita_cpf(Grafo **G, usuarios **user, char *cpf);
+
+usuarios *edita_nome(Grafo **G, usuarios **user, char *nom);
 
 //Funcao salva_Arquivo --- Recebe como Parametros um Grafo(G) e armazena os dados do grafo em um arquivo.
-void salva_Arquivo(Grafo **G);
+FILE *salva_Arquivo(Grafo **G);
+
+void menu(Grafo **G);
+
+int tamanho_Arquivo(char *nomeArquivo);
 
 int verifica_letra(char nome);
 
