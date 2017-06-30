@@ -10,8 +10,9 @@
 //Estrutura com uma string com o nome do objeto(objeto), um inteiro (id), e o criador da transação(criador).
 typedef struct transacoes{
   char objeto[100];
+  char categoria[100];
+  float valor;  
   int idT;
-  int avaliacao;  
 
   struct transacoes *proxT, *antT;
   struct usuarios *criador;
@@ -33,6 +34,7 @@ typedef struct usuarios{
   char cidade[30];
   char cep[20];
   char cpf[12];
+  int avaliacao;  
   int numeroAmigos;             //Inteiro que representa o numero de amigos de um usuario.
 
   struct amigos *Amigos[26];
@@ -56,6 +58,18 @@ Grafo *cria_Grafo();
 
 //Funcao cria_transacao --- Recebe como Parametro grafo(G) e um usuario(User); e retorna uma transacao.
 transacoes *cria_transacao(Grafo **G, usuarios *user);
+
+transacoes *cria_transacaoAuto(Grafo **G, usuarios *user, char *nomeT, char *categoriaT, float val);
+
+transacoes *procura_categoria(Grafo **G, char *categoriaT);
+
+transacoes *cria_listaDeTransacoes(transacoes *listadeTransacoes, int cont);
+
+transacoes *procura_transacaoDeAmigos(Grafo **G, usuarios *User, char *categoriaT);
+
+usuarios *conclui_transacao(Grafo **G, transacoes **Transacao, int aval);
+
+void exclui_transacao(Grafo **G, transacoes **Transacao);
 
 //Funcao circulo_amigos --- Recebe como Parametro um usuario(User); e retorna uma lista de amigos de amigos.
 amigos *circulo_amigosLista(Grafo **G, usuarios **User);

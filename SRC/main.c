@@ -7,13 +7,16 @@
 
 Grafo *G;
 usuarios *User, *User1, *User2, *User3, *User4, *User5;
+transacoes *Tran, *Tran1, *Tran2, *Tran3;
 amigos *aux;	
-int NumeroUsuarios, NumeroAmigos;
+int aval = 10;
+float val = 200.2;
 char nom[] = "Rafael", nom1[] = "Marcelo", nom2[] = "Paula", nom3[] = "Andre", nom4[] = "Leandro", nom5[] = "Joao";
 char cidade[] = "Aguas", cidade1[] = "Taguatinga", cidade2[] = "Ceilandia", cidade3[] = "Marajo", cidade4[] = "Olinda", cidade5[] = "Maceio";
 char cep[] = "83201-23", cep1[] = "83201-10", cep2[] = "99901-23", cep3[] = "83211-29", cep4[] = "83101-03", cep5[] = "85201-26";
 char cpf[] = "123583201-23", cpf1[] = "123544201-23", cpf2[] = "567899901-23", cpf3[] = "111183211-29", cpf4[] = "987583101-03", cpf5[] = "908385201-26";
 char nomeArquivo[] = "BancodeDados.txt";
+char categoria[] = "carros", categoria1[] = "casas", categoria2[] = "roupas";
 
 
 TEST(TestaExistencia, TestExist){ // Testando criação e existencia dos itens criados.
@@ -172,6 +175,63 @@ TEST(TestaCirculoAmigos, TestFriends){ // Testando erros no circulo de amigos.
 
 	ASSERT_TRUE(strcmp(aux->proxAmigo->nomeAmigo, User4->nome) == 0);
 	ASSERT_TRUE(aux->proxAmigo->idAmigo == User4->id);
+
+	destroi_Grafo(&G);
+}
+
+
+TEST(TestaTransacao, TestTransaction){ // Testando erros nas transações.
+	printf("\n");
+	G = cria_Grafo();
+	User = cria_pessoaAuto(&G, nom, cpf, cep, cidade);
+	User1 = cria_pessoaAuto(&G, nom1, cpf1, cep1, cidade1);
+	User2 = cria_pessoaAuto(&G, nom2, cpf2, cep2, cidade2);
+	User3 = cria_pessoaAuto(&G, nom3, cpf3, cep3, cidade3);
+	User4 = cria_pessoaAuto(&G, nom4, cpf4, cep4, cidade4);
+	adiciona_amigos(&G, &User, &User1, 0); // Rafael - Marcelo
+	adiciona_amigos(&G, &User1, &User2, 0); // Marcelo - Paula
+	adiciona_amigos(&G, &User, &User2, 0); // Rafael - Paula
+	adiciona_amigos(&G, &User3, &User2, 0); // Paula- Andre
+
+
+	ASSERT_TRUE((G->listaT == NULL));
+	Tran = cria_transacaoAuto(&G, User, nom, categoria, val);
+	ASSERT_TRUE(G->N_transacoes == 1);
+	ASSERT_TRUE(strcmp(Tran->objeto, nom) == 0);
+	ASSERT_TRUE(strcmp(Tran->categoria, categoria) == 0);
+	ASSERT_TRUE(Tran->valor == val);
+	ASSERT_TRUE(Tran->criador->id == User->id);
+	ASSERT_TRUE((G->listaT != NULL));
+	ASSERT_TRUE(Tran != NULL);
+
+	Tran1 = procura_categoria(&G, categoria1); // Não existe transações com categoria1.
+	ASSERT_TRUE(Tran1 == NULL);
+	Tran1 = procura_categoria(&G, categoria);
+	ASSERT_TRUE(Tran1 != NULL);
+
+	Tran2 = procura_transacaoDeAmigos(&G, User2, categoria); // Existe uma transação criada por User com a categoria enviada, 
+															// User1 é amigo de User, logo essa busca deve retornar um valor diferente de NULL.
+	ASSERT_TRUE(Tran2 != NULL);
+
+	Tran3 = procura_transacaoDeAmigos(&G, User3, categoria); // Existe uma transação criada por User com a categoria enviado,
+															// porem User3 nao é amigo de User, logo essa busca deve
+															  // retornar um valor igual a NULL.
+	ASSERT_FALSE(Tran3 != NULL);
+
+	ASSERT_TRUE(User4->avaliacao == 0);
+	User4 = conclui_transacao(&G, &Tran, 10); // Retorna um usuario, criador de uma transação, avaliado.
+	ASSERT_TRUE(User4->avaliacao == 10);
+	ASSERT_TRUE(G->N_transacoes == 0);
+
+	Tran = cria_transacaoAuto(&G, User, nom, categoria, val);
+	User4 = conclui_transacao(&G, &Tran, 2);
+	ASSERT_TRUE(User4->avaliacao == 6);
+
+	Tran = cria_transacaoAuto(&G, User, nom, categoria, val);
+	exclui_transacao(&G, &Tran);
+	ASSERT_TRUE(G->N_transacoes == 0);
+	ASSERT_TRUE(G->listaT == NULL);
+
 
 	destroi_Grafo(&G);
 }

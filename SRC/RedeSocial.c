@@ -77,12 +77,12 @@ FILE *salva_Arquivo(Grafo **G){
       for(i = 0; i < 26; i++){
         pont = ((*G)->listaAdj[i]);
         while(pont != NULL){
-          //fprintf(fp,"----------------------------------------------------------------------------\n");
+          fprintf(fp,"----------------------------------------------------------------------------\n");
           fprintf(fp,"Nome = %s\n", pont->nome);
-          //fprintf(fp,"CPF = %s", pont->cpf);
-          //fprintf(fp,"Cep = %s", pont->cep);
-          //fprintf(fp,"Cidade = %s", pont->cidade);
-          //fprintf(fp,"Numero de amigos = %d", pont->numeroAmigos);
+          fprintf(fp,"CPF = %s", pont->cpf);
+          fprintf(fp,"Cep = %s", pont->cep);
+          fprintf(fp,"Cidade = %s", pont->cidade);
+          fprintf(fp,"Numero de amigos = %d", pont->numeroAmigos);
           pontAmigos = verifica_amizades(&pont);
           if(pontAmigos == NULL){
               fprintf(fp, "Amigos = { }\n");
@@ -122,17 +122,76 @@ Grafo *cria_Grafo(){
   return G;
 }
 
+usuarios *conclui_transacao(Grafo **G, transacoes **Transacao, int aval){
+  struct usuarios *User;
+
+  User = (*Transacao)->criador;
+  if((User->avaliacao) != 0){ // Assertiva para testar se o usuario foi avaliado.
+    aval = ((User->avaliacao) + aval) / 2;  // Se o usuario for avaliado, a nova avaliação é somada a a avaliação antiga.
+                                            // A nova avaliaçao será uma media disso.
+  }
+
+  User->avaliacao = aval;
+  exclui_transacao(&(*G), &(*Transacao));
+  
+  return User;
+}
+
+void exclui_transacao(Grafo **G, transacoes **Transacao){
+  struct transacoes *Tr, *pont;
+
+  pont = (*G)->listaT;
+  while(pont != NULL){
+    if(pont->idT == (*Transacao)->idT){
+      if(((*G)->listaT) == (*Transacao)){
+        ((*G)->listaT) = NULL;
+        free((*Transacao));
+      }
+      if((*Transacao)->proxT != NULL && (*Transacao)->antT == NULL){
+        ((*G)->listaT) = (*Transacao)->proxT;
+        (*Transacao)->proxT->antT = ((*G)->listaT);
+        free((*Transacao));
+      }
+      if((*Transacao)->proxT != NULL && (*Transacao)->antT != NULL){
+        (*Transacao)->proxT->antT = (*Transacao)->antT;
+        (*Transacao)->antT->proxT = (*Transacao)->proxT;
+        free((*Transacao));
+      }
+      if((*Transacao)->proxT == NULL && (*Transacao)->antT != NULL){
+        (*Transacao)->antT->proxT = NULL;
+        free((*Transacao));
+      }
+      pont = NULL;
+    }
+    else{
+      pont = pont->proxT;
+    }
+  }
+  if((*G)->N_transacoes > 0){
+    (*G)->N_transacoes--;
+  }else{
+    (*G)->N_transacoes = 0;
+  }
+}
+
 transacoes *cria_transacao(Grafo **G, usuarios *user){
   struct transacoes *Tr, *pont;
-  char nomeT[100];
+  char nomeT[100], categoriaT[100];
+  float val;
   
   Tr = (transacoes*)malloc(sizeof(transacoes));
   
-  printf("Digite o nome da transacao: \n");
+  printf("Digite a categoria da transacao: \n");
+  scanf(" %[^\n]", categoriaT);
+  strcpy(Tr->categoria, categoriaT);
+  printf("Digite o titulo da transacao: \n");
   scanf(" %[^\n]", nomeT);
   strcpy(Tr->objeto, nomeT);
+  printf("Digite o o valor do objeto de transacao: \n");
+  scanf(" %f", &val);
   Tr->idT = (*G)->N_transacoes;
   Tr->criador = user;
+  Tr->valor = val;
   if((*G)->N_transacoes == 0){
     (*G)->listaT = Tr;
     (*G)->listaT->antT = NULL;
@@ -147,6 +206,105 @@ transacoes *cria_transacao(Grafo **G, usuarios *user){
     Tr->proxT = NULL;
   }
   (*G)->N_transacoes++;
+
+  return Tr;
+}
+
+transacoes *cria_transacaoAuto(Grafo **G, usuarios *user, char *nomeT, char *categoriaT, float val){
+  struct transacoes *Tr, *pont;
+
+  Tr = (transacoes*)malloc(sizeof(transacoes));
+  strcpy(Tr->categoria, categoriaT);
+  strcpy(Tr->objeto, nomeT);
+  Tr->idT = (*G)->N_transacoes;
+  Tr->criador = user;
+  Tr->valor = val;
+  if((*G)->N_transacoes == 0){
+    (*G)->listaT = Tr;
+    (*G)->listaT->antT = NULL;
+    (*G)->listaT->proxT = NULL;
+  }else{
+    pont = (*G)->listaT;
+    while(pont->proxT != NULL){
+      pont = pont->proxT;
+    }
+    pont->proxT = Tr;
+    Tr->antT = pont;
+    Tr->proxT = NULL;
+  }
+  (*G)->N_transacoes++;
+
+  return Tr;
+}
+
+transacoes *cria_listaDeTransacoes(transacoes *listadeTransacoes, int cont){
+  struct transacoes *listadeT, *pont2, *Tr;
+
+  Tr = (transacoes*)malloc(sizeof(transacoes));
+  Tr->idT = listadeTransacoes->idT;
+  Tr->criador = listadeTransacoes->criador;
+  Tr->valor = listadeTransacoes->valor;
+  strcpy(Tr->categoria, listadeTransacoes->categoria);
+  strcpy(Tr->objeto, listadeTransacoes->objeto);
+
+  if(cont == 0){
+    listadeT = Tr;
+    listadeT->proxT = NULL;
+    listadeT->antT = NULL;
+  }else{
+    pont2 = listadeT;
+    while(pont2->proxT != NULL){
+      pont2 = pont2->proxT;
+    }
+    pont2->proxT = Tr;
+    Tr->antT = pont2;
+    Tr->proxT = NULL;
+  }
+
+  return listadeT;
+}
+
+transacoes *procura_categoria(Grafo **G, char *categoriaT){
+  struct transacoes *Tr, *listadeTransacoes = NULL, *pont;
+  int cont = 0;
+
+  pont = (*G)->listaT;
+  while(pont != NULL){
+    if(strcmp(pont->categoria, categoriaT) == 0){
+      listadeTransacoes = cria_listaDeTransacoes(pont, cont);
+      cont++;
+    }
+    pont = pont->proxT;
+  }
+
+  return listadeTransacoes;
+}
+
+// Funcao procura_transacaoDeAmigos - Recebe um Grafo(G), um usuario (User) e uma string (Categoria) como parametros.
+// Procura em uma lista de transações se existe a categoria enviada como parametro e depois pesquisa se algum de seus amigos é o criador dessa transação.
+transacoes *procura_transacaoDeAmigos(Grafo **G, usuarios *User, char *categoriaT){
+  struct transacoes *listadeTransacoes = NULL, *pont;
+  struct amigos *amigoT;
+  int cont = 0;
+
+  amigoT = verifica_amizades(&(User));
+  pont = procura_categoria(&(*G), categoriaT);
+  if(pont != NULL){ 
+    while(pont != NULL){
+      while(amigoT != NULL){
+        if(pont->criador->id == amigoT->idAmigo){
+          listadeTransacoes = cria_listaDeTransacoes(pont, cont);
+          cont++;
+        }
+        amigoT = amigoT->proxAmigo;
+      }
+      pont = pont->proxT;
+    }
+  }else{
+    printf("Categoria nao encontrada\n");
+  }
+
+  return listadeTransacoes;
 }
 
 int tamanho_Arquivo(char *nomeArquivo){
@@ -639,6 +797,7 @@ usuarios *cria_pessoa(Grafo **G){
   printf("Digite o seu cep: ");
   scanf(" %[^\n]", cep);
   strcpy(user->cep, cep);
+  user->avaliacao = 0;
 
 
   letra = verifica_letra(nom[0]);
@@ -677,6 +836,7 @@ usuarios *cria_pessoaAuto(Grafo **G, char *nom, char *cpf, char *cep, char *cida
   strcpy(user->cpf, cpf);
   strcpy(user->cidade, cidade);
   strcpy(user->cep, cep);
+  user->avaliacao = 0;
 
 
   letra = verifica_letra(nom[0]);
