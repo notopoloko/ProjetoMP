@@ -50,7 +50,9 @@ int main(){
                     unpost_menu(menu);
                     for(i=0; i<numero;i++)free_item(itens[i]);
                     free_menu(menu);
+                    delwin(tela);
                     endwin();
+                    destroi_Grafo(&graph);
                     return 0;
                 }else if(!strcmp("Criar usuario",item_name(current_item(menu)))){
                     unpost_menu(menu);

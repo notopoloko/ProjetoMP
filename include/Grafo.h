@@ -7,19 +7,11 @@
 #include <string.h>
 #include <form.h>
 
-//Estrutura do tipo grafo com um vetor de caracteres representando o nome do grafo, um inteiro representando
-//o numero de usuarios do grafo e um ponteiro para outra estrutura do tipo usuarios.
-typedef struct listaAmigos{
-  char nomeAmigo[100];
-
-  struct amigos *proxAmigo, *antAmigo;
-}listaAmigos;
 
 //Estrutura do tipo grafo com um vetor de caracteres representando o nome do grafo, um inteiro representando
 //o numero de usuarios do grafo e um ponteiro para outra estrutura do tipo usuarios.
 typedef struct amigos{
   char nomeAmigo[100];
-
   struct amigos *proxAmigo, *antAmigo;
 }amigos;
 
@@ -27,13 +19,14 @@ typedef struct amigos{
 //Apresenta tambem um ponteiro(Tipo usuarios) que aponta para proxima usuario e um ponteira para uma estrutura do tipo Amizades.
 typedef struct usuarios{
   int id;
-  char nome[100];
-  char cidade[30];
-  char cep[20];
-  char cpf[12];
-  char email[21];
-  char endereco[21];
+  char nome[51];
+  char cidade[51];
+  char cep[21];
+  char cpf[21];
+  char email[51];
+  char endereco[51];
   char senha[21];
+  char descricao[201];
   int numeroAmigos;             //Inteiro que representa o numero de amigos de um usuario.
 
   struct amigos *Amigos[26];
@@ -88,3 +81,7 @@ void imprime_amigos(usuarios *User);
 void adiciona_usuario(Grafo **G, usuarios **User);
 
 int cria_pessoa_interface(Grafo *G);
+
+int test_string(char*);
+
+int confirm_user(usuarios);
