@@ -1,12 +1,12 @@
-#include <ncurses.h>
-#include <menu.h>
-#include <form.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
 #include <string.h>
 #include <form.h>
+#include <ncurses.h>
+#include <menu.h>
 
+#define ARRAY_SIZE(a) (sizeof(a)/sizeof(a[0]))
 
 //Estrutura do tipo grafo com um vetor de caracteres representando o nome do grafo, um inteiro representando
 //o numero de usuarios do grafo e um ponteiro para outra estrutura do tipo usuarios.
@@ -19,14 +19,14 @@ typedef struct amigos{
 //Apresenta tambem um ponteiro(Tipo usuarios) que aponta para proxima usuario e um ponteira para uma estrutura do tipo Amizades.
 typedef struct usuarios{
   int id;
-  char nome[51];
-  char cidade[51];
-  char cep[21];
-  char cpf[21];
-  char email[51];
-  char endereco[51];
-  char senha[21];
-  char descricao[201];
+  char nome[50];
+  char cidade[50];
+  char endereco[50];
+  char cep[20];
+  char cpf[20];
+  char email[50];
+  char senha[20];
+  char descricao[200];
   int numeroAmigos;             //Inteiro que representa o numero de amigos de um usuario.
 
   struct amigos *Amigos[26];
@@ -40,8 +40,6 @@ typedef struct Grafo{
   struct usuarios *listaAdj[26];
 }Grafo;
 
-//Funcao cria_Grafo
-//Aloca espaço de memoria para criar uma estrutura do tipo Grafo que atribui NomedoGrafo para estrutura.
 Grafo *cria_Grafo();
 
 usuarios *testaUsuario(usuarios *User);
@@ -54,7 +52,7 @@ usuarios *procura_nome(Grafo *G, char *nom);
 
 usuarios *editar_pessoa(Grafo **G);
 
-usuarios *cria_pessoa(Grafo **G);
+usuarios *cria_pessoa(Grafo **G, usuarios *user);
 
 void menu(Grafo **G);
 
@@ -81,6 +79,8 @@ void imprime_amigos(usuarios *User);
 void adiciona_usuario(Grafo **G, usuarios **User);
 
 int cria_pessoa_interface(Grafo *G);
+
+int primaria_interface();
 
 int test_string(char*);
 

@@ -4,7 +4,7 @@ int Const = 0;
 
 //ERRO = -1 O erro em todo este programa recebe o valor de -1.
 void salva_Arquivo(Grafo **G){
-  FILE *fp; 
+  FILE *fp;
   usuarios *pont;
   amigos *pontAmigos;
   int i;
@@ -19,12 +19,17 @@ void salva_Arquivo(Grafo **G){
       for(i = 0; i < 26; i++){
         pont = ((*G)->listaAdj[i]);
         while(pont != NULL){
-          //fprintf(fp,"----------------------------------------------------------------------------\n");
-          fprintf(fp,"Nome = %s\n", pont->nome);
-          //fprintf(fp,"CPF = %s", pont->cpf);
-          //fprintf(fp,"Cep = %s", pont->cep);
-          //fprintf(fp,"Cidade = %s", pont->cidade);
-          //fprintf(fp,"Numero de amigos = %d", pont->numeroAmigos);
+          fprintf(fp,"----------------------------------------------------------------------------\n");
+          fprintf(fp,"%d\n", pont->id);
+          fprintf(fp,"%s\n", pont->nome);
+          fprintf(fp,"%s\n", pont->cidade);
+          fprintf(fp,"%s\n", pont->endereco);
+          fprintf(fp,"%s\n", pont->cpf);
+          fprintf(fp,"%s\n", pont->cep);
+          fprintf(fp,"%s\n", pont->email);
+          fprintf(fp,"%s\n", pont->senha);
+          fprintf(fp,"%s\n", pont->descricao);
+          fprintf(fp,"%d\n", pont->numeroAmigos);
           pontAmigos = verifica_amizades(&pont);
           if(pontAmigos == NULL){
               fprintf(fp, "Amigos = { }\n");
@@ -41,8 +46,8 @@ void salva_Arquivo(Grafo **G){
         }
       }
     }
+    fclose(fp);
   }
-  fclose(fp);
 }
 
 //ERRO = -1 O erro em todo este programa recebe o valor de -1.
@@ -53,7 +58,7 @@ Grafo *cria_Grafo(){
   struct Grafo *G;
   int i = 0;
 
-  G = (Grafo *)malloc(sizeof(*G));
+  G = (Grafo *)malloc(sizeof(Grafo));
   G->N_usuarios = 0;
   while(i < 26){
     G->listaAdj[i] = NULL;
@@ -465,30 +470,13 @@ usuarios *editar_pessoa(Grafo **G){
 }
 
 
-usuarios *cria_pessoa(Grafo **G){
-  system("cls || clear");
-  char nom[100], cidade[30], cep[20], cpf[12];
+usuarios *cria_pessoa(Grafo **G, usuarios *user){
   int cont = 0, letra;
-  struct usuarios *pont, *user;
+  usuarios *pont;
 
-  user = (usuarios*)malloc(sizeof(usuarios));
-  printf("Digite o seu nome: ");
   user->id = (*G)->N_usuarios;
-  scanf(" %[^\n]", nom);
-  getchar();
-  strcpy(user->nome, nom);
-  /*printf("Digite o seu cpf: ");
-  scanf(" %[^\n]", cpf);
-  strcpy(user->cpf, cpf);
-  printf("Digite a sua cidade: ");
-  scanf(" %[^\n]", cidade);
-  strcpy(user->cidade, cidade);
-  printf("Digite o seu cep: ");
-  scanf(" %[^\n]", cep);
-  strcpy(user->cep, cep);*/
 
-
-  letra = verifica_letra(nom[0]);
+  letra = verifica_letra(user->nome[0]);
   if(((*G)->listaAdj[letra]) == NULL){
     ((*G)->listaAdj[letra]) = user;
 
@@ -514,7 +502,7 @@ usuarios *cria_pessoa(Grafo **G){
   return user;
 }
 
-void menu(Grafo **G){
+/*void menu(Grafo **G){
   struct usuarios *user1, *user2;
   int opc = -1;
 
@@ -529,7 +517,7 @@ void menu(Grafo **G){
     printf("|0 - Sair                                               | \n");
     printf(" -------------------------------------------------------\n");
     scanf(" %d", &opc);
-    if(opc < 0 && opc > 4){
+    if(opc < 0 || opc > 4){
       printf("Valor invalido\n");
     }
 
@@ -562,15 +550,7 @@ void menu(Grafo **G){
     }
   }
   salva_Arquivo(&(*G));
-}
-
-void cria_pessoa(usuarios user){
-
-  FILE *fp;
-  fp = fopen("../Allusers/Alluserinfo","ab");
-  fwrite(&user,sizeof(usuarios),1,fp);
-  fclose(fp);
-}
+}*/
 
 int cria_pessoa_interface(Grafo *G){
   FIELD *field[9];
@@ -608,7 +588,7 @@ int cria_pessoa_interface(Grafo *G){
   form_opts_off(my_form, O_BS_OVERLOAD);
   post_form(my_form);
   refresh();
-  mvprintw(LINES - 2, 0, "Use as setas para para trocar entre os campos. Para terminar digite ENTER");
+  mvprintw(LINES - 2, 0, "Use as setas para para trocar entre os campos. Para terminar digite ENTER. Pressione F2 para cancelar");
   mvprintw(4,9,"Nome:");
   mvprintw(6,9,"Cidade:");
   mvprintw(8,9,"Endereço:");
@@ -621,7 +601,7 @@ int cria_pessoa_interface(Grafo *G){
   set_current_field(my_form,field[0]);
   refresh();
 
-  while(ch = getch()){
+  while((ch = getch())!=KEY_F(2)){
     switch(ch){
       case KEY_DOWN:
         if(number!=3)number++;
@@ -645,7 +625,6 @@ int cria_pessoa_interface(Grafo *G){
         form_driver(my_form, REQ_NEXT_FIELD);
         nome = field_buffer(field[0], 0);
         nome[49] = '\0';
-        mvprintw(LINES - 4, 0, "%i",strlen(nome));
         cidade = field_buffer(field[1], 0);
         cidade[49] = '\0';
         endereco = field_buffer(field[2], 0);
@@ -675,18 +654,23 @@ int cria_pessoa_interface(Grafo *G){
 
         if(confirm_user(user))break;
         refresh();
+        cria_pessoa(&G, &user);
 
-        getch();
         unpost_form(my_form);
         free_form(my_form);
         for(i=0;i<8;++i)free_field(field[i]);
         endwin();
-        return 1;//sucesso ao criar um usuário
+        return 0;//sucesso ao criar um usuário
       default:
         form_driver(my_form, ch);
         break;
     }
   }
+  unpost_form(my_form);
+  free_form(my_form);
+  for(i=0;i<8;++i)free_field(field[i]);
+  endwin();
+  return 2;
 }
 
 int test_string(char *string){
@@ -763,4 +747,68 @@ int confirm_user(usuarios user){
         }
     }wrefresh(my_menu_win);
   }
+}
+
+
+int primaria_interface(){
+    WINDOW *tela;
+    ITEM **itens;
+    int ch,width;
+    MENU *menu;
+    int numero,i;
+    char *choices[] = {"Criar usuario", "Login", "Editar usuario","Excluir usuario","Procurar transacao","Sair",(char *)NULL};
+
+    initscr();
+    start_color();
+    cbreak;
+    noecho();
+    init_pair(1, COLOR_RED,COLOR_BLACK);/*inicialização das cores do título do menu*/
+    numero = ARRAY_SIZE(choices);/*número de opções disponíveis para serem colocas no menu*/
+    itens = (ITEM **)calloc(numero, sizeof(ITEM*));
+    for(i = 0; i < numero; i++)itens[i] = new_item(choices[i],choices[i]);
+    menu = new_menu((ITEM **)itens);
+    set_menu_mark(menu, "  - ");
+    menu_opts_off(menu, O_SHOWDESC);
+    tela = newwin(10,40,LINES/2-5,COLS/2-20);
+    keypad(tela, TRUE);
+    set_menu_win(menu,tela);
+    set_menu_sub(menu, derwin(tela, 6,38,3,1));
+    set_menu_format(menu,numero,1);
+    box(tela,0,0);
+    mvwaddch(tela, 2, 0, ACS_LTEE);
+    mvwhline(tela, 2, 1, ACS_HLINE, 38);
+    mvwaddch(tela, 2, 39, ACS_RTEE);
+    width = strlen("BEM-VINDO");
+    mvwprintw(tela, 1,(40-width)/2, "BEM-VINDO");
+    post_menu(menu);
+    wrefresh(tela);
+    while(ch = wgetch(tela)){
+        switch(ch){
+            case KEY_DOWN:
+                menu_driver(menu, REQ_DOWN_ITEM);
+                break;
+            case KEY_UP:
+                menu_driver(menu, REQ_UP_ITEM);
+                break;
+            case 10:
+                if(!strcmp("Sair",item_name(current_item(menu)))){
+                    unpost_menu(menu);
+                    for(i=0; i<numero;i++)free_item(itens[i]);
+                    free_menu(menu);
+                    delwin(tela);
+                    endwin();
+                    return 0;
+                }else if(!strcmp("Criar usuario",item_name(current_item(menu)))){
+                    unpost_menu(menu);
+                    for(i=0; i<numero;i++)free_item(itens[i]);
+                    free_menu(menu);
+                    endwin();
+                    return 1;
+                }else if(!strcmp("Login",item_name(current_item(menu)))){
+                    //login_user();
+                }
+                break;
+        }wrefresh(tela);
+    }
+    return 0;
 }
