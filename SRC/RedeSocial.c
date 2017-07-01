@@ -157,7 +157,7 @@ usuarios *conclui_transacao(Grafo **G, transacoes **Transacao, int aval){
 }
 
 void exclui_transacao(Grafo **G, transacoes **Transacao){
-  struct transacoes *Tr, *pont;
+  struct transacoes *pont;
 
   pont = (*G)->listaT;
   while(pont != NULL){
@@ -290,7 +290,6 @@ transacoes *cria_transacaoAuto(Grafo **G, usuarios *user, char *nomeT, char *cat
 
 transacoes *procura_categoria(Grafo **G, char *categoriaT){
   struct transacoes *Tr, *listadeTransacoes = NULL, *pont, *pont2;
-  int cont = 0;
 
   pont = (*G)->listaT;
   while(pont != NULL){
@@ -371,7 +370,6 @@ transacoes *procura_nomeT(Grafo **G, char *categoriaT, char *nomeT){
 transacoes *procura_transacaoDeAmigos(Grafo **G, usuarios *User, char *categoriaT){
   struct transacoes *listadeTransacoes = NULL, *pont, *Tr, *pont2;
   struct amigos *amigoT;
-  int cont = 0;
 
   amigoT = verifica_amizades(&(User));
   pont = procura_categoria(&(*G), categoriaT);
@@ -593,7 +591,7 @@ usuarios *procura_nome(Grafo *G, char *nom){
     return user1;
   }
   else{
-    //printf("\nUsuario %s Nao Encontrado!!\n", nom);
+   //printf("\nUsuario %s Nao Encontrado!!\n", nom);
     return NULL;
   }
 }
@@ -624,7 +622,7 @@ usuarios *procura_usuario(Grafo *G){
     return user1;
   }
   else{
-       // printf("\nUsuario %s Nao Encontrado!!\n", nom);
+    //printf("\nUsuario %s Nao Encontrado!!\n", nom);
     return NULL;
   }
 }
@@ -720,16 +718,6 @@ int verifica_letra(char nome){
   return letra;
 }
 
-usuarios *testaUsuario(usuarios *User){
-  if(User == NULL){
-    printf("Usuario nao encontrado\n");
-  }else{
-    printf("Usuario %s encontrado!\n", User->nome);
-  }
-
-  return User;
-}
-
 usuarios *edita_nome(Grafo **G, usuarios **user, char *nom){
   struct usuarios *userAux2, *userAux;
   struct amigos *Aux;
@@ -806,12 +794,14 @@ usuarios *editar_pessoa(Grafo **G){
       }
       exclui_usuario(&(*G), &(user));
       opc = 0;
+      //printf("Nome Alterado!!!\n");
       break;
 
       case(2):
       printf("Digite a nova cidade: ");
       scanf(" %[^\n]", cidade);
       strcpy(user->cidade, cidade);
+      //printf("Cidade Alterada!!!\n");
       opc = 0;
       break;
 
@@ -819,6 +809,7 @@ usuarios *editar_pessoa(Grafo **G){
       printf("Digite o novo cep: ");
       scanf(" %[^\n]", cep);
       strcpy(user->cep, cep);
+      //printf("Cep Alterado!!!\n");
       opc = 0;
       break;
 
@@ -826,6 +817,7 @@ usuarios *editar_pessoa(Grafo **G){
       printf("Digite o novo cpf: ");
       scanf(" %[^\n]", cpf);
       strcpy(user->cpf, cpf);
+      //printf("Cpf Alterado!!!\n");
       opc = 0;
       break;
 
