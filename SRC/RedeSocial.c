@@ -26,6 +26,7 @@ bool eh_amigo(usuarios *User, usuarios *User2){
 amigos *circulo_amigosLista(Grafo **G, usuarios **User){
   struct usuarios *user2;
   struct amigos *pont, *pont2, *lista, *aux, *pont3;
+  FILE *fp;
 
   pont = verifica_amizades(&(*User));
   lista = NULL;
@@ -57,6 +58,24 @@ amigos *circulo_amigosLista(Grafo **G, usuarios **User){
     }
     pont = pont->proxAmigo;
   }
+
+  if(lista != NULL){
+    pont = lista;
+    fp = fopen("/home/aeron/proj4/ProjetoMP/LIB/CirculoDeAmigos.txt", "w+");
+    if(fp == NULL)
+      printf("Erro, nao foi possivel abrir o arquivo\n");
+    else{
+      fprintf(fp, "--------------------- AmigosDeAmigos de %s ---------------------------------\n", (*User)->nome);
+      while(pont != NULL){
+        fprintf(fp, "Id = %d\n", pont->idAmigo);
+        fprintf(fp, "Nome = %s\n", pont->nomeAmigo);
+        pont = pont->proxAmigo;
+      }
+      fprintf(fp, "---------------------------------------------------------------------------------\n\n");
+    }
+    fclose(fp);
+  }
+
   return lista;
 }
 
@@ -68,7 +87,7 @@ FILE *salva_Arquivo(Grafo **G){
   int i;
 
   if(existe_Grafo(*G)){
-    fp = fopen("BancodeDados.txt","w+");
+    fp = fopen("/home/aeron/proj4/ProjetoMP/LIB/BancodeDados.txt","w+");
     if (fp == NULL){
     // Verifica se existe um arquivo bancoDados.txt.
       printf("Impossível criar arquivo");
@@ -79,10 +98,10 @@ FILE *salva_Arquivo(Grafo **G){
         while(pont != NULL){
           fprintf(fp,"----------------------------------------------------------------------------\n");
           fprintf(fp,"Nome = %s\n", pont->nome);
-          fprintf(fp,"CPF = %s", pont->cpf);
-          fprintf(fp,"Cep = %s", pont->cep);
-          fprintf(fp,"Cidade = %s", pont->cidade);
-          fprintf(fp,"Numero de amigos = %d", pont->numeroAmigos);
+          fprintf(fp,"CPF = %s\n", pont->cpf);
+          fprintf(fp,"Cep = %s\n", pont->cep);
+          fprintf(fp,"Cidade = %s\n", pont->cidade);
+          fprintf(fp,"Numero de amigos = %d\n", pont->numeroAmigos);
           pontAmigos = verifica_amizades(&pont);
           if(pontAmigos == NULL){
               fprintf(fp, "Amigos = { }\n");
@@ -100,7 +119,7 @@ FILE *salva_Arquivo(Grafo **G){
       }
     }
   }else{
-    fp = fopen("BancodeDados.txt","r");
+    fp = fopen("/home/aeron/proj4/ProjetoMP/LIB/BancodeDados.txt","r");
   }
   fclose(fp);
   return fp;
@@ -178,101 +197,124 @@ transacoes *cria_transacao(Grafo **G, usuarios *user){
   struct transacoes *Tr, *pont;
   char nomeT[100], categoriaT[100];
   float val;
+  FILE *fp; 
   
-  Tr = (transacoes*)malloc(sizeof(transacoes));
-  
-  printf("Digite a categoria da transacao: \n");
-  scanf(" %[^\n]", categoriaT);
-  strcpy(Tr->categoria, categoriaT);
-  printf("Digite o titulo da transacao: \n");
-  scanf(" %[^\n]", nomeT);
-  strcpy(Tr->objeto, nomeT);
-  printf("Digite o o valor do objeto de transacao: \n");
-  scanf(" %f", &val);
-  Tr->idT = (*G)->N_transacoes;
-  Tr->criador = user;
-  Tr->valor = val;
-  if((*G)->N_transacoes == 0){
-    (*G)->listaT = Tr;
-    (*G)->listaT->antT = NULL;
-    (*G)->listaT->proxT = NULL;
-  }else{
-    pont = (*G)->listaT;
-    while(pont->proxT != NULL){
-      pont = pont->proxT;
+  if(existe_Grafo(*G)){
+    Tr = (transacoes*)malloc(sizeof(transacoes));
+    
+    printf("Digite a categoria da transacao: \n");
+    scanf(" %[^\n]", categoriaT);
+    strcpy(Tr->categoria, categoriaT);
+    printf("Digite o titulo da transacao: \n");
+    scanf(" %[^\n]", nomeT);
+    strcpy(Tr->objeto, nomeT);
+    printf("Digite o o valor do objeto de transacao: \n");
+    scanf(" %f", &val);
+    Tr->idT = (*G)->N_transacoes;
+    Tr->criador = user;
+    Tr->valor = val;
+    if((*G)->listaT == NULL){
+      (*G)->listaT = Tr;
+      (*G)->listaT->antT = NULL;
+      (*G)->listaT->proxT = NULL;
+    }else{
+      pont = (*G)->listaT;
+      while(pont->proxT != NULL){
+        pont = pont->proxT;
+      }
+      Tr->antT = pont;
+      Tr->proxT = NULL;
+      pont->proxT = Tr;
     }
-    pont->proxT = Tr;
-    Tr->antT = pont;
-    Tr->proxT = NULL;
+    (*G)->N_transacoes++;
+
+    fp = fopen("Transacoes.txt", "a+");
+    if(fp == NULL)
+      printf("Erro, nao foi possivel abrir o arquivo\n");
+    else{
+      fprintf(fp, "Id = %d\n", Tr->idT);
+      fprintf(fp, "Nome = %s\n", Tr->objeto);
+      fprintf(fp, "Categoria = %s\n", Tr->categoria);
+      fprintf(fp, "Criador = %s\n", Tr->criador->nome);
+      fprintf(fp, "Valor = %f\n", Tr->valor);
+    }
+    fclose(fp);
   }
-  (*G)->N_transacoes++;
 
   return Tr;
 }
 
 transacoes *cria_transacaoAuto(Grafo **G, usuarios *user, char *nomeT, char *categoriaT, float val){
   struct transacoes *Tr, *pont;
+  FILE *fp;
 
-  Tr = (transacoes*)malloc(sizeof(transacoes));
-  strcpy(Tr->categoria, categoriaT);
-  strcpy(Tr->objeto, nomeT);
-  Tr->idT = (*G)->N_transacoes;
-  Tr->criador = user;
-  Tr->valor = val;
-  if((*G)->N_transacoes == 0){
-    (*G)->listaT = Tr;
-    (*G)->listaT->antT = NULL;
-    (*G)->listaT->proxT = NULL;
-  }else{
-    pont = (*G)->listaT;
-    while(pont->proxT != NULL){
-      pont = pont->proxT;
-    }
-    pont->proxT = Tr;
-    Tr->antT = pont;
+  if(existe_Grafo(*G)){
+    Tr = (transacoes*)malloc(sizeof(transacoes));
+    strcpy(Tr->categoria, categoriaT);
+    strcpy(Tr->objeto, nomeT);
+    Tr->idT = (*G)->N_transacoes;
+    Tr->criador = user;
+    Tr->valor = val;
     Tr->proxT = NULL;
-  }
-  (*G)->N_transacoes++;
+    Tr->antT = NULL;
+    if((*G)->listaT == NULL){
+      (*G)->listaT = Tr;
+      (*G)->listaT->antT = NULL;
+      (*G)->listaT->proxT = NULL;
+    }else{
+      pont = (*G)->listaT;
+      while(pont->proxT != NULL){
+        pont = pont->proxT;
+      }
+      Tr->antT = pont;
+      Tr->proxT = NULL;
+      pont->proxT = Tr;
+    }
+    (*G)->N_transacoes++;
 
+
+    fp = fopen("/home/aeron/proj4/ProjetoMP/LIB/Transacoes.txt", "a+");
+    if(fp == NULL)
+      printf("Erro, nao foi possivel abrir o arquivo\n");
+    else{
+      fprintf(fp, "Id = %d\n", Tr->idT);
+      fprintf(fp, "Nome = %s\n", Tr->objeto);
+      fprintf(fp, "Categoria = %s\n", Tr->categoria);
+      fprintf(fp, "Criador = %s\n", Tr->criador->nome);
+      fprintf(fp, "Valor = %.2f\n\n", Tr->valor);
+    }
+    fclose(fp);
+  }
   return Tr;
 }
 
-transacoes *cria_listaDeTransacoes(transacoes *listadeTransacoes, int cont){
-  struct transacoes *listadeT, *pont2, *Tr;
-
-  Tr = (transacoes*)malloc(sizeof(transacoes));
-  Tr->idT = listadeTransacoes->idT;
-  Tr->criador = listadeTransacoes->criador;
-  Tr->valor = listadeTransacoes->valor;
-  strcpy(Tr->categoria, listadeTransacoes->categoria);
-  strcpy(Tr->objeto, listadeTransacoes->objeto);
-
-  if(cont == 0){
-    listadeT = Tr;
-    listadeT->proxT = NULL;
-    listadeT->antT = NULL;
-  }else{
-    pont2 = listadeT;
-    while(pont2->proxT != NULL){
-      pont2 = pont2->proxT;
-    }
-    pont2->proxT = Tr;
-    Tr->antT = pont2;
-    Tr->proxT = NULL;
-  }
-
-  return listadeT;
-}
-
 transacoes *procura_categoria(Grafo **G, char *categoriaT){
-  struct transacoes *Tr, *listadeTransacoes = NULL, *pont;
+  struct transacoes *Tr, *listadeTransacoes = NULL, *pont, *pont2;
   int cont = 0;
 
   pont = (*G)->listaT;
   while(pont != NULL){
     if(strcmp(pont->categoria, categoriaT) == 0){
-      listadeTransacoes = cria_listaDeTransacoes(pont, cont);
-      cont++;
+      Tr = (transacoes*)malloc(sizeof(transacoes));
+      Tr->idT = pont->idT;
+      Tr->criador = pont->criador;
+      Tr->valor = pont->valor;
+      strcpy(Tr->categoria, pont->categoria);
+      strcpy(Tr->objeto, pont->objeto);
+
+      if(listadeTransacoes == NULL){
+        listadeTransacoes = Tr;
+        listadeTransacoes->proxT = NULL;
+        listadeTransacoes->antT = NULL;
+      }else{
+        pont2 = listadeTransacoes;
+        while(pont2->proxT != NULL){
+          pont2 = pont2->proxT;
+        }
+        Tr->antT = pont;
+        Tr->proxT = NULL;
+        pont2->proxT = Tr;
+      }
     }
     pont = pont->proxT;
   }
@@ -280,10 +322,54 @@ transacoes *procura_categoria(Grafo **G, char *categoriaT){
   return listadeTransacoes;
 }
 
+//Funcao procura_nomeT --- Recebe como Parametro um grafo(G), uma string(categoria) e uma string (nomeT).
+//E retorna uma lista de transacoes.
+transacoes *procura_nomeT(Grafo **G, char *categoriaT, char *nomeT){
+  struct transacoes *listadeTransacoes = NULL, *pont, *Tr, *pont2;
+  int i , j;
+
+  pont = procura_categoria(&(*G), categoriaT);
+  while(pont != NULL){
+    for(i = 0; (pont->objeto[i]); i++){
+      if((pont->objeto[i]) == nomeT[0]){      // Assertiva que verifica se a primeira letra do objeto é igual a letra do nome mandado como parametro.
+        j = 1;
+        while(((pont->objeto[i+j]) == nomeT[j])){  // Assertiva que verifica se as letras seguintes do objeto são iguais a letra do nome mandado como parametro.
+          j++;
+        }
+        if(j >= 3){ // Assertiva que verifica se o minimo de letras para uma busca por nome foi satisfeita.
+          Tr = (transacoes*)malloc(sizeof(transacoes));
+          Tr->idT = pont->idT;
+          Tr->criador = pont->criador;
+          Tr->valor = pont->valor;
+          strcpy(Tr->categoria, pont->categoria);
+          strcpy(Tr->objeto, pont->objeto);
+          if(listadeTransacoes == NULL){
+            listadeTransacoes = Tr;
+            listadeTransacoes->proxT = NULL;
+            listadeTransacoes->antT = NULL;
+          }else{
+            pont2 = listadeTransacoes;
+            while(pont2->proxT != NULL){
+              pont2 = pont2->proxT;
+            }
+            Tr->antT = pont2;
+            Tr->proxT = NULL;
+            pont2->proxT = Tr;
+          }
+        }
+      }
+    }
+    pont = pont->proxT;
+    i = 0;
+  }
+  pont = listadeTransacoes;
+  return listadeTransacoes;
+}
+
 // Funcao procura_transacaoDeAmigos - Recebe um Grafo(G), um usuario (User) e uma string (Categoria) como parametros.
 // Procura em uma lista de transações se existe a categoria enviada como parametro e depois pesquisa se algum de seus amigos é o criador dessa transação.
 transacoes *procura_transacaoDeAmigos(Grafo **G, usuarios *User, char *categoriaT){
-  struct transacoes *listadeTransacoes = NULL, *pont;
+  struct transacoes *listadeTransacoes = NULL, *pont, *Tr, *pont2;
   struct amigos *amigoT;
   int cont = 0;
 
@@ -293,8 +379,25 @@ transacoes *procura_transacaoDeAmigos(Grafo **G, usuarios *User, char *categoria
     while(pont != NULL){
       while(amigoT != NULL){
         if(pont->criador->id == amigoT->idAmigo){
-          listadeTransacoes = cria_listaDeTransacoes(pont, cont);
-          cont++;
+          Tr = (transacoes*)malloc(sizeof(transacoes));
+          Tr->idT = pont->idT;
+          Tr->criador = pont->criador;
+          Tr->valor = pont->valor;
+          strcpy(Tr->categoria, pont->categoria);
+          strcpy(Tr->objeto, pont->objeto);
+          if(listadeTransacoes == NULL){
+            listadeTransacoes = Tr;
+            listadeTransacoes->proxT = NULL;
+            listadeTransacoes->antT = NULL;
+          }else{
+            pont2 = listadeTransacoes;
+            while(pont2->proxT != NULL){
+              pont2 = pont2->proxT;
+            }
+            Tr->antT = pont2;
+            Tr->proxT = NULL;
+            pont2->proxT = Tr;
+          }
         }
         amigoT = amigoT->proxAmigo;
       }
@@ -418,7 +521,7 @@ void destroi_Grafo(Grafo **G){
         pont = pont->prox;
       }
     }
-    fp = fopen("BancodeDados.txt","w+");
+    fp = fopen("/home/aeron/proj4/ProjetoMP/LIB/BancodeDados.txt","w");
     fclose(fp);
     free(*G);
     cria_Grafo();

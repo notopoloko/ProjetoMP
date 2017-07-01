@@ -1,4 +1,4 @@
-#include <stdio.h>
+#include <stdio.h> 
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
@@ -56,14 +56,20 @@ typedef struct Grafo{
 //Aloca espaço de memoria para criar uma estrutura do tipo Grafo que atribui NomedoGrafo para estrutura.
 Grafo *cria_Grafo();
 
-//Funcao cria_transacao --- Recebe como Parametro grafo(G) e um usuario(User); e retorna uma transacao.
+//Funcao cria_transacao --- Recebe como Parametro um grafo(G) e um usuario(User); e retorna uma transacao.
 transacoes *cria_transacao(Grafo **G, usuarios *user);
 
+//Funcao cria_transacaoAuto --- Recebe como Parametro um grafo(G), um usuario(User), uma string(nomeT), uma string(categoriaT) e um float(val)
+//E retorna uma transacao.
 transacoes *cria_transacaoAuto(Grafo **G, usuarios *user, char *nomeT, char *categoriaT, float val);
 
+//Funcao procura_categoria --- Recebe como Parametro um grafo(G) e uma string(categoria).
+//E retorna uma lista de transacoes.
 transacoes *procura_categoria(Grafo **G, char *categoriaT);
 
-transacoes *cria_listaDeTransacoes(transacoes *listadeTransacoes, int cont);
+//Funcao procura_nomeT --- Recebe como Parametro um grafo(G), uma string(categoria) e uma string (nomeT).
+//E retorna uma lista de transacoes.
+transacoes *procura_nomeT(Grafo **G, char *categoriaT, char *nomeT);
 
 transacoes *procura_transacaoDeAmigos(Grafo **G, usuarios *User, char *categoriaT);
 

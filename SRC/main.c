@@ -7,15 +7,17 @@
 
 Grafo *G;
 usuarios *User, *User1, *User2, *User3, *User4, *User5;
-transacoes *Tran, *Tran1, *Tran2, *Tran3;
-amigos *aux;	
+transacoes *Tran, *Tran1, *Tran2, *Tran3, *pont = NULL;
+amigos *aux;
 int aval = 10;
 float val = 200.2;
 char nom[] = "Rafael", nom1[] = "Marcelo", nom2[] = "Paula", nom3[] = "Andre", nom4[] = "Leandro", nom5[] = "Joao";
 char cidade[] = "Aguas", cidade1[] = "Taguatinga", cidade2[] = "Ceilandia", cidade3[] = "Marajo", cidade4[] = "Olinda", cidade5[] = "Maceio";
 char cep[] = "83201-23", cep1[] = "83201-10", cep2[] = "99901-23", cep3[] = "83211-29", cep4[] = "83101-03", cep5[] = "85201-26";
 char cpf[] = "123583201-23", cpf1[] = "123544201-23", cpf2[] = "567899901-23", cpf3[] = "111183211-29", cpf4[] = "987583101-03", cpf5[] = "908385201-26";
-char nomeArquivo[] = "BancodeDados.txt";
+char nomeArquivo[] = "/home/aeron/proj4/ProjetoMP/LIB/BancodeDados.txt";
+char nomeArquivo1[] = "/home/aeron/proj4/ProjetoMP/LIB/Transacoes.txt";
+char nomeArquivo2[] = "/home/aeron/proj4/ProjetoMP/LIB/CirculoDeAmigos.txt";
 char categoria[] = "carros", categoria1[] = "casas", categoria2[] = "roupas";
 
 
@@ -183,6 +185,7 @@ TEST(TestaCirculoAmigos, TestFriends){ // Testando erros no circulo de amigos.
 TEST(TestaTransacao, TestTransaction){ // Testando erros nas transações.
 	printf("\n");
 	G = cria_Grafo();
+	char nomEx[] = "Rafazinho";
 	User = cria_pessoaAuto(&G, nom, cpf, cep, cidade);
 	User1 = cria_pessoaAuto(&G, nom1, cpf1, cep1, cidade1);
 	User2 = cria_pessoaAuto(&G, nom2, cpf2, cep2, cidade2);
@@ -196,13 +199,21 @@ TEST(TestaTransacao, TestTransaction){ // Testando erros nas transações.
 
 	ASSERT_TRUE((G->listaT == NULL));
 	Tran = cria_transacaoAuto(&G, User, nom, categoria, val);
-	ASSERT_TRUE(G->N_transacoes == 1);
+	Tran2 = cria_transacaoAuto(&G, User, nomEx, categoria, val);
+	ASSERT_TRUE(G->N_transacoes == 2);
 	ASSERT_TRUE(strcmp(Tran->objeto, nom) == 0);
 	ASSERT_TRUE(strcmp(Tran->categoria, categoria) == 0);
 	ASSERT_TRUE(Tran->valor == val);
 	ASSERT_TRUE(Tran->criador->id == User->id);
 	ASSERT_TRUE((G->listaT != NULL));
 	ASSERT_TRUE(Tran != NULL);
+
+	ASSERT_TRUE(pont == NULL);
+	pont = procura_nomeT(&G, categoria, nomEx); // Retorna a seguinte lista : Rafael , Rafazinho.
+	ASSERT_TRUE(pont != NULL);
+
+
+	exclui_transacao(&G, &Tran2);
 
 	Tran1 = procura_categoria(&G, categoria1); // Não existe transações com categoria1.
 	ASSERT_TRUE(Tran1 == NULL);
@@ -231,7 +242,6 @@ TEST(TestaTransacao, TestTransaction){ // Testando erros nas transações.
 	exclui_transacao(&G, &Tran);
 	ASSERT_TRUE(G->N_transacoes == 0);
 	ASSERT_TRUE(G->listaT == NULL);
-
 
 	destroi_Grafo(&G);
 }

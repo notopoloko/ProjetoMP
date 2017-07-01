@@ -1,0 +1,1232 @@
+----------------------------- Transações -------------------------------------
+Id = 0
+Nome = Rafael
+Categoria = carros
+Criador = Rafael
+Valor = 200.20
+
+Id = 0
+Nome = Rafael
+Categoria = carros
+Criador = Rafael
+Valor = 200.20
+
+
+Id = 0
+Nome = Rafael
+Categoria = carros
+Criador = Rafael
+Valor = 200.20
+
+Id = 0
+Nome = Rafael
+Categoria = carros
+Criador = Rafael
+Valor = 200.20
+
+Id = 0
+Nome = Rafael
+Categoria = carros
+Criador = Rafael
+Valor = 200.20
+
+Id = 0
+Nome = Rafael
+Categoria = carros
+Criador = Rafael
+Valor = 200.20
+
+Id = 0
+Nome = Rafael
+Categoria = carros
+Criador = Rafael
+Valor = 200.20
+
+Id = 0
+Nome = Rafael
+Categoria = carros
+Criador = Rafael
+Valor = 200.20
+
+Id = 0
+Nome = Rafael
+Categoria = carros
+Criador = Rafael
+Valor = 200.20
+
+Id = 0
+Nome = Rafael
+Categoria = carros
+Criador = Rafael
+Valor = 200.20
+
+Id = 0
+Nome = Rafael
+Categoria = carros
+Criador = Rafael
+Valor = 200.20
+
+Id = 0
+Nome = Rafael
+Categoria = carros
+Criador = Rafael
+Valor = 200.20
+
+Id = 0
+Nome = Rafael
+Categoria = carros
+Criador = Rafael
+Valor = 200.20
+
+Id = 0
+Nome = Rafael
+Categoria = carros
+Criador = Rafael
+Valor = 200.20
+
+Id = 0
+Nome = Rafael
+Categoria = carros
+Criador = Rafael
+Valor = 200.20
+
+Id = 0
+Nome = Rafael
+Categoria = carros
+Criador = Rafael
+Valor = 200.20
+
+Id = 0
+Nome = Rafael
+Categoria = carros
+Criador = Rafael
+Valor = 200.20
+
+Id = 0
+Nome = Rafael
+Categoria = carros
+Criador = Rafael
+Valor = 200.20
+
+Id = 0
+Nome = Rafael
+Categoria = carros
+Criador = Rafael
+Valor = 200.20
+
+Id = 0
+Nome = Rafael
+Categoria = carros
+Criador = Rafael
+Valor = 200.20
+
+Id = 0
+Nome = Rafael
+Categoria = carros
+Criador = Rafael
+Valor = 200.20
+
+Id = 1
+Nome = Rafonso
+Categoria = carros
+Criador = Rafael
+Valor = 200.20
+
+Id = 0
+Nome = Rafael
+Categoria = carros
+Criador = Rafael
+Valor = 200.20
+
+Id = 1
+Nome = Rafonso
+Categoria = carros
+Criador = Rafael
+Valor = 200.20
+
+Id = 0
+Nome = Rafael
+Categoria = carros
+Criador = Rafael
+Valor = 200.20
+
+Id = 1
+Nome = Rafanso
+Categoria = carros
+Criador = Paula
+Valor = 200.20
+
+Id = 0
+Nome = Rafael
+Categoria = carros
+Criador = Rafael
+Valor = 200.20
+
+Id = 1
+Nome = Rafanso
+Categoria = carros
+Criador = Paula
+Valor = 200.20
+
+Id = 0
+Nome = Rafael
+Categoria = carros
+Criador = Rafael
+Valor = 200.20
+
+Id = 1
+Nome = Rafanso
+Categoria = carros
+Criador = Paula
+Valor = 200.20
+
+Id = 0
+Nome = Rafael
+Categoria = carros
+Criador = Rafael
+Valor = 200.20
+
+Id = 1
+Nome = Rafanso
+Categoria = carros
+Criador = Paula
+Valor = 200.20
+
+Id = 0
+Nome = Rafael
+Categoria = carros
+Criador = Rafael
+Valor = 200.20
+
+Id = 1
+Nome = Rafanso
+Categoria = carros
+Criador = Paula
+Valor = 200.20
+
+Id = 0
+Nome = Rafael
+Categoria = carros
+Criador = Rafael
+Valor = 200.20
+
+Id = 1
+Nome = Rafanso
+Categoria = carros
+Criador = Paula
+Valor = 200.20
+
+Id = 0
+Nome = Rafael
+Categoria = carros
+Criador = Rafael
+Valor = 200.20
+
+Id = 1
+Nome = Rafanso
+Categoria = carros
+Criador = Paula
+Valor = 200.20
+
+Id = 0
+Nome = Rafael
+Categoria = carros
+Criador = Rafael
+Valor = 200.20
+
+Id = 1
+Nome = Rafanso
+Categoria = carros
+Criador = Paula
+Valor = 200.20
+
+Id = 0
+Nome = Rafael
+Categoria = carros
+Criador = Rafael
+Valor = 200.20
+
+Id = 1
+Nome = Rafanso
+Categoria = carros
+Criador = Paula
+Valor = 200.20
+
+Id = 0
+Nome = Rafael
+Categoria = carros
+Criador = Rafael
+Valor = 200.20
+
+Id = 0
+Nome = Rafael
+Categoria = carros
+Criador = Rafael
+Valor = 200.20
+
+Id = 0
+Nome = Rafael
+Categoria = carros
+Criador = Rafael
+Valor = 200.20
+
+Id = 0
+Nome = Rafael
+Categoria = carros
+Criador = Rafael
+Valor = 200.20
+
+Id = 0
+Nome = Rafael
+Categoria = carros
+Criador = Rafael
+Valor = 200.20
+
+Id = 0
+Nome = Rafael
+Categoria = carros
+Criador = Rafael
+Valor = 200.20
+
+Id = 0
+Nome = Rafael
+Categoria = carros
+Criador = Rafael
+Valor = 200.20
+
+Id = 0
+Nome = Rafael
+Categoria = carros
+Criador = Rafael
+Valor = 200.20
+
+Id = 0
+Nome = Rafael
+Categoria = carros
+Criador = Rafael
+Valor = 200.20
+
+Id = 0
+Nome = Rafael
+Categoria = carros
+Criador = Rafael
+Valor = 200.20
+
+Id = 1
+Nome = Rafazinho
+Categoria = carros
+Criador = Rafael
+Valor = 200.20
+
+Id = 0
+Nome = Rafael
+Categoria = carros
+Criador = Rafael
+Valor = 200.20
+
+Id = 1
+Nome = Rafazinho
+Categoria = carros
+Criador = Rafael
+Valor = 200.20
+
+Id = 0
+Nome = Rafael
+Categoria = carros
+Criador = Rafael
+Valor = 200.20
+
+Id = 1
+Nome = Rafazinho
+Categoria = carros
+Criador = Rafael
+Valor = 200.20
+
+Id = 0
+Nome = Rafael
+Categoria = carros
+Criador = Rafael
+Valor = 200.20
+
+Id = 0
+Nome = Rafael
+Categoria = carros
+Criador = Rafael
+Valor = 200.20
+
+Id = 1
+Nome = Rafazinho
+Categoria = carros
+Criador = Rafael
+Valor = 200.20
+
+Id = 0
+Nome = Rafael
+Categoria = carros
+Criador = Rafael
+Valor = 200.20
+
+Id = 0
+Nome = Rafael
+Categoria = carros
+Criador = Rafael
+Valor = 200.20
+
+Id = 1
+Nome = Rafazinho
+Categoria = carros
+Criador = Rafael
+Valor = 200.20
+
+Id = 0
+Nome = Rafael
+Categoria = carros
+Criador = Rafael
+Valor = 200.20
+
+Id = 1
+Nome = Rafazinho
+Categoria = carros
+Criador = Rafael
+Valor = 200.20
+
+Id = 0
+Nome = Rafael
+Categoria = carros
+Criador = Rafael
+Valor = 200.20
+
+Id = 1
+Nome = Rafazinho
+Categoria = carros
+Criador = Rafael
+Valor = 200.20
+
+Id = 0
+Nome = Rafael
+Categoria = carros
+Criador = Rafael
+Valor = 200.20
+
+Id = 0
+Nome = Rafael
+Categoria = carros
+Criador = Rafael
+Valor = 200.20
+
+Id = 0
+Nome = Rafael
+Categoria = carros
+Criador = Rafael
+Valor = 200.20
+
+Id = 1
+Nome = Rafazinho
+Categoria = carros
+Criador = Rafael
+Valor = 200.20
+
+Id = 0
+Nome = Rafael
+Categoria = carros
+Criador = Rafael
+Valor = 200.20
+
+Id = 0
+Nome = Rafael
+Categoria = carros
+Criador = Rafael
+Valor = 200.20
+
+Id = 0
+Nome = Rafael
+Categoria = carros
+Criador = Rafael
+Valor = 200.20
+
+Id = 1
+Nome = Rafazinho
+Categoria = carros
+Criador = Rafael
+Valor = 200.20
+
+Id = 0
+Nome = Rafael
+Categoria = carros
+Criador = Rafael
+Valor = 200.20
+
+Id = 0
+Nome = Rafael
+Categoria = carros
+Criador = Rafael
+Valor = 200.20
+
+Id = 0
+Nome = Rafael
+Categoria = carros
+Criador = Rafael
+Valor = 200.20
+
+Id = 1
+Nome = Rafazinho
+Categoria = carros
+Criador = Rafael
+Valor = 200.20
+
+Id = 0
+Nome = Rafael
+Categoria = carros
+Criador = Rafael
+Valor = 200.20
+
+Id = 0
+Nome = Rafael
+Categoria = carros
+Criador = Rafael
+Valor = 200.20
+
+Id = 0
+Nome = Rafael
+Categoria = carros
+Criador = Rafael
+Valor = 200.20
+
+Id = 1
+Nome = Rafazinho
+Categoria = carros
+Criador = Rafael
+Valor = 200.20
+
+Id = 0
+Nome = Rafael
+Categoria = carros
+Criador = Rafael
+Valor = 200.20
+
+Id = 0
+Nome = Rafael
+Categoria = carros
+Criador = Rafael
+Valor = 200.20
+
+Id = 0
+Nome = Rafael
+Categoria = carros
+Criador = Rafael
+Valor = 200.20
+
+Id = 1
+Nome = Rafazinho
+Categoria = carros
+Criador = Rafael
+Valor = 200.20
+
+Id = 0
+Nome = Rafael
+Categoria = carros
+Criador = Rafael
+Valor = 200.20
+
+Id = 0
+Nome = Rafael
+Categoria = carros
+Criador = Rafael
+Valor = 200.20
+
+Id = 0
+Nome = Rafael
+Categoria = carros
+Criador = Rafael
+Valor = 200.20
+
+Id = 1
+Nome = Rafazinho
+Categoria = carros
+Criador = Rafael
+Valor = 200.20
+
+Id = 0
+Nome = Rafael
+Categoria = carros
+Criador = Rafael
+Valor = 200.20
+
+Id = 0
+Nome = Rafael
+Categoria = carros
+Criador = Rafael
+Valor = 200.20
+
+Id = 0
+Nome = Rafael
+Categoria = carros
+Criador = Rafael
+Valor = 200.20
+
+Id = 1
+Nome = Rafazinho
+Categoria = carros
+Criador = Rafael
+Valor = 200.20
+
+Id = 0
+Nome = Rafael
+Categoria = carros
+Criador = Rafael
+Valor = 200.20
+
+Id = 0
+Nome = Rafael
+Categoria = carros
+Criador = Rafael
+Valor = 200.20
+
+Id = 0
+Nome = Rafael
+Categoria = carros
+Criador = Rafael
+Valor = 200.20
+
+Id = 1
+Nome = Rafazinho
+Categoria = carros
+Criador = Rafael
+Valor = 200.20
+
+Id = 0
+Nome = Rafael
+Categoria = carros
+Criador = Rafael
+Valor = 200.20
+
+Id = 0
+Nome = Rafael
+Categoria = carros
+Criador = Rafael
+Valor = 200.20
+
+Id = 0
+Nome = Rafael
+Categoria = carros
+Criador = Rafael
+Valor = 200.20
+
+Id = 1
+Nome = Rafazinho
+Categoria = carros
+Criador = Rafael
+Valor = 200.20
+
+Id = 0
+Nome = Rafael
+Categoria = carros
+Criador = Rafael
+Valor = 200.20
+
+Id = 0
+Nome = Rafael
+Categoria = carros
+Criador = Rafael
+Valor = 200.20
+
+Id = 0
+Nome = Rafael
+Categoria = carros
+Criador = Rafael
+Valor = 200.20
+
+Id = 1
+Nome = Rafazinho
+Categoria = carros
+Criador = Rafael
+Valor = 200.20
+
+Id = 0
+Nome = Rafael
+Categoria = carros
+Criador = Rafael
+Valor = 200.20
+
+Id = 0
+Nome = Rafael
+Categoria = carros
+Criador = Rafael
+Valor = 200.20
+
+Id = 0
+Nome = Rafael
+Categoria = carros
+Criador = Rafael
+Valor = 200.20
+
+Id = 1
+Nome = Rafazinho
+Categoria = carros
+Criador = Rafael
+Valor = 200.20
+
+Id = 0
+Nome = Rafael
+Categoria = carros
+Criador = Rafael
+Valor = 200.20
+
+Id = 0
+Nome = Rafael
+Categoria = carros
+Criador = Rafael
+Valor = 200.20
+
+Id = 0
+Nome = Rafael
+Categoria = carros
+Criador = Rafael
+Valor = 200.20
+
+Id = 1
+Nome = Rafazinho
+Categoria = carros
+Criador = Rafael
+Valor = 200.20
+
+Id = 0
+Nome = Rafael
+Categoria = carros
+Criador = Rafael
+Valor = 200.20
+
+Id = 0
+Nome = Rafael
+Categoria = carros
+Criador = Rafael
+Valor = 200.20
+
+Id = 0
+Nome = Rafael
+Categoria = carros
+Criador = Rafael
+Valor = 200.20
+
+Id = 1
+Nome = Rafazinho
+Categoria = carros
+Criador = Rafael
+Valor = 200.20
+
+Id = 0
+Nome = Rafael
+Categoria = carros
+Criador = Rafael
+Valor = 200.20
+
+Id = 1
+Nome = Rafazinho
+Categoria = carros
+Criador = Rafael
+Valor = 200.20
+
+Id = 0
+Nome = Rafael
+Categoria = carros
+Criador = Rafael
+Valor = 200.20
+
+Id = 0
+Nome = Rafael
+Categoria = carros
+Criador = Rafael
+Valor = 200.20
+
+Id = 0
+Nome = Rafael
+Categoria = carros
+Criador = Rafael
+Valor = 200.20
+
+Id = 1
+Nome = Rafazinho
+Categoria = carros
+Criador = Rafael
+Valor = 200.20
+
+Id = 0
+Nome = Rafael
+Categoria = carros
+Criador = Rafael
+Valor = 200.20
+
+Id = 0
+Nome = Rafael
+Categoria = carros
+Criador = Rafael
+Valor = 200.20
+
+Id = 0
+Nome = Rafael
+Categoria = carros
+Criador = Rafael
+Valor = 200.20
+
+Id = 1
+Nome = Rafazinho
+Categoria = carros
+Criador = Rafael
+Valor = 200.20
+
+Id = 0
+Nome = Rafael
+Categoria = carros
+Criador = Rafael
+Valor = 200.20
+
+Id = 0
+Nome = Rafael
+Categoria = carros
+Criador = Rafael
+Valor = 200.20
+
+Id = 0
+Nome = Rafael
+Categoria = carros
+Criador = Rafael
+Valor = 200.20
+
+Id = 1
+Nome = Rafazinho
+Categoria = carros
+Criador = Rafael
+Valor = 200.20
+
+Id = 0
+Nome = Rafael
+Categoria = carros
+Criador = Rafael
+Valor = 200.20
+
+Id = 0
+Nome = Rafael
+Categoria = carros
+Criador = Rafael
+Valor = 200.20
+
+Id = 0
+Nome = Rafael
+Categoria = carros
+Criador = Rafael
+Valor = 200.20
+
+Id = 1
+Nome = Rafazinho
+Categoria = carros
+Criador = Rafael
+Valor = 200.20
+
+Id = 0
+Nome = Rafael
+Categoria = carros
+Criador = Rafael
+Valor = 200.20
+
+Id = 0
+Nome = Rafael
+Categoria = carros
+Criador = Rafael
+Valor = 200.20
+
+Id = 0
+Nome = Rafael
+Categoria = carros
+Criador = Rafael
+Valor = 200.20
+
+Id = 1
+Nome = Rafazinho
+Categoria = carros
+Criador = Rafael
+Valor = 200.20
+
+Id = 0
+Nome = Rafael
+Categoria = carros
+Criador = Rafael
+Valor = 200.20
+
+Id = 0
+Nome = Rafael
+Categoria = carros
+Criador = Rafael
+Valor = 200.20
+
+Id = 0
+Nome = Rafael
+Categoria = carros
+Criador = Rafael
+Valor = 200.20
+
+Id = 1
+Nome = Rafazinho
+Categoria = casas
+Criador = Rafael
+Valor = 200.20
+
+Id = 0
+Nome = Rafael
+Categoria = carros
+Criador = Rafael
+Valor = 200.20
+
+Id = 0
+Nome = Rafael
+Categoria = carros
+Criador = Rafael
+Valor = 200.20
+
+Id = 0
+Nome = Rafael
+Categoria = carros
+Criador = Rafael
+Valor = 200.20
+
+Id = 1
+Nome = Rafazinho
+Categoria = casas
+Criador = Rafael
+Valor = 200.20
+
+Id = 0
+Nome = Rafael
+Categoria = carros
+Criador = Rafael
+Valor = 200.20
+
+Id = 0
+Nome = Rafael
+Categoria = carros
+Criador = Rafael
+Valor = 200.20
+
+Id = 0
+Nome = Rafael
+Categoria = carros
+Criador = Rafael
+Valor = 200.20
+
+Id = 1
+Nome = Rafazinho
+Categoria = casas
+Criador = Rafael
+Valor = 200.20
+
+Id = 0
+Nome = Rafael
+Categoria = carros
+Criador = Rafael
+Valor = 200.20
+
+Id = 0
+Nome = Rafael
+Categoria = carros
+Criador = Rafael
+Valor = 200.20
+
+Id = 0
+Nome = Rafael
+Categoria = carros
+Criador = Rafael
+Valor = 200.20
+
+Id = 1
+Nome = Rafazinho
+Categoria = casas
+Criador = Rafael
+Valor = 200.20
+
+Id = 0
+Nome = Rafael
+Categoria = carros
+Criador = Rafael
+Valor = 200.20
+
+Id = 0
+Nome = Rafael
+Categoria = carros
+Criador = Rafael
+Valor = 200.20
+
+Id = 0
+Nome = Rafael
+Categoria = carros
+Criador = Rafael
+Valor = 200.20
+
+Id = 1
+Nome = Rafazinho
+Categoria = casas
+Criador = Rafael
+Valor = 200.20
+
+Id = 0
+Nome = Rafael
+Categoria = carros
+Criador = Rafael
+Valor = 200.20
+
+Id = 0
+Nome = Rafael
+Categoria = carros
+Criador = Rafael
+Valor = 200.20
+
+Id = 0
+Nome = Rafael
+Categoria = carros
+Criador = Rafael
+Valor = 200.20
+
+Id = 1
+Nome = Rafazinho
+Categoria = carros
+Criador = Rafael
+Valor = 200.20
+
+Id = 0
+Nome = Rafael
+Categoria = carros
+Criador = Rafael
+Valor = 200.20
+
+Id = 1
+Nome = Rafazinho
+Categoria = carros
+Criador = Rafael
+Valor = 200.20
+
+Id = 0
+Nome = Rafael
+Categoria = carros
+Criador = Rafael
+Valor = 200.20
+
+Id = 1
+Nome = Rafazinho
+Categoria = carros
+Criador = Rafael
+Valor = 200.20
+
+Id = 0
+Nome = Rafael
+Categoria = carros
+Criador = Rafael
+Valor = 200.20
+
+Id = 1
+Nome = Rafazinho
+Categoria = carros
+Criador = Rafael
+Valor = 200.20
+
+Id = 0
+Nome = Rafael
+Categoria = carros
+Criador = Rafael
+Valor = 200.20
+
+Id = 1
+Nome = Rafazinho
+Categoria = carros
+Criador = Rafael
+Valor = 200.20
+
+Id = 0
+Nome = Rafael
+Categoria = carros
+Criador = Rafael
+Valor = 200.20
+
+Id = 1
+Nome = Rafazinho
+Categoria = carros
+Criador = Rafael
+Valor = 200.20
+
+Id = 0
+Nome = Rafael
+Categoria = carros
+Criador = Rafael
+Valor = 200.20
+
+Id = 0
+Nome = Rafael
+Categoria = carros
+Criador = Rafael
+Valor = 200.20
+
+Id = 0
+Nome = Rafael
+Categoria = carros
+Criador = Rafael
+Valor = 200.20
+
+Id = 1
+Nome = Rafazinho
+Categoria = carros
+Criador = Rafael
+Valor = 200.20
+
+Id = 0
+Nome = Rafael
+Categoria = carros
+Criador = Rafael
+Valor = 200.20
+
+Id = 1
+Nome = Rafazinho
+Categoria = carros
+Criador = Rafael
+Valor = 200.20
+
+Id = 0
+Nome = Rafael
+Categoria = carros
+Criador = Rafael
+Valor = 200.20
+
+Id = 1
+Nome = Rafazinho
+Categoria = carros
+Criador = Rafael
+Valor = 200.20
+
+Id = 0
+Nome = Rafael
+Categoria = carros
+Criador = Rafael
+Valor = 200.20
+
+Id = 0
+Nome = Rafael
+Categoria = carros
+Criador = Rafael
+Valor = 200.20
+
+Id = 0
+Nome = Rafael
+Categoria = carros
+Criador = Rafael
+Valor = 200.20
+
+Id = 1
+Nome = Rafazinho
+Categoria = carros
+Criador = Rafael
+Valor = 200.20
+
+Id = 0
+Nome = Rafael
+Categoria = carros
+Criador = Rafael
+Valor = 200.20
+
+Id = 0
+Nome = Rafael
+Categoria = carros
+Criador = Rafael
+Valor = 200.20
+
+Id = 0
+Nome = Rafael
+Categoria = carros
+Criador = Rafael
+Valor = 200.20
+
+Id = 1
+Nome = Rafazinho
+Categoria = carros
+Criador = Rafael
+Valor = 200.20
+
+Id = 0
+Nome = Rafael
+Categoria = carros
+Criador = Rafael
+Valor = 200.20
+
+Id = 0
+Nome = Rafael
+Categoria = carros
+Criador = Rafael
+Valor = 200.20
+
+Id = 0
+Nome = Rafael
+Categoria = carros
+Criador = Rafael
+Valor = 200.20
+
+Id = 1
+Nome = Rafazinho
+Categoria = carros
+Criador = Rafael
+Valor = 200.20
+
+Id = 0
+Nome = Rafael
+Categoria = carros
+Criador = Rafael
+Valor = 200.20
+
+Id = 0
+Nome = Rafael
+Categoria = carros
+Criador = Rafael
+Valor = 200.20
+
+Id = 0
+Nome = Rafael
+Categoria = carros
+Criador = Rafael
+Valor = 200.20
+
+Id = 1
+Nome = Rafazinho
+Categoria = carros
+Criador = Rafael
+Valor = 200.20
+
+Id = 0
+Nome = Rafael
+Categoria = carros
+Criador = Rafael
+Valor = 200.20
+
+Id = 0
+Nome = Rafael
+Categoria = carros
+Criador = Rafael
+Valor = 200.20
+
+Id = 0
+Nome = Rafael
+Categoria = carros
+Criador = Rafael
+Valor = 200.20
+
+Id = 1
+Nome = Rafazinho
+Categoria = carros
+Criador = Rafael
+Valor = 200.20
+
+Id = 0
+Nome = Rafael
+Categoria = carros
+Criador = Rafael
+Valor = 200.20
+
+Id = 0
+Nome = Rafael
+Categoria = carros
+Criador = Rafael
+Valor = 200.20
+
