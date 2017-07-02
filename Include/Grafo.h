@@ -71,10 +71,15 @@ transacoes *procura_categoria(Grafo **G, char *categoriaT);
 //E retorna uma lista de transacoes.
 transacoes *procura_nomeT(Grafo **G, char *categoriaT, char *nomeT);
 
+//Funcao procura_transacaoDeAmigos --- Recebe como Parametro grafo(G), um usuario(User) e uma string (categoriaT).
+//Retorna uma transacao.
 transacoes *procura_transacaoDeAmigos(Grafo **G, usuarios *User, char *categoriaT);
 
+//Funcao conclui_transacao --- Recebe como Parametro grafo(G), transacoes(Transacao) e um inteiro(ava1).
+//Retorna um usuario.
 usuarios *conclui_transacao(Grafo **G, transacoes **Transacao, int aval);
 
+//Funcao exclui_transacao --- Recebe como Parametro grafo(G) e transacoes(Transacao).
 void exclui_transacao(Grafo **G, transacoes **Transacao);
 
 //Funcao circulo_amigos --- Recebe como Parametro um usuario(User); e retorna uma lista de amigos de amigos.
@@ -83,41 +88,59 @@ amigos *circulo_amigosLista(Grafo **G, usuarios **User);
 //Funcao verifica_amizades --- Recebe como Parametro um usuario(User) e retorna uma lista de amigos de User.
 amigos *verifica_amizades(usuarios **User);
 
+//Funcao testaUsuario --- Recebe como Parametro um usuario(User); e retorna um usuario.
 usuarios *testaUsuario(usuarios *User);
 
+//Funcao procura_usuario --- Recebe como Parametro grafo(G); e retorna um usuario.
 usuarios *procura_usuario(Grafo *G);
 
+//Funcao procura_nome --- Recebe como Parametro grafo(G) e uma string(nom); e retorna um usuario.
 usuarios *procura_nome(Grafo *G, char *nom);
 
+//Funcao editar_pessoa --- Recebe como Parametro grafo(G); e retorna um usuario.
 usuarios *editar_pessoa(Grafo **G);
 
+//Funcao cria_pessoa --- Recebe como Parametro grafo(G); e retorna um usuario.
 usuarios *cria_pessoa(Grafo **G);
 
+//Funcao cria_pessoaAuto --- Recebe como Parametro grafo(G), uma string(nome), uma string(cpf),uma string(cep) e uma string(cidade).
+//Retorna um usuario.
 usuarios *cria_pessoaAuto(Grafo **G, char *nom, char *cpf, char *cep, char *cidade);
 
+//Funcao edita_cidade --- Recebe como Parametro grafo(G), um usuario(User) e uma string(cidade); e retorna um usuario.
 usuarios *edita_cidade(Grafo **G, usuarios **user, char *cidade);
 
+//Funcao edita_cep --- Recebe como Parametro grafo(G), um usuario(User) e uma string(cep); e retorna um usuario.
 usuarios *edita_cep(Grafo **G, usuarios **user, char *cep);
 
+//Funcao edita_cep --- Recebe como Parametro grafo(G), um usuario(User) e uma string(cpf); e retorna um usuario.
 usuarios *edita_cpf(Grafo **G, usuarios **user, char *cpf);
 
+//Funcao edita_cep --- Recebe como Parametro grafo(G), um usuario(User) e uma string(nom); e retorna um usuario.
 usuarios *edita_nome(Grafo **G, usuarios **user, char *nom);
 
 //Funcao salva_Arquivo --- Recebe como Parametros um Grafo(G) e armazena os dados do grafo em um arquivo.
 FILE *salva_Arquivo(Grafo **G);
 
+//Funcao menu --- Recebe como Parametros um Grafo(G).
 void menu(Grafo **G);
 
+//Funcao eh_amigo --- Recebe como Parametros um usuario(User) e um usuario(User2); e retorna um booleano.
 bool eh_amigo(usuarios *User, usuarios *User2);
 
+//Funcao tamanho_Arquivo --- Recebe como Parametros uma string(nomeArquivo);e retorna um inteiro.
 int tamanho_Arquivo(char *nomeArquivo);
 
+//Funcao verifica_letra --- Recebe como Parametros uma string(nome);e retorna um inteiro.
 int verifica_letra(char nome);
 
+//Funcao destroi_Grafo --- Recebe como Parametros um Grafo(G).
 void destroi_Grafo(Grafo **G);
 
+//Funcao exclui_usuario --- Recebe como Parametros um Grafo(G) e um usuario(User).
 void exclui_usuario(Grafo **G, usuarios **User);
 
+//Funcao e excluir_amigo --- Recebe como Parametros um Grafo(G), um usuarios(User), um usuario(User1) e um inteiro(cons).
 void excluir_amigo(Grafo **G, usuarios **User, usuarios **User1, int cons);
 
 //Funcao existe_Grafo --- Recebe como Parametro um Grafo(G) e retorna um valor verdadeiro,caso o grafo exista, e falso, caso nao exista grafo.
