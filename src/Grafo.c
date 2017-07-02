@@ -3,33 +3,33 @@
 int Const = 0;
 
 //ERRO = -1 O erro em todo este programa recebe o valor de -1.
-void salva_Arquivo(Grafo **G){
+void salva_Arquivo(Grafo *G){//checada
   FILE *fp;
   usuarios *pont;
   amigos *pontAmigos;
   int i;
 
-  if(existe_Grafo(*G)){
-    fp = fopen("../Allusers/BancodeDados.txt","w+");
+  if(existe_Grafo(G)){
+    fp = fopen("../Allusers/BancodeDados.txt","w");
     if (fp == NULL){
     // Verifica se existe um arquivo bancoDados.txt.
       printf("Impossível criar arquivo");
     }           
     else{
       for(i = 0; i < 26; i++){
-        pont = ((*G)->listaAdj[i]);
+        pont = G->listaAdj[i];
         while(pont != NULL){
           fprintf(fp,"----------------------------------------------------------------------------\n");
-          fprintf(fp,"%d\n", pont->id);
-          fprintf(fp,"%s\n", pont->nome);
-          fprintf(fp,"%s\n", pont->cidade);
-          fprintf(fp,"%s\n", pont->endereco);
-          fprintf(fp,"%s\n", pont->cpf);
-          fprintf(fp,"%s\n", pont->cep);
-          fprintf(fp,"%s\n", pont->email);
-          fprintf(fp,"%s\n", pont->senha);
-          fprintf(fp,"%s\n", pont->descricao);
-          fprintf(fp,"%d\n", pont->numeroAmigos);
+          fprintf(fp,"ID = %d\n", pont->id);
+          fprintf(fp,"NOME = %s\n", pont->nome);
+          fprintf(fp,"CIDADE = %s\n", pont->cidade);
+          fprintf(fp,"ENDERECO = %s\n", pont->endereco);
+          fprintf(fp,"CPF = %s\n", pont->cpf);
+          fprintf(fp,"CEP = %s\n", pont->cep);
+          fprintf(fp,"EMAIL = %s\n", pont->email);
+          fprintf(fp,"SENHA = %s\n", pont->senha);
+          fprintf(fp,"DESCRICAO = %s\n", pont->descricao);
+          fprintf(fp,"NUMERO DE AMIGOS = %d\n", pont->numeroAmigos);
           pontAmigos = verifica_amizades(&pont);
           if(pontAmigos == NULL){
               fprintf(fp, "Amigos = { }\n");
@@ -54,7 +54,7 @@ void salva_Arquivo(Grafo **G){
 char Erro[] = "Erro"; // Vetor de caracteres que é retornado na funcao retorna nome, caso um grafo seja inexistente.
 
 //Funcao cria_Grafo --- Recebe como Parametro um Grafo(G) e aloca espaço de memoria para criar uma estrutura do tipo Grafo.
-Grafo *cria_Grafo(){
+Grafo *cria_Grafo(){//checada
   struct Grafo *G;
   int i = 0;
 
@@ -167,7 +167,6 @@ void destroi_Grafo(Grafo **G){
 
  //Funcao imprime Grafo --- Recebe como Parametro um Grafo(G) e imprime na tela todos os usuarios e Amizades.
 void imprime_Grafo(Grafo *G){
-  system("cls || clear");
   int i = 0;
   struct usuarios *pont;
 
@@ -214,7 +213,6 @@ void imprime_amigos(usuarios *User){
 //Funcao procura_nome --- Recebe como Parametros um Grafo(G) e um nome.
 //Retorna um usuario ou NULL caso não encontre o usuario.
 usuarios *procura_nome(Grafo *G, char *nom){
-  system("cls || clear");
   struct usuarios *User, *user1;
   bool encontrado = false;
   int letra;
@@ -225,6 +223,7 @@ usuarios *procura_nome(Grafo *G, char *nom){
     if(strcmp(nom, User->nome) == 0){
       encontrado = true;
       user1 = User;
+      break;
     }
     User = User->prox;
   }
@@ -470,36 +469,36 @@ usuarios *editar_pessoa(Grafo **G){
 }
 
 
-usuarios *cria_pessoa(Grafo **G, usuarios *user){
+int cria_pessoa(Grafo *G, usuarios *user){//checada
   int cont = 0, letra;
   usuarios *pont;
 
-  user->id = (*G)->N_usuarios;
+  user->id = G->N_usuarios;
 
   letra = verifica_letra(user->nome[0]);
-  if(((*G)->listaAdj[letra]) == NULL){
-    ((*G)->listaAdj[letra]) = user;
+  if((G->listaAdj[letra]) == NULL){
+
+    (G->listaAdj[letra]) = user;
 
     for (cont = 0; cont < 26; ++cont){
-      ((*G)->listaAdj[letra])->Amigos[cont] = NULL;
+      (G->listaAdj[letra])->Amigos[cont] = NULL;
     }
-    ((*G)->listaAdj[letra])->ant = NULL;
-    ((*G)->listaAdj[letra])->prox = NULL;
-    (((*G)->listaAdj[letra])->numeroAmigos) = 0;
-  }
-  else{
-    pont = ((*G)->listaAdj[letra]);
+    (G->listaAdj[letra])->ant = NULL;
+    (G->listaAdj[letra])->prox = NULL;
+    (G->listaAdj[letra])->numeroAmigos = 0;
+  }else{
+    pont = (G->listaAdj[letra]);
     while(pont->prox != NULL){
       pont = pont->prox;
     }
-    pont->prox = (user);
-    ((user)->ant) = pont;
-    ((user)->prox) = NULL;
-    (user)->numeroAmigos = 0;
+    pont->prox = user;
+    user->ant = pont;
+    user->prox = NULL;
+    user->numeroAmigos = 0;
   }
-  (*G)->N_usuarios++;
+  G->N_usuarios++;
 
-  return user;
+  return 0;
 }
 
 /*void menu(Grafo **G){
@@ -552,13 +551,14 @@ usuarios *cria_pessoa(Grafo **G, usuarios *user){
   salva_Arquivo(&(*G));
 }*/
 
-int cria_pessoa_interface(Grafo *G){
+int cria_pessoa_interface(Grafo *G, char *nom){
   FIELD *field[9];
   FORM *my_form;
-  int ch,i,number=0, position = 0;
+  int ch,i;
   char *nome,*cidade,*endereco,*cep,*cpf,*email,*senha,*descricao;
-  usuarios user;
+  usuarios *user;
 
+  user = (usuarios *)malloc(sizeof(usuarios));
   initscr();
   start_color();
   cbreak();
@@ -604,15 +604,12 @@ int cria_pessoa_interface(Grafo *G){
   while((ch = getch())!=KEY_F(2)){
     switch(ch){
       case KEY_DOWN:
-        if(number!=3)number++;
         form_driver(my_form, REQ_NEXT_FIELD);
         break;
       case KEY_UP:
-        if(number!=0)number--;
         form_driver(my_form, REQ_PREV_FIELD);
         break;
       case KEY_LEFT:
-        if(position != 0) position--;
         form_driver(my_form, REQ_LEFT_CHAR);
         break;
       case KEY_RIGHT:
@@ -638,29 +635,36 @@ int cria_pessoa_interface(Grafo *G){
         senha = field_buffer(field[6], 0);
         senha[19] = '\0';
         descricao = field_buffer(field[7], 0);
-        descricao[49] = '\0';
+        descricao[199] = '\0';
         if(test_string(nome)||test_string(cidade)||test_string(endereco)||test_string(cep)||test_string(cpf)||test_string(email)||test_string(senha)||test_string(descricao)){
           mvprintw(LINES - 3, 0, "Por favor, preencha todos os campos");
           break;
         }
-        strcpy(user.nome,nome);
-        strcpy(user.cidade,cidade);
-        strcpy(user.endereco,endereco);
-        strcpy(user.cep,cep);
-        strcpy(user.cpf,cpf);
-        strcpy(user.email,email);
-        strcpy(user.senha,senha);
-        strcpy(user.descricao,descricao);
+        strcpy(user->nome,nome);
+        strcpy(nom,nome);
+        strcpy(user->cidade,cidade);
+        strcpy(user->endereco,endereco);
+        strcpy(user->cep,cep);
+        strcpy(user->cpf,cpf);
+        strcpy(user->email,email);
+        strcpy(user->senha,senha);
+        strcpy(user->descricao,descricao);
 
-        if(confirm_user(user))break;
+        if(confirm_user(*user)){
+          mvprintw(LINES - 4, 0, "Digite para alterar seus dados");
+          break;
+        }
         refresh();
-        cria_pessoa(&G, &user);
+
+        cria_pessoa(G, user);
 
         unpost_form(my_form);
         free_form(my_form);
         for(i=0;i<8;++i)free_field(field[i]);
+        clear();
+        refresh();
         endwin();
-        return 0;//sucesso ao criar um usuário
+        return 4;//sucesso ao criar um usuário
       default:
         form_driver(my_form, ch);
         break;
@@ -669,6 +673,8 @@ int cria_pessoa_interface(Grafo *G){
   unpost_form(my_form);
   free_form(my_form);
   for(i=0;i<8;++i)free_field(field[i]);
+  clear();
+  refresh();
   endwin();
   return 2;
 }
@@ -742,6 +748,8 @@ int confirm_user(usuarios user){
           free_menu(my_menu);
           free_item(my_items[0]);
           free_item(my_items[1]);
+          wclear(my_menu_win);
+          wrefresh(my_menu_win);
           delwin(my_menu_win);
           return 1;
         }
@@ -756,7 +764,7 @@ int primaria_interface(){
     int ch,width;
     MENU *menu;
     int numero,i;
-    char *choices[] = {"Criar usuario", "Login", "Editar usuario","Excluir usuario","Procurar transacao","Sair",(char *)NULL};
+    char *choices[] = {"Criar usuario", "Login","Sair",(char *)NULL};
 
     initscr();
     start_color();
@@ -802,13 +810,325 @@ int primaria_interface(){
                     unpost_menu(menu);
                     for(i=0; i<numero;i++)free_item(itens[i]);
                     free_menu(menu);
+                    delwin(tela);
                     endwin();
                     return 1;
                 }else if(!strcmp("Login",item_name(current_item(menu)))){
-                    //login_user();
+                    unpost_menu(menu);
+                    for(i=0; i<numero;i++)free_item(itens[i]);
+                    free_menu(menu);
+                    delwin(tela);
+                    endwin();
+                    return 3;
                 }
-                break;
         }wrefresh(tela);
     }
     return 0;
+}
+
+int login_user_interface(Grafo *g, char *nom){
+  FIELD *field[3];
+  FORM *my_form;
+  int ch,check;
+  char *name, *senha;
+
+  initscr();
+  start_color();
+  cbreak();
+  noecho();
+  keypad(stdscr,true);
+
+  init_pair(1,COLOR_WHITE, COLOR_BLUE);
+  init_pair(2,COLOR_RED, COLOR_BLUE);
+  field[0] = new_field(1,50,LINES/2,COLS/2-25,0,0);
+  field[1] = new_field(1,20,LINES/2+2,COLS/2-10,0,0);
+  field[2] = NULL;
+
+  set_field_fore(field[0],COLOR_PAIR(1));
+  set_field_back(field[0],COLOR_PAIR(1));
+  field_opts_off(field[0], O_AUTOSKIP);
+
+  field_opts_off(field[1], O_AUTOSKIP);
+  set_field_fore(field[1],COLOR_PAIR(1));
+  set_field_back(field[1],COLOR_PAIR(1));
+
+  my_form = new_form(field);
+
+  post_form(my_form);
+  set_current_field(my_form,field[0]);
+  attron(COLOR_PAIR(2));
+  mvprintw(LINES/2-4,COLS/2-3,"LOGIN");
+  attroff(COLOR_PAIR(2));
+  mvprintw(LINES-2,0,"Use as setas para mudar os campos e pressione ENTER para terminar. Cancele com F2");
+  mvprintw(LINES/2,COLS/2-31,"Nome:");
+  mvprintw(LINES/2+2,COLS/2-17,"Senha:");
+  refresh();
+  while((ch = getch())!=KEY_F(2)){
+    switch(ch){
+      case KEY_DOWN:
+        form_driver(my_form,REQ_NEXT_FIELD);
+        break;
+      case KEY_UP:
+        form_driver(my_form, REQ_PREV_FIELD);
+        break;
+      case KEY_LEFT:
+        form_driver(my_form, REQ_LEFT_CHAR);
+        break;
+      case KEY_RIGHT:
+        form_driver(my_form, REQ_RIGHT_CHAR);
+        break;
+      case KEY_BACKSPACE:
+        form_driver(my_form, REQ_DEL_PREV);
+        break;
+      case 10:
+        form_driver(my_form,REQ_NEXT_FIELD);
+        name = field_buffer(field[0],0);
+        senha = field_buffer(field[1],0);
+        name[49] = '\0';
+        strcpy(nom,name);
+        senha[19] = '\0';
+        if(test_string(name)||test_string(senha)){
+          mvprintw(LINES - 4, 0, "Preencha os campos");
+          break;
+        }
+        check = check_user(g,name,senha);
+        switch(check){
+          case 0:
+            mvprintw(LINES - 3, 0, "Nao há esse usuario");
+            break;
+          case 1:
+            mvprintw(LINES - 3, 0, "Senha incorreta   ");
+            break;
+        }
+        if(check == 2){
+        unpost_form(my_form);
+        free_form(my_form);
+        free_field(field[0]);
+        free_field(field[1]);
+        clear();
+        refresh();
+        endwin();
+        return 4;
+        }else break;
+
+      default:
+        form_driver(my_form,ch);
+        break;
+    }
+  }
+  unpost_form(my_form);
+  free_form(my_form);
+  free_field(field[0]);
+  free_field(field[1]);
+  clear();
+  refresh();
+  endwin();
+  return 2;
+}
+
+int check_user(Grafo* G, char *name, char *senha){
+  usuarios *user;
+
+  if(!(user = procura_nome(G,name)))return 0;
+  else if(strcmp(senha,user->senha))return 1;
+  else return 2;
+}
+
+int logged_user_interface(Grafo *g,char *name){
+    ITEM **itens;
+    int ch,width;
+    MENU *menu;
+    int numero,i;
+    char *choices[] = {"Editar suas informacoes", "Excluir conta", "Procurar Transacao","Sair",(char *)NULL};
+    usuarios *user;
+
+    initscr();
+    start_color();
+    cbreak();
+    noecho();
+    keypad(stdscr, TRUE);
+    numero = ARRAY_SIZE(choices);/*número de opções disponíveis para serem colocas no menu*/
+    itens = (ITEM **)calloc(numero, sizeof(ITEM*));
+    for(i = 0; i < numero; i++)itens[i] = new_item(choices[i],choices[i]);
+    menu = new_menu((ITEM **)itens);
+    set_menu_mark(menu, "  - ");
+    menu_opts_off(menu, O_SHOWDESC);
+    set_menu_format(menu,numero,1);
+    width = strlen("BEM-VINDO");
+    mvprintw(LINES/4-7,COLS/4-20,"Ola, %s",name);
+    mvprintw(LINES/4-5,COLS/4-20, "BEM-VINDO");
+    set_menu_sub(menu,derwin(stdscr,6,38,LINES/4-2,COLS/4-25));
+    post_menu(menu);
+    refresh();
+    if(!(user = procura_nome(g,name))){
+      printw("Nao achei");
+      refresh();
+      return 2;
+    }
+    while(ch = getch()){
+        switch(ch){
+            case KEY_DOWN:
+                menu_driver(menu, REQ_DOWN_ITEM);
+                break;
+            case KEY_UP:
+                menu_driver(menu, REQ_UP_ITEM);
+                break;
+            case 10:
+                if(!strcmp("Sair",item_name(current_item(menu)))){
+                    unpost_menu(menu);
+                    for(i=0; i<numero;i++)free_item(itens[i]);
+                    free_menu(menu);
+                    clear();
+                    refresh();
+                    endwin();
+                    return 2;
+                }else if(!strcmp("Editar suas informacoes",item_name(current_item(menu)))){
+                    edit_user_interface(g,user,name);
+                    mvprintw(LINES/4-7,COLS/4-20,"Ola, %s",name);
+                    menu_driver(menu, REQ_DOWN_ITEM);
+                    refresh();
+                    break;
+                }else if(!strcmp("Login",item_name(current_item(menu)))){
+                    unpost_menu(menu);
+                    for(i=0; i<numero;i++)free_item(itens[i]);
+                    free_menu(menu);
+                    endwin();
+                    return 3;
+                }
+        }
+    }
+    return 0;
+}
+
+int edit_user_interface(Grafo *g,usuarios *user,char *nom){
+  WINDOW *my_form_win;
+  FIELD *field[9];
+  FORM *my_form;
+  int ch,i,rows,cols;
+  char *nome,*cidade,*endereco,*cep,*cpf,*email,*senha,*descricao;
+  usuarios *user1;
+
+
+  init_pair(1,COLOR_WHITE, COLOR_BLUE);
+  init_pair(2,COLOR_WHITE, COLOR_BLUE);
+
+  field[0] = new_field(1,50,4,COLS/2,0,0);
+  field[1] = new_field(1,50,6,COLS/2,0,0);
+  field[2] = new_field(1,50,8,COLS/2,0,0);
+  field[3] = new_field(1,20,10,COLS/2,0,0);
+  field[4] = new_field(1,20,12,COLS/2,0,0);
+  field[5] = new_field(1,50,14,COLS/2,0,0);
+  field[6] = new_field(1,20,16,COLS/2,0,0);
+  field[7] = new_field(4,50,18,COLS/2,0,0);
+
+  field[8] = NULL;
+  for(i=0;i<8;++i){
+    set_field_fore(field[i],COLOR_PAIR(1));
+    set_field_back(field[i],COLOR_PAIR(2));
+    field_opts_off(field[i],O_AUTOSKIP);
+  }
+  set_field_buffer(field[0],0,user->nome);
+  set_field_buffer(field[1],0,user->cidade);
+  set_field_buffer(field[2],0,user->endereco);
+  set_field_buffer(field[3],0,user->cep);
+  set_field_buffer(field[4],0,user->cpf);
+  set_field_buffer(field[5],0,user->email);
+  set_field_buffer(field[6],0,user->senha);
+  set_field_buffer(field[7],0,user->descricao);
+
+  my_form = new_form(field);
+  set_current_field(my_form,field[0]);
+  scale_form(my_form,&rows,&cols);
+  my_form_win = newwin(rows+4,cols+4,LINES/2-10,1);
+  keypad(my_form_win,true);
+  set_form_win(my_form,my_form_win);
+  set_form_sub(my_form,derwin(my_form_win,rows,cols,1,1));
+
+  box(my_form_win,0,0);
+  form_opts_off(my_form, O_BS_OVERLOAD);
+  post_form(my_form);
+
+  wrefresh(my_form_win);
+  mvprintw(LINES - 2, 0, "Use as setas para para trocar entre os campos. Para terminar digite ENTER. Pressione F2 para cancelar");
+  mvwprintw(my_form_win,4,2,"Nome:");
+  mvwprintw(my_form_win,6,2,"Cidade:");
+  mvwprintw(my_form_win,8,2,"Endereço:");
+  mvwprintw(my_form_win,10,2,"Cep:");
+  mvwprintw(my_form_win,12,2,"CPF:");
+  mvwprintw(my_form_win,14,2,"E-mail:");
+  mvwprintw(my_form_win,16,2,"Senha:");
+  mvwprintw(my_form_win,18,2,"Descreva vc:");
+  refresh();
+  while((ch = wgetch(my_form_win))!=KEY_F(2)){
+    switch(ch){
+      case KEY_DOWN:
+        form_driver(my_form, REQ_NEXT_FIELD);
+        break;
+      case KEY_UP:
+        form_driver(my_form, REQ_PREV_FIELD);
+        break;
+      case KEY_LEFT:
+        form_driver(my_form, REQ_LEFT_CHAR);
+        break;
+      case KEY_RIGHT:
+        form_driver(my_form, REQ_RIGHT_CHAR);
+        break;
+      case KEY_BACKSPACE:
+        form_driver(my_form, REQ_DEL_PREV);
+        break;
+      case 10:
+        exclui_usuario(&g,&user);
+        user1 = (usuarios*)malloc(sizeof(usuarios));
+        form_driver(my_form, REQ_NEXT_FIELD);
+        nome = field_buffer(field[0], 0);
+        nome[49] = '\0';
+        cidade = field_buffer(field[1], 0);
+        cidade[49] = '\0';
+        endereco = field_buffer(field[2], 0);
+        endereco[49] = '\0';
+        cep = field_buffer(field[3], 0);
+        cep[19] = '\0';
+        cpf = field_buffer(field[4], 0);
+        cpf[19] = '\0';
+        email = field_buffer(field[5], 0);
+        email[49] = '\0';
+        senha = field_buffer(field[6], 0);
+        senha[19] = '\0';
+        descricao = field_buffer(field[7], 0);
+        descricao[199] = '\0';
+        if(test_string(nome)||test_string(cidade)||test_string(endereco)||test_string(cep)||test_string(cpf)||test_string(email)||test_string(senha)||test_string(descricao)){
+          mvprintw(LINES - 3, 0, "Por favor, preencha todos os campos");
+          break;
+        }
+        strcpy(user1->nome,nome);
+        strcpy(nom,nome);
+        strcpy(user1->cidade,cidade);
+        strcpy(user1->endereco,endereco);
+        strcpy(user1->cep,cep);
+        strcpy(user1->cpf,cpf);
+        strcpy(user1->email,email);
+        strcpy(user1->senha,senha);
+        strcpy(user1->descricao,descricao);
+        cria_pessoa(g,user1);
+
+        wclear(my_form_win);
+        wrefresh(my_form_win);
+        delwin(my_form_win);
+        unpost_form(my_form);
+        free_form(my_form);
+        for(i=0;i<8;++i)free_field(field[i]);
+        return 0;
+      default:
+        form_driver(my_form,ch);
+        break;
+    }
+    wrefresh(my_form_win);
+  }
+  wclear(my_form_win);
+  wrefresh(my_form_win);
+  delwin(my_form_win);
+  unpost_form(my_form);
+  free_form(my_form);
+  for(i=0;i<8;++i)free_field(field[i]);
+  return 0;
 }

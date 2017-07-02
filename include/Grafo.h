@@ -52,11 +52,11 @@ usuarios *procura_nome(Grafo *G, char *nom);
 
 usuarios *editar_pessoa(Grafo **G);
 
-usuarios *cria_pessoa(Grafo **G, usuarios *user);
+int cria_pessoa(Grafo *G, usuarios *user);
 
 void menu(Grafo **G);
 
-void salva_Arquivo(Grafo **G);
+void salva_Arquivo(Grafo *G);
 
 int verifica_letra(char nome);
 
@@ -78,10 +78,18 @@ void imprime_amigos(usuarios *User);
 //Funcao adiciona_usuario --- Recebe como Parametros um Grafo(G) e um usuario(V).
 void adiciona_usuario(Grafo **G, usuarios **User);
 
-int cria_pessoa_interface(Grafo *G);
+int cria_pessoa_interface(Grafo *G,char*);
 
 int primaria_interface();
 
 int test_string(char*);
 
 int confirm_user(usuarios);
+
+int login_user_interface(Grafo *, char*);
+
+int check_user(Grafo*, char*,char*);
+
+int logged_user_interface(Grafo *, char*);
+
+int edit_user_interface(Grafo*, usuarios*,char*);

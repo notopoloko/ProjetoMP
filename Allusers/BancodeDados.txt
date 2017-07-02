@@ -1,0 +1,12 @@
+----------------------------------------------------------------------------
+ID = 1
+NOME = Adalberto                                        
+CIDADE = asdf                                             
+ENDERECO = asdf                                             
+CPF = asd                
+CEP = asdf               
+EMAIL = fasd                                             
+SENHA = 123456789          
+DESCRICAO = fasdf                                                                                                                                                                                                  
+NUMERO DE AMIGOS = 0
+Amigos = { }
