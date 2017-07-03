@@ -1495,6 +1495,8 @@ int adiciona_amigos_interface(Grafo *g, usuarios *user){
       case KEY_RIGHT:
         form_driver(my_form,REQ_RIGHT_CHAR);
         break;
+      case KEY_BACKSPACE:
+        form_driver(my_form,REQ_DEL_PREV);
       case 10:
         form_driver(my_form,REQ_NEXT_FIELD);
         nome = field_buffer(field[0],0);
@@ -1570,7 +1572,7 @@ int ver_amigos_interface(Grafo *g,usuarios *user){
   keypad(my_menu_win,true);
 
   set_menu_win(my_menu,my_menu_win);
-  set_menu_sub(my_menu,derwin(my_menu_win,20,60,3,1));
+  set_menu_sub(my_menu,derwin(my_menu_win,15,55,3,2));
 
   box(my_menu_win,0,0);
   post_menu(my_menu);
@@ -1589,9 +1591,9 @@ int ver_amigos_interface(Grafo *g,usuarios *user){
         name[49] = '\0';
         user1 = procura_nome(g,name);
         mvwprintw(my_menu_win,4,60,"NOME = %s",user1->nome);
-        mvwprintw(my_menu_win,4,60,"ENDERECO = %s",user1->endereco);
-        mvwprintw(my_menu_win,4,60,"EMAIL = %s",user1->email);
-        mvwprintw(my_menu_win,4,60,"CIDADE = %s",user1->cidade);
+        mvwprintw(my_menu_win,6,60,"ENDERECO = %s",user1->endereco);
+        mvwprintw(my_menu_win,8,60,"EMAIL = %s",user1->email);
+        mvwprintw(my_menu_win,10,60,"CIDADE = %s",user1->cidade);
 
     }
     wrefresh(my_menu_win);
