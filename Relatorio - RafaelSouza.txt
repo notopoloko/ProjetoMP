@@ -1,0 +1,15 @@
+Relatório - Rafael Oliveira 15/0081537
+
+17/06/2017 | 3h | projetar          | criação da biblioteca Grafo.h.
+19/06/2017 | 3h | projetar          | inicio da criação do arquivo principal(RedeSocial.c).
+20/06/2017 | 3h | correção de erros | verificar e corrigir o segfault da função edita_pessoa.
+21/06/2017 | 4h | projetar          | criação de um arquivo de testes para desenvolvimento das funções.
+22/06/2017 | 2h | projetar          | criação da funções no arquivo principal.
+23/06/2017 | 3h | revisar projeto   | procura por erros nas funções relacionadas as funções de edição.
+23/06/2017 | 2h | revisar projeto   | rodar o valgrind e retirar erros das funções cria_pessoa e edita_pessoa
+24/06/2017 | 2h | revisar projeto   | colocar ponteiros no final das funções apontarem pra NULL
+25/06/2017 |7h30| revisar projetos  | alterar condicionais e refatorar codigo.
+25/06/2017 |7h30| revisar projetos  | gerar primeira documentação DoxyGen.
+28/06/2017 |4h30| criar testes      | criar testes com o GTeste.
+30/06/2017 |2h30| criar testes      | criar testes de impressão e e testes de transações.
+01/07/2017 |4h30| revisar projeto   | concluir alteraçoes na biblioteca e no arquivo principal.

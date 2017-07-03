@@ -1,0 +1,22 @@
+Historietas.
+
+Um usuário é cadastrado no sistema,recebeu um Id de usuario, depois disso ele recebe autorização de criar  e fechar transações, criar  e excluir amizades, alterar seus dados cadastrados, excluir conta e fazer pesquisas por usuários e por transações. Ao usuário não é permitido ao usuário nenhuma função atribuída apenas à administradores do sistema, como ter acesso aos arquivos de texto criados ou excluir contas de outros usuários.
+
+
+His-1) Um usuário tenta se adicionar aos seus círculos de amizade, em seguida é exibida uma mensagem de erro: "O usuario nao pode se adicionar como amigo".
+
+His-2) Um usuário faz uma pesquisa por nome de outro usuário que não está cadastrado no sistema, em seguida é exibida uma mensagem de erro: "Usuário (nome do usuário) não encontrado".
+
+His-3) Um usuário faz uma pesquisa por nome de outro usuário que está cadastrado no sistema, em seguida é exibida uma mensagem: "Usuário (nome do usuário)encontrado".
+
+His-4) Um usuário entra no menu de exclusão de amigos, porém o usuário não tem círculo de amigos, em seguida é exibida uma mensagem: "Usuario sem amizades para exclusão".
+
+His-5) Um usuário tenta adicionar aos seus círculos de amizade um usuário válido, em seguida é exibida uma mensagem de erro: "Amigo adicionado".
+
+His-6) Um usuário entra no menu de edição e altera seu nome, em seguida é exibida uma mensagem: "Nome Alterado!!!".
+
+His-7) Um usuário entra no menu de edição e altera seu cep, em seguida é exibida uma mensagem: "Cep Alterado!!!".
+
+His-8) Um usuário entra no menu de edição e altera seu cpf, em seguida é exibida uma mensagem: "Cpf Alterado!!!".
+
+His-9) Um usuário entra no menu de edição e altera sua cidade, em seguida é exibida uma mensagem: "Cidade Alterada!!!".
