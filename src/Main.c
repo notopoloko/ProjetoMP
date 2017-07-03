@@ -24,7 +24,6 @@ int main(){
                 break;
         }
     }
-    imprime_Grafo(graph);
     salva_Arquivo(graph);
     destroi_Grafo(&graph);
     return 0;

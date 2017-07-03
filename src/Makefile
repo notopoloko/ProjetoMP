@@ -5,7 +5,7 @@ CXXFLAGS=-I$(IDIR) -g -D_TEST -ftest-coverage -fprofile-arcs
 ODIR=obj
 LDIR=../lib
 
-LIBS= -lgtest -lpthread -lgtest_main --coverage -lgcov -lncurses -lmenu -lform -g -Wno-write-strings
+LIBS= -lgtest -lpthread -lgtest_main --coverage -lgcov -lncurses -lmenu -lform -Wno-write-strings
 
 _DEPS= Grafo.h
 DEPS = $(patsubst %,$(IDIR)/%,$(_DEPS))
@@ -18,7 +18,7 @@ $(ODIR)/%.o: %.c $(DEPS)
 
 main: $(OBJ)
 	$(CXX) $(CXXFLAGS) -o $@ $^ $(LIBS)
-	cppcheck --enable=all Main.c Grafo.c ../include/Grafo.h
+	cppcheck --enable=warning Main.c Grafo.c ../include/Grafo.h
 
 .PHONY: clean
 

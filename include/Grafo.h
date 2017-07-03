@@ -8,10 +8,23 @@
 
 #define ARRAY_SIZE(a) (sizeof(a)/sizeof(a[0]))
 
+//Estrutura com uma string com o nome do objeto(objeto), um inteiro (id), e o criador da transação(criador).
+typedef struct transacoes{
+  char objeto[100];
+  char categoria[100];
+  float valor;  
+  int idT;
+
+  struct transacoes *proxT, *antT;
+  struct usuarios *criador;
+}transacoes;
+
 //Estrutura do tipo grafo com um vetor de caracteres representando o nome do grafo, um inteiro representando
 //o numero de usuarios do grafo e um ponteiro para outra estrutura do tipo usuarios.
 typedef struct amigos{
-  char nomeAmigo[100];
+  char nomeAmigo[50];
+  int idAmigo;
+
   struct amigos *proxAmigo, *antAmigo;
 }amigos;
 
@@ -27,6 +40,7 @@ typedef struct usuarios{
   char email[50];
   char senha[20];
   char descricao[200];
+  int avaliacao;
   int numeroAmigos;             //Inteiro que representa o numero de amigos de um usuario.
 
   struct amigos *Amigos[26];
@@ -37,16 +51,33 @@ typedef struct usuarios{
 //o numero de usuarios do grafo e um ponteiro para outra estrutura do tipo usuarios.
 typedef struct Grafo{
   int N_usuarios;
+  int N_transacoes;
+
   struct usuarios *listaAdj[26];
+  struct transacoes *listaT;
 }Grafo;
 
 Grafo *cria_Grafo();
 
-usuarios *testaUsuario(usuarios *User);
+transacoes *cria_transacao(Grafo **G, usuarios *user);
+
+transacoes *cria_transacaoAuto(Grafo **G, usuarios *user, char *nomeT, char *categoriaT, float val);
+
+transacoes *procura_categoria(Grafo **G, char *categoriaT);
+
+transacoes *procura_nomeT(Grafo **G, char *categoriaT, char *nomeT);
+
+transacoes *procura_transacaoDeAmigos(Grafo **G, usuarios *User, char *categoriaT);
+
+usuarios *conclui_transacao(Grafo **G, transacoes **Transacao, int aval);
+
+void exclui_transacao(Grafo **G, transacoes **Transacao);
+
+amigos *circulo_amigosLista(Grafo **G, usuarios **User);
 
 amigos *verifica_amizades(usuarios **User);
 
-usuarios *procura_usuario(Grafo *G);
+usuarios *testaUsuario(usuarios *User);
 
 usuarios *procura_nome(Grafo *G, char *nom);
 
@@ -54,9 +85,9 @@ usuarios *editar_pessoa(Grafo **G);
 
 int cria_pessoa(Grafo *G, usuarios *user);
 
-void menu(Grafo **G);
-
 void salva_Arquivo(Grafo *G);
+
+bool eh_amigo(usuarios *User, usuarios *User2);
 
 int verifica_letra(char nome);
 
@@ -76,7 +107,7 @@ void imprime_Grafo(Grafo *G);
 void imprime_amigos(usuarios *User);
 
 //Funcao adiciona_usuario --- Recebe como Parametros um Grafo(G) e um usuario(V).
-void adiciona_usuario(Grafo **G, usuarios **User);
+void adiciona_amigos(Grafo **G, usuarios **User, usuarios **User1, int cons);
 
 int cria_pessoa_interface(Grafo *G,char*);
 
@@ -93,3 +124,7 @@ int check_user(Grafo*, char*,char*);
 int logged_user_interface(Grafo *, char*);
 
 int edit_user_interface(Grafo*, usuarios*,char*);
+
+int adiciona_amigos_interface(Grafo *,usuarios*);
+
+int ver_amigos_interface(Grafo*,usuarios*);
