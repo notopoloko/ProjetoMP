@@ -443,6 +443,7 @@ int tamanho_Arquivo(char *nomeArquivo){
     fseek(fp, 0, SEEK_END);
     tamanho = ftell(fp);
     fclose(fp);
+
     return tamanho;
   }
 }

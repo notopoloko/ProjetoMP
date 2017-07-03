@@ -6,7 +6,6 @@
 //Variavel global que representa uma constante.
 int Const = 0;
 
-
 //Estrutura com uma string com o nome do objeto(objeto), um inteiro (id), e o criador da transação(criador).
 typedef struct transacoes{
   char objeto[100];
@@ -34,6 +33,7 @@ typedef struct usuarios{
   char cidade[30];
   char cep[20];
   char cpf[12];
+  char senha[30];
   int avaliacao;  
   int numeroAmigos;             //Inteiro que representa o numero de amigos de um usuario.
 
@@ -56,6 +56,10 @@ typedef struct Grafo{
 //Aloca espaço de memoria para criar uma estrutura do tipo Grafo que atribui NomedoGrafo para estrutura.
 Grafo *cria_Grafo();
 
+transacoes *procura_transacaoDeUsuario(Grafo **G, usuarios *User);
+
+transacoes *procura_categoria_pnome(transacoes *transacao, char *nome);
+
 //Funcao cria_transacao --- Recebe como Parametro um grafo(G) e um usuario(User); e retorna uma transacao.
 transacoes *cria_transacao(Grafo **G, usuarios *user);
 
@@ -71,10 +75,27 @@ transacoes *procura_categoria(Grafo **G, char *categoriaT);
 //E retorna uma lista de transacoes.
 transacoes *procura_nomeT(Grafo **G, char *categoriaT, char *nomeT);
 
+//Funcao procura_transacaoDeAmigos --- Recebe como Parametro grafo(G), um usuario(User) e uma string (categoriaT).
+//Retorna uma transacao.
 transacoes *procura_transacaoDeAmigos(Grafo **G, usuarios *User, char *categoriaT);
 
+//Funcao procura_transacaoDeUsuario --- Recebe como Parametro grafo(G), um usuario(User).
+//Retorna uma transacao.
+transacoes *procura_transacaoDeUsuario(Grafo **G, usuarios *User);
+
+
+//Funcao procura_transacaoDeUsuario --- Recebe como Parametro grafo(G), um usuario(User).
+//Retorna uma transacao.
+transacoes *procura_porId(transacoes *transacao, int id);
+
+
+void imprime_transacao(transacoes **tran);
+
+//Funcao conclui_transacao --- Recebe como Parametro grafo(G), transacoes(Transacao) e um inteiro(ava1).
+//Retorna um usuario.
 usuarios *conclui_transacao(Grafo **G, transacoes **Transacao, int aval);
 
+//Funcao exclui_transacao --- Recebe como Parametro grafo(G) e transacoes(Transacao).
 void exclui_transacao(Grafo **G, transacoes **Transacao);
 
 //Funcao circulo_amigos --- Recebe como Parametro um usuario(User); e retorna uma lista de amigos de amigos.
@@ -83,41 +104,59 @@ amigos *circulo_amigosLista(Grafo **G, usuarios **User);
 //Funcao verifica_amizades --- Recebe como Parametro um usuario(User) e retorna uma lista de amigos de User.
 amigos *verifica_amizades(usuarios **User);
 
+//Funcao testaUsuario --- Recebe como Parametro um usuario(User); e retorna um usuario.
 usuarios *testaUsuario(usuarios *User);
 
+//Funcao procura_usuario --- Recebe como Parametro grafo(G); e retorna um usuario.
 usuarios *procura_usuario(Grafo *G);
 
+//Funcao procura_nome --- Recebe como Parametro grafo(G) e uma string(nom); e retorna um usuario.
 usuarios *procura_nome(Grafo *G, char *nom);
 
+//Funcao editar_pessoa --- Recebe como Parametro grafo(G); e retorna um usuario.
 usuarios *editar_pessoa(Grafo **G);
 
+//Funcao cria_pessoa --- Recebe como Parametro grafo(G); e retorna um usuario.
 usuarios *cria_pessoa(Grafo **G);
 
+//Funcao cria_pessoaAuto --- Recebe como Parametro grafo(G), uma string(nome), uma string(cpf),uma string(cep) e uma string(cidade).
+//Retorna um usuario.
 usuarios *cria_pessoaAuto(Grafo **G, char *nom, char *cpf, char *cep, char *cidade);
 
+//Funcao edita_cidade --- Recebe como Parametro grafo(G), um usuario(User) e uma string(cidade); e retorna um usuario.
 usuarios *edita_cidade(Grafo **G, usuarios **user, char *cidade);
 
+//Funcao edita_cep --- Recebe como Parametro grafo(G), um usuario(User) e uma string(cep); e retorna um usuario.
 usuarios *edita_cep(Grafo **G, usuarios **user, char *cep);
 
+//Funcao edita_cep --- Recebe como Parametro grafo(G), um usuario(User) e uma string(cpf); e retorna um usuario.
 usuarios *edita_cpf(Grafo **G, usuarios **user, char *cpf);
 
+//Funcao edita_cep --- Recebe como Parametro grafo(G), um usuario(User) e uma string(nom); e retorna um usuario.
 usuarios *edita_nome(Grafo **G, usuarios **user, char *nom);
 
 //Funcao salva_Arquivo --- Recebe como Parametros um Grafo(G) e armazena os dados do grafo em um arquivo.
 FILE *salva_Arquivo(Grafo **G);
 
+//Funcao menu --- Recebe como Parametros um Grafo(G).
 void menu(Grafo **G);
 
+//Funcao eh_amigo --- Recebe como Parametros um usuario(User) e um usuario(User2); e retorna um booleano.
 bool eh_amigo(usuarios *User, usuarios *User2);
 
+//Funcao tamanho_Arquivo --- Recebe como Parametros uma string(nomeArquivo);e retorna um inteiro.
 int tamanho_Arquivo(char *nomeArquivo);
 
+//Funcao verifica_letra --- Recebe como Parametros uma string(nome);e retorna um inteiro.
 int verifica_letra(char nome);
 
+//Funcao destroi_Grafo --- Recebe como Parametros um Grafo(G).
 void destroi_Grafo(Grafo **G);
 
+//Funcao exclui_usuario --- Recebe como Parametros um Grafo(G) e um usuario(User).
 void exclui_usuario(Grafo **G, usuarios **User);
 
+//Funcao e excluir_amigo --- Recebe como Parametros um Grafo(G), um usuarios(User), um usuario(User1) e um inteiro(cons).
 void excluir_amigo(Grafo **G, usuarios **User, usuarios **User1, int cons);
 
 //Funcao existe_Grafo --- Recebe como Parametro um Grafo(G) e retorna um valor verdadeiro,caso o grafo exista, e falso, caso nao exista grafo.
@@ -132,13 +171,28 @@ void imprime_amigos(usuarios *User);
 //Funcao adiciona_amigos --- Recebe como Parametros um Grafo(G), dois usuarios(User e User1) e um inteiro.
 void adiciona_amigos(Grafo **G, usuarios **User, usuarios **User1, int cons);
 //Funcao eh_amigo --- Recebe como Parametro dois usuarios(User e User2) e retorna um valor booleano.
+
+transacoes *procura_porId(transacoes *transacao, int id){
+  struct transacoes *pont;
+
+  pont = (transacao);
+  while(pont != NULL){
+    if(pont->idT == id){
+      return pont;
+    }
+    pont = pont->proxT;
+  }
+
+  return pont;
+}
+
 bool eh_amigo(usuarios *User, usuarios *User2){
   struct amigos *pont;
   bool encontrado = false;
 
   pont = verifica_amizades(&(User));
   while(pont != NULL){
-    if(pont->idAmigo == (User2)->id){
+    if(pont->idAmigo == (User2)->id){  // Assertiva para verificar se dois usuarios são amigos.
       encontrado = true;
     }
     pont = pont->proxAmigo;
@@ -146,20 +200,23 @@ bool eh_amigo(usuarios *User, usuarios *User2){
   return encontrado;
 }
 
-//Funcao circulo_amigos --- Recebe como Parametro um usuario(User) e retorna uma lista de amigos de amigos.
+//Funcao circulo_amigos --- Recebe como Parametro um grafo(G) e um usuario(User) e retorna uma lista de amigos de amigos.
 amigos *circulo_amigosLista(Grafo **G, usuarios **User){
   struct usuarios *user2;
   struct amigos *pont, *pont2, *lista, *aux, *pont3;
   FILE *fp;
 
-  pont = verifica_amizades(&(*User));
+  pont = verifica_amizades(&(*User)); // cria uma lista de amigos de user.
   lista = NULL;
   while(pont != NULL){
-    user2 = procura_nome((*G), pont->nomeAmigo);
-    pont2 = verifica_amizades(&user2);  
+    user2 = procura_nome((*G), pont->nomeAmigo); // Retorna um usuario(user2) partindo da lista de amigos de user.
+    pont2 = verifica_amizades(&user2);  // Retorna uma lista de amigos de user2.
     while(pont2 != NULL){
-      if((eh_amigo((*User), (procura_nome((*G), pont2->nomeAmigo))) == false)){
-        if((*User)->id != pont2->idAmigo){
+      if((eh_amigo((*User), (procura_nome((*G), pont2->nomeAmigo))) == false)){  // Assertiva para verificar se um elemento da
+                                                                                  // lista de amigos de user2 é amigo de user.
+        if((*User)->id != pont2->idAmigo){  // Asertiva para que o proprio user não seja adicionado a nova lista de amigos de amigos de user.
+
+          //Esse bloco de codigo é responsavel por criar uma lista de amigos de amigos de user.
           pont3 = (amigos*)malloc(sizeof(amigos));
           strcpy(pont3->nomeAmigo, pont2->nomeAmigo);
           pont3->idAmigo = pont2->idAmigo;
@@ -176,17 +233,18 @@ amigos *circulo_amigosLista(Grafo **G, usuarios **User){
             pont3->antAmigo = aux;
             pont3->proxAmigo = NULL;
           }
+          // Fim do bloco de criação de lista
         }
       }
       pont2 = pont2->proxAmigo;
     }
     pont = pont->proxAmigo;
   }
-
-  if(lista != NULL){
+  //Esse bloco de codigo é responsavel por criar um arquivo com a lista de amigos de amigos de user.
+  if(lista != NULL){ // Assertiva para verificar se a lista existe.
     pont = lista;
     fp = fopen("/home/aeron/proj4/ProjetoMP/LIB/CirculoDeAmigos.txt", "w+");
-    if(fp == NULL)
+    if(fp == NULL) // Assertiva para verificar se o arquivo existe.
       printf("Erro, nao foi possivel abrir o arquivo\n");
     else{
       fprintf(fp, "--------------------- AmigosDeAmigos de %s ---------------------------------\n", (*User)->nome);
@@ -210,7 +268,7 @@ FILE *salva_Arquivo(Grafo **G){
   amigos *pontAmigos;
   int i;
 
-  if(existe_Grafo(*G)){
+  if(existe_Grafo(*G)){ // Assertiva para verificar a existencia do Grafo
     fp = fopen("/home/aeron/proj4/ProjetoMP/LIB/BancodeDados.txt","w+");
     if (fp == NULL){
     // Verifica se existe um arquivo bancoDados.txt.
@@ -227,10 +285,10 @@ FILE *salva_Arquivo(Grafo **G){
           fprintf(fp,"Cidade = %s\n", pont->cidade);
           fprintf(fp,"Numero de amigos = %d\n", pont->numeroAmigos);
           pontAmigos = verifica_amizades(&pont);
-          if(pontAmigos == NULL){
+          if(pontAmigos == NULL){ // Assertiva que verifica se uma lista de amigos nao existe
               fprintf(fp, "Amigos = { }\n");
           }
-          else{
+          else{ 
             fprintf(fp, "Amigos = {");
             while(pontAmigos != NULL){
               fprintf(fp, " %s ", pontAmigos->nomeAmigo);
@@ -258,13 +316,15 @@ Grafo *cria_Grafo(){
   G->N_usuarios = 0;
   G->listaT = NULL;
   G->N_transacoes = 0;
-  while(i < 26){
+  while(i < 26){ //Laço para declarar todas hashtable como NULL.
     G->listaAdj[i] = NULL;
     i++;
   }
   return G;
 }
 
+//Funcao conclui_transacao --- Recebe como parametros um grafo(G), uma transação(Transacao) e um valor inteiro(aval).
+// Retorna um usuário criador da transação.
 usuarios *conclui_transacao(Grafo **G, transacoes **Transacao, int aval){
   struct usuarios *User;
 
@@ -280,27 +340,28 @@ usuarios *conclui_transacao(Grafo **G, transacoes **Transacao, int aval){
   return User;
 }
 
+//Funcao exclui_transacao --- Recebe como parametros um grafo(G) e uma transação(Transacao).
 void exclui_transacao(Grafo **G, transacoes **Transacao){
   struct transacoes *pont;
 
   pont = (*G)->listaT;
-  while(pont != NULL){
-    if(pont->idT == (*Transacao)->idT){
-      if(((*G)->listaT) == (*Transacao)){
+  while(pont != NULL){ // Verifica se existe transações e entra em uma laço que percorre toda a lista de transações.
+    if(pont->idT == (*Transacao)->idT){   //Assertiva para verificar se Transacao equivale a um elemento da lista de transaçãoes.
+      if((*Transacao)->proxT == NULL && (*Transacao)->antT == NULL){
         ((*G)->listaT) = NULL;
         free((*Transacao));
       }
-      if((*Transacao)->proxT != NULL && (*Transacao)->antT == NULL){
+      if((*Transacao)->proxT != NULL && (*Transacao)->antT == NULL){   //Assertiva para verificar se Transacao é o inicio da lista.
         ((*G)->listaT) = (*Transacao)->proxT;
         (*Transacao)->proxT->antT = ((*G)->listaT);
         free((*Transacao));
       }
-      if((*Transacao)->proxT != NULL && (*Transacao)->antT != NULL){
+      if((*Transacao)->proxT != NULL && (*Transacao)->antT != NULL){  //Assertiva para verificar se Transacao está entre outras transações.
         (*Transacao)->proxT->antT = (*Transacao)->antT;
         (*Transacao)->antT->proxT = (*Transacao)->proxT;
         free((*Transacao));
       }
-      if((*Transacao)->proxT == NULL && (*Transacao)->antT != NULL){
+      if((*Transacao)->proxT == NULL && (*Transacao)->antT != NULL){  //Assertiva para verificar se Transacao é o fim da lista.
         (*Transacao)->antT->proxT = NULL;
         free((*Transacao));
       }
@@ -310,20 +371,22 @@ void exclui_transacao(Grafo **G, transacoes **Transacao){
       pont = pont->proxT;
     }
   }
-  if((*G)->N_transacoes > 0){
+  if((*G)->N_transacoes > 0){   //Assertiva para verificar se existe transações na lista.
     (*G)->N_transacoes--;
   }else{
     (*G)->N_transacoes = 0;
   }
 }
 
+//Funcao cria_transacao --- Recebe como parametros um grafo(G) e um usuario(user).
+// Retorna uma transação criada.
 transacoes *cria_transacao(Grafo **G, usuarios *user){
   struct transacoes *Tr, *pont;
   char nomeT[100], categoriaT[100];
   float val;
   FILE *fp; 
   
-  if(existe_Grafo(*G)){
+  if(existe_Grafo(*G)){ // Assertiva para verificar a existencia do Grafo
     Tr = (transacoes*)malloc(sizeof(transacoes));
     
     printf("Digite a categoria da transacao: \n");
@@ -337,6 +400,7 @@ transacoes *cria_transacao(Grafo **G, usuarios *user){
     Tr->idT = (*G)->N_transacoes;
     Tr->criador = user;
     Tr->valor = val;
+    //Esse bloco de codigo é responsavel por adicionar uma transação à lista de transações.
     if((*G)->listaT == NULL){
       (*G)->listaT = Tr;
       (*G)->listaT->antT = NULL;
@@ -350,10 +414,11 @@ transacoes *cria_transacao(Grafo **G, usuarios *user){
       Tr->proxT = NULL;
       pont->proxT = Tr;
     }
+    //Fim do bloco de criação de transação
     (*G)->N_transacoes++;
 
     fp = fopen("Transacoes.txt", "a+");
-    if(fp == NULL)
+    if(fp == NULL) // Verifica se o arquivo existe.
       printf("Erro, nao foi possivel abrir o arquivo\n");
     else{
       fprintf(fp, "Id = %d\n", Tr->idT);
@@ -368,11 +433,14 @@ transacoes *cria_transacao(Grafo **G, usuarios *user){
   return Tr;
 }
 
+//Funcao cria_transacao --- Recebe como parametros um grafo(G) e um usuario(user).
+// Retorna uma transação criada.
+// Esta função é uma copia da função cria_transacao, ela foi utilizada nos testes do Gteste para agilizar o processo de testes.
 transacoes *cria_transacaoAuto(Grafo **G, usuarios *user, char *nomeT, char *categoriaT, float val){
   struct transacoes *Tr, *pont;
   FILE *fp;
 
-  if(existe_Grafo(*G)){
+  if(existe_Grafo(*G)){ // Assertiva para verificar a existencia do Grafo
     Tr = (transacoes*)malloc(sizeof(transacoes));
     strcpy(Tr->categoria, categoriaT);
     strcpy(Tr->objeto, nomeT);
@@ -412,19 +480,22 @@ transacoes *cria_transacaoAuto(Grafo **G, usuarios *user, char *nomeT, char *cat
   return Tr;
 }
 
+//Funcao procura_transacao --- Recebe como parametros um grafo(G) e uma string(categoriaT).
+// Retorna uma transação.
 transacoes *procura_categoria(Grafo **G, char *categoriaT){
   struct transacoes *Tr, *listadeTransacoes = NULL, *pont, *pont2;
 
   pont = (*G)->listaT;
   while(pont != NULL){
-    if(strcmp(pont->categoria, categoriaT) == 0){
+    if(strcmp(pont->categoria, categoriaT) == 0){ // Assertiva para verificar se uma categoria da lista de transações é igual à categoriaT.
+
+      // Esse bloco de código é responsavel pela criação de uma lista de transações que tiverem a categoria igual à categoriaT.
       Tr = (transacoes*)malloc(sizeof(transacoes));
       Tr->idT = pont->idT;
       Tr->criador = pont->criador;
       Tr->valor = pont->valor;
       strcpy(Tr->categoria, pont->categoria);
       strcpy(Tr->objeto, pont->objeto);
-
       if(listadeTransacoes == NULL){
         listadeTransacoes = Tr;
         listadeTransacoes->proxT = NULL;
@@ -438,6 +509,7 @@ transacoes *procura_categoria(Grafo **G, char *categoriaT){
         Tr->proxT = NULL;
         pont2->proxT = Tr;
       }
+      // Fim do bloco
     }
     pont = pont->proxT;
   }
@@ -451,7 +523,7 @@ transacoes *procura_nomeT(Grafo **G, char *categoriaT, char *nomeT){
   struct transacoes *listadeTransacoes = NULL, *pont, *Tr, *pont2;
   int i , j;
 
-  pont = procura_categoria(&(*G), categoriaT);
+  pont = procura_categoria(&(*G), categoriaT);  // retorna uma lista de transações com categorias iguais à categoria enviada como parametro da função.
   while(pont != NULL){
     for(i = 0; (pont->objeto[i]); i++){
       if((pont->objeto[i]) == nomeT[0]){      // Assertiva que verifica se a primeira letra do objeto é igual a letra do nome mandado como parametro.
@@ -460,6 +532,8 @@ transacoes *procura_nomeT(Grafo **G, char *categoriaT, char *nomeT){
           j++;
         }
         if(j >= 3){ // Assertiva que verifica se o minimo de letras para uma busca por nome foi satisfeita.
+
+         // Esse bloco de código é responsavel pela criação de uma lista de transações que tiverem o nome do objeto igual ao nomeT.
           Tr = (transacoes*)malloc(sizeof(transacoes));
           Tr->idT = pont->idT;
           Tr->criador = pont->criador;
@@ -479,13 +553,13 @@ transacoes *procura_nomeT(Grafo **G, char *categoriaT, char *nomeT){
             Tr->proxT = NULL;
             pont2->proxT = Tr;
           }
+          //Fim do bloco
         }
       }
     }
     pont = pont->proxT;
-    i = 0;
   }
-  pont = listadeTransacoes;
+
   return listadeTransacoes;
 }
 
@@ -500,7 +574,9 @@ transacoes *procura_transacaoDeAmigos(Grafo **G, usuarios *User, char *categoria
   if(pont != NULL){ 
     while(pont != NULL){
       while(amigoT != NULL){
-        if(pont->criador->id == amigoT->idAmigo){
+        if(pont->criador->id == amigoT->idAmigo){  // Assertiva que verifica se o criador de uma transações representa uma amigo de user.
+
+          //Esse bloco é responsavel por criar uma lista de transações em que seus criadores sejam amigos de user.
           Tr = (transacoes*)malloc(sizeof(transacoes));
           Tr->idT = pont->idT;
           Tr->criador = pont->criador;
@@ -520,6 +596,7 @@ transacoes *procura_transacaoDeAmigos(Grafo **G, usuarios *User, char *categoria
             Tr->proxT = NULL;
             pont2->proxT = Tr;
           }
+          //Fim do bloco
         }
         amigoT = amigoT->proxAmigo;
       }
@@ -532,23 +609,69 @@ transacoes *procura_transacaoDeAmigos(Grafo **G, usuarios *User, char *categoria
   return listadeTransacoes;
 }
 
+transacoes *procura_transacaoDeUsuario(Grafo **G, usuarios *User){
+  struct transacoes *listadeTransacoes = NULL, *pont, *Tr, *pont2;
+
+  pont = (*G)->listaT;
+  if(pont != NULL){ 
+    while(pont != NULL){
+      if(pont->criador->id == User->id){  // Assertiva que verifica se o criador de uma transações representa um user.
+  
+        //Esse bloco é responsavel por criar uma lista de transações em que seus criadores sejam amigos de user.
+        Tr = (transacoes*)malloc(sizeof(transacoes));
+        Tr->idT = pont->idT;
+        Tr->criador = pont->criador;
+        Tr->valor = pont->valor;
+        strcpy(Tr->categoria, pont->categoria);
+        strcpy(Tr->objeto, pont->objeto);
+        if(listadeTransacoes == NULL){
+          listadeTransacoes = Tr;
+          listadeTransacoes->proxT = NULL;
+          listadeTransacoes->antT = NULL;
+        }else{
+          pont2 = listadeTransacoes;
+          while(pont2->proxT != NULL){
+            pont2 = pont2->proxT;
+          }
+          Tr->antT = pont2;
+          Tr->proxT = NULL;
+          pont2->proxT = Tr;
+        }
+      }
+      pont = pont->proxT;
+    }
+  }else{
+    printf("Usuario sem transações\n");
+  }
+
+  pont = listadeTransacoes;
+  while(pont != NULL){
+    printf("Nome = %s Id = %d\n", pont->objeto, pont->idT);
+    pont = pont->proxT;
+  }
+  return listadeTransacoes;
+}
+
+//Funcao tamanho_Arquivo - Recebe como parametro uma string (nomeArquivo).
+//Retorna um valor inteiro que representa o tamanho do arquivo.
 int tamanho_Arquivo(char *nomeArquivo){
   FILE *fp= fopen(nomeArquivo, "r");
   int tamanho;
 
-  if(fp == NULL){
+  if(fp == NULL){ // Verifica se o arquivo existe.
       return 0;
   }else{
     fseek(fp, 0, SEEK_END);
     tamanho = ftell(fp);
     fclose(fp);
+
     return tamanho;
   }
 }
 
 //Funcao existe_Grafo --- Recebe como Parametro um Grafo(G) e retorna um valor verdadeiro,caso o grafo exista, e falso, caso nao exista grafo.
 bool existe_Grafo(Grafo *G){
-  if(G->N_usuarios != 0){
+  if(G->N_usuarios != 0){  // Verifica se o numero de usuarios é maior que 0.
     return true;
   }
   else{
@@ -575,18 +698,18 @@ void exclui_usuario(Grafo **G, usuarios **User){
       }
       free(amigo);
     }
-    if((*User)->ant != NULL && (*User)->prox != NULL){
+    if((*User)->ant != NULL && (*User)->prox != NULL){ // Verifica se o usuario a ser excluido está entre outros usuarios.
       (*User)->ant->prox = (*User)->prox;
       (*User)->prox->ant = (*User)->ant;
     }
-    if((*User)->ant == NULL && (*User)->prox != NULL){
+    if((*User)->ant == NULL && (*User)->prox != NULL){ // Verifica se o usuario a ser excluido está no inicio da lista e se existe outros usuarios a sua frente.
       (*User)->prox->ant = NULL;
       ((*G)->listaAdj[letra]) = (*User)->prox;
     }
-    if((*User)->ant == NULL && (*User)->prox == NULL){
+    if((*User)->ant == NULL && (*User)->prox == NULL){ // Verifica se o usuario a ser excluido está no inicio da lista e se não existe outros usuarios a sua frente.
       ((*G)->listaAdj[letra]) = NULL;
     }
-    if((*User)->ant != NULL && (*User)->prox == NULL){
+    if((*User)->ant != NULL && (*User)->prox == NULL){ // Verifica se o usuario a ser excluido está no final da lista.
       (*User)->ant->prox = NULL;
     }
     free((*User));
@@ -594,16 +717,18 @@ void exclui_usuario(Grafo **G, usuarios **User){
   }
 } 
 
-//Funcao verifica_amizades --- Recebe como Parametro um usuario(User) e retorna uma lista de amigos de User.
+//Funcao verifica_amizades --- Recebe como Parametro um usuario(User).
+//Retorna uma lista de amigos de User.
 amigos *verifica_amizades(usuarios **User){
   int cont = 0, i = 0;
   struct amigos *listaAmigos, *pont, *pont2, *iterator;
 
   listaAmigos = NULL;
-  if((*User)->numeroAmigos != 0){
+  if((*User)->numeroAmigos != 0){ // Assertiva para verificar se o usuario tem amigos.
     while(cont != ((*User)->numeroAmigos)){
       pont = ((*User)->Amigos[i]);
       while(pont != NULL){
+        // Bloco de codigo responsavel por criar a lista de amigos de User.
         pont2 = (amigos*)malloc(sizeof(amigos));
         strcpy(pont2->nomeAmigo, pont->nomeAmigo);
         pont2->idAmigo = pont->idAmigo;
@@ -620,6 +745,7 @@ amigos *verifica_amizades(usuarios **User){
           pont2->antAmigo = iterator;
           pont2->proxAmigo = NULL;
         }
+        // Fim do bloco
         pont = pont->proxAmigo;
         cont++;
       }
@@ -635,7 +761,7 @@ void destroi_Grafo(Grafo **G){
   FILE *fp;
   struct usuarios *pont;
 
-  if(existe_Grafo(*G)){
+  if(existe_Grafo(*G)){ // Verifica se o Grafo existe.
     for(i = 0; i < 26; i++){
       pont = (*G)->listaAdj[i];
       while(pont != NULL){
@@ -676,6 +802,18 @@ void imprime_Grafo(Grafo *G){
   }
 }
 
+void imprime_transacao(transacoes **tran){
+  transacoes *pont;
+
+  pont = (*tran);
+  while(pont != NULL){
+    printf(" %s  (%d)", pont->objeto, pont->idT);
+    pont = pont->proxT;
+  }
+  printf("}\n\n");
+  
+}
+
  //Funcao imprime Grafo --- Recebe como Parametro um Grafo(G) e imprime na tela todos os usuarios e Amizades.
 void imprime_amigos(usuarios *User){
   amigos *pontAmigos;
@@ -711,11 +849,11 @@ usuarios *procura_nome(Grafo *G, char *nom){
     User = User->prox;
   }
   if(encontrado){
-    printf("Usuario %s encontrado!\n", user1->nome);
+    //printf("Usuario %s encontrado!\n", user1->nome);
     return user1;
   }
   else{
-    printf("\nUsuario %s Nao Encontrado!!\n", nom);
+   //printf("\nUsuario %s Nao Encontrado!!\n", nom);
     return NULL;
   }
 }
@@ -742,11 +880,11 @@ usuarios *procura_usuario(Grafo *G){
     User = User->prox;
   }
   if(encontrado){
-    printf("Usuario %s encontrado!\n", user1->nome);
+    //printf("Usuario %s encontrado!\n", user1->nome);
     return user1;
   }
   else{
-    printf("\nUsuario %s Nao Encontrado!!\n", nom);
+    //printf("\nUsuario %s Nao Encontrado!!\n", nom);
     return NULL;
   }
 }
@@ -760,20 +898,17 @@ void excluir_amigo(Grafo **G, usuarios **User, usuarios **User1, int cons){
     letra = verifica_letra(((*User1)->nome[0]));
     pont = ((*User)->Amigos[letra]);
     while(pont != NULL){
-      //Assertiva pro caso de Só um amigo.
-      if(strcmp(pont->nomeAmigo, (*User1)->nome) == 0){
+      if(strcmp(pont->nomeAmigo, (*User1)->nome) == 0){   //Assertiva pro caso de Só um amigo.
         if(pont->proxAmigo == NULL && pont->antAmigo == NULL){
           free(((*User)->Amigos[letra]));
           ((*User)->Amigos[letra]) = NULL;
         }
-        //Assertiva pro caso do amigo ser o primeiro da hashtable.
-        if(pont->antAmigo == NULL && pont->proxAmigo != NULL){
+        if(pont->antAmigo == NULL && pont->proxAmigo != NULL){       //Assertiva pro caso do amigo ser o primeiro da hashtable.
           ((*User)->Amigos[letra]) = pont->proxAmigo;
           pont->proxAmigo->antAmigo = NULL;
           free(pont);
         }
-        //Assertiva pra um amigo entre outros amigos.
-        if(pont->antAmigo != NULL && pont->proxAmigo != NULL){
+        if(pont->antAmigo != NULL && pont->proxAmigo != NULL){       //Assertiva pra um amigo entre outros amigos.
           pont->antAmigo->proxAmigo = pont->proxAmigo;
           pont->proxAmigo->antAmigo = pont->antAmigo;
           free(pont);
@@ -785,7 +920,7 @@ void excluir_amigo(Grafo **G, usuarios **User, usuarios **User1, int cons){
         pont = pont->proxAmigo;
       }
     }
-    if(cons == 0){
+    if(cons == 0){ // cons representa uma constante. Quando cons = 0 significa que é o primeiro acesso a esta função.
       excluir_amigo(&(*G), &(*User1), &(*User), 1);
     }
   }else{
@@ -798,13 +933,13 @@ void adiciona_amigos(Grafo **G, usuarios **User1, usuarios **User2, int cons){
   int letra;
   struct amigos *pont, *amigo;
 
-  if((*User1)->id != (*User2)->id){
+  if((*User1)->id != (*User2)->id){  // Assertiva responsavel por não deixar que um usuário se auto adicione como amigo.
+    // Bloco de codigo responsavel por adicionar elementos a hashtable de amigos.
     amigo = (amigos*)malloc(sizeof(amigos));
     amigo->idAmigo = (*User2)->id;
     strcpy(amigo->nomeAmigo, (*User2)->nome);
-
     letra = verifica_letra(((*User2)->nome[0]));
-    if(((*User1)->Amigos[letra]) == NULL){
+    if(((*User1)->Amigos[letra]) == NULL){ // Verifica se a lista está vazia.
       ((*User1)->Amigos[letra]) = (amigo);
       ((*User1)->Amigos[letra])->proxAmigo = NULL;
       ((*User1)->Amigos[letra])->antAmigo = NULL;
@@ -818,8 +953,9 @@ void adiciona_amigos(Grafo **G, usuarios **User1, usuarios **User2, int cons){
       amigo->antAmigo = pont;
       amigo->proxAmigo = NULL;
     }
+    // Fim do bloco.
     (*User1)->numeroAmigos++;
-    if(cons == 0){
+    if(cons == 0){  // cons representa uma constante. Quando cons = 0 significa que é o primeiro acesso a esta função.
       adiciona_amigos(&(*G), &(*User2), &(*User1), 1);
     }
   }else{
@@ -827,11 +963,13 @@ void adiciona_amigos(Grafo **G, usuarios **User1, usuarios **User2, int cons){
   }
 }
 
+// Funcao Verifica_letra --- Recebe como parametro um caracter.
+// Retorna -1, caso o caracter não represente uma  letra, ou um valor de 0 a 26 caso contrario.
 int verifica_letra(char nome){
   int cont = 0, letra = -1;
 
-  while(cont < 26){
-    if((nome == ('A'+cont)) || ((nome) == ('a'+cont))){
+  while(cont < 26){  // 26 representa o total de letras do alfabeto.
+    if((nome == ('A'+cont)) || ((nome) == ('a'+cont))){  // Verifica se o caracter é igual uma letra mais o contador.
       letra = cont;
       cont = 26;
     }
@@ -842,16 +980,8 @@ int verifica_letra(char nome){
   return letra;
 }
 
-usuarios *testaUsuario(usuarios *User){
-  if(User == NULL){
-    printf("Usuario nao encontrado\n");
-  }else{
-    printf("Usuario %s encontrado!\n", User->nome);
-  }
-
-  return User;
-}
-
+// Funcao edita_nome --- Recebe como parametros um grafo(G), um usuario (user) e uma string(nom).
+// Retorna um usuario com a modificação feita.
 usuarios *edita_nome(Grafo **G, usuarios **user, char *nom){
   struct usuarios *userAux2, *userAux;
   struct amigos *Aux;
@@ -869,30 +999,39 @@ usuarios *edita_nome(Grafo **G, usuarios **user, char *nom){
   return userAux;
 }
 
+// Funcao edita_cidade --- Recebe como parametros um grafo(G), um usuario (user) e uma string(cidade).
+// Retorna um usuario com a modificação feita.
 usuarios *edita_cidade(Grafo **G, usuarios **user, char *cidade){
   strcpy((*user)->cidade, cidade);
 
   return (*user);
 }
 
+// Funcao edita_cep --- Recebe como parametros um grafo(G), um usuario (user) e uma string(cep).
+// Retorna um usuario com a modificação feita.
 usuarios *edita_cep(Grafo **G, usuarios **user, char *cep){
   strcpy((*user)->cep, cep);
 
   return (*user);
 }
 
+// Funcao edita_cpf --- Recebe como parametros um grafo(G), um usuario (user) e uma string(cpf).
+// Retorna um usuario com a modificação feita.
 usuarios *edita_cpf(Grafo **G, usuarios **user, char *cpf){
   strcpy((*user)->cpf, cpf);
 
   return (*user);
 }
 
+// Funcao editar_pessoa --- Recebe como parametro um grafo(G).
+// Retorna um usuario com as modificações feitas.
 usuarios *editar_pessoa(Grafo **G){
   system("cls || clear");
-  char nom[100], cidade[30], cep[20], cpf[12];
-  int opc = -1, opc1 = -1;
+  char nom[100], cidade[30], cep[20], cpf[12], categoria[50];
+  int opc = -1, opc1 = -1, id, aval;
   struct usuarios *user = NULL, *user2 = NULL, *userAux2, *userAux;
   struct amigos *Aux;
+  struct transacoes *tran, *pont;
 
   while(user == NULL){
     getchar();
@@ -908,14 +1047,14 @@ usuarios *editar_pessoa(Grafo **G){
     printf("|2 - Cidade                                             | \n");
     printf("|3 - Cep                                                | \n");
     printf("|4 - Cpf                                                | \n");
-    printf("|5 - Transacoes                                         | \n");
-    printf("|6 - Amizades                                           | \n");
-    printf("|7 - Excluir conta                                      | \n");
+    printf("|5 - Amizades                                           | \n");
+    printf("|6 - Excluir conta                                      | \n");
+    printf("|7 - Transacoes                                         | \n");
     printf("|0 - Sair                                               | \n");
     printf(" -------------------------------------------------------\n");
     scanf(" %d", &opc);
     switch(opc){
-      case(1):
+      case(1): // Case que representa a alteração de nome do usuario.
       printf("Digite o novo nome: ");
       scanf(" %[^\n]", nom);
       userAux = cria_pessoaAuto(&(*G), nom, (user->cpf), (user->cep), (user->cidade));
@@ -928,30 +1067,30 @@ usuarios *editar_pessoa(Grafo **G){
       }
       exclui_usuario(&(*G), &(user));
       opc = 0;
-      printf("Nome Alterado!!!\n");
+      //printf("Nome Alterado!!!\n");
       break;
 
-      case(2):
+      case(2): // Case que representa a alteração da cidade do usuario.
       printf("Digite a nova cidade: ");
       scanf(" %[^\n]", cidade);
       strcpy(user->cidade, cidade);
-      printf("Cidade Alterada!!!\n");
+      //printf("Cidade Alterada!!!\n");
       opc = 0;
       break;
 
-      case(3):
+      case(3): // Case que representa a alteração de cep do usuario.
       printf("Digite o novo cep: ");
       scanf(" %[^\n]", cep);
       strcpy(user->cep, cep);
-      printf("Cep Alterado!!!\n");
+      //printf("Cep Alterado!!!\n");
       opc = 0;
       break;
 
-      case(4):
+      case(4): // Case que representa a alteração de cpf do usuario.
       printf("Digite o novo cpf: ");
       scanf(" %[^\n]", cpf);
       strcpy(user->cpf, cpf);
-      printf("Cpf Alterado!!!\n");
+      //printf("Cpf Alterado!!!\n");
       opc = 0;
       break;
 
@@ -970,14 +1109,14 @@ usuarios *editar_pessoa(Grafo **G){
           system("cls || clear");
           imprime_amigos(user);
           user2 = procura_usuario((*G));
-          if(user2 != NULL){
-            if(user->id != user2->id){
-              if(opc1 == 1){
+          if(user2 != NULL){ // Verifica se user2 existe.
+            if(user->id != user2->id){ // verifica se user e user2 é o mesmo usuario.
+              if(opc1 == 1){  // if que representa a adição de um amigo.
                   adiciona_amigos(&(*G), &user, &user2, 0);
                   printf("Amigo adicionado!!\n");
                   imprime_amigos(user);
               }
-              if(opc1 == 2){
+              if(opc1 == 2){  // if que representa a exclusão de um amigo.
                   excluir_amigo(&(*G), &user, &user2, 0);
                   imprime_amigos(user);
               }
@@ -991,26 +1130,86 @@ usuarios *editar_pessoa(Grafo **G){
         }
       }
       break;
-      case(6):
+      case(6): // Case que representa a exclusão de um usuario.
         exclui_usuario(&(*G), &user);
         opc = 0;
       break;
-      case(7):
+      case(7): // Case que representa a criação de uma transação.
         cria_transacao(&(*G), user);
-        opc = 0;
-      break;
+        opc1 = -1;
+        while(opc1 != 0){
+          printf(" -------------------------------------------------------\n");
+          printf("|                 Escolha uma acao                      | \n");
+          printf("|1 - procura_transacao por categoria                    | \n");
+          printf("|2 - procura_transacao por nome                         | \n");
+          printf("|3 - Exclui transação                                   | \n");
+          printf("|4 - Conclui transação                                   | \n");
+          printf("|0 - Sair                                               | \n");
+          printf(" -------------------------------------------------------\n");
+          scanf("%d", &opc1);
+          if(opc1 != 0){
+            switch(opc1){
+              case(1): // Case que representa a alteração da cidade do usuario.
+              printf("Digite o nome da categoria:\n ");
+              scanf(" %[^\n]", categoria);
+              tran = procura_categoria(&(*G), categoria);
+              imprime_transacao(&tran);
+              break;
 
+              case(2): // Case que representa a alteração da cidade do usuario.
+              printf("Digite o nome da categoria:\n ");
+              scanf(" %[^\n]", categoria);
+              printf("Digite o nome da transação:\n ");
+              scanf(" %[^\n]", nom);
+              tran = procura_nomeT(&(*G), categoria, nom);
+              imprime_transacao(&tran);
+              break;
+
+              case(3): // Case que representa exclusão
+              pont = procura_transacaoDeUsuario(&(*G), user);
+              if(pont != NULL){
+                printf("Digite o id: \n");
+                scanf("%d", &id);
+                pont = procura_porId(pont, id);
+                exclui_transacao(&(*G), &pont);
+              }else{
+                printf("Nao existe transacoes para esse usuario\n");
+              }
+              opc1 = 0;
+              break;
+
+              case(4):  // Case que representa conclusão
+              pont = procura_transacaoDeUsuario(&(*G), user);
+              if(pont != NULL){
+                printf("Digite o id: \n");
+                scanf("%d", &id);
+                printf("Avalie a transação: \n");
+                scanf("%d", &aval);
+                pont = procura_porId(pont, id);
+                conclui_transacao(&(*G), &pont, aval);
+              }else{
+                printf("Nao existe transacoes para esse usuario\n");
+              }
+              break;
+              opc1 = 0;
+            }
+          }
+        }
+        break;
     }
   }
   system("cls || clear");
   return user;
 }
 
+// Funcao cria_pessoa --- Recebe como parametro um grafo(G).
+// Retorna o usuario criado.
 usuarios *cria_pessoa(Grafo **G){
   char nom[100], cidade[30], cep[20], cpf[12];
   int cont = 0, letra;
   struct usuarios *pont, *user;
-
+  
+  // Bloco de codigos responsavel pela adição de um usuario ao grafo.
   user = (usuarios*)malloc(sizeof(usuarios));
   printf("Digite o seu nome: ");
   user->id = (*G)->N_usuarios;
@@ -1030,7 +1229,7 @@ usuarios *cria_pessoa(Grafo **G){
 
 
   letra = verifica_letra(nom[0]);
-  if(((*G)->listaAdj[letra]) == NULL){
+  if(((*G)->listaAdj[letra]) == NULL){  // Verifica se a lista de usuario está vazia.
     ((*G)->listaAdj[letra]) = user;
 
     for (cont = 0; cont < 26; ++cont){
@@ -1050,15 +1249,20 @@ usuarios *cria_pessoa(Grafo **G){
     ((user)->prox) = NULL;
     (user)->numeroAmigos = 0;
   }
+  // Fim do bloco.
   (*G)->N_usuarios++;
 
   return user;
 }
 
+// Funcao cria_pessoaAuto --- Recebe como parametros um grafo(G) e quatro strings(nom, cpf, cep, cidade).
+// Retorna o usuario criado.
+// Copia da função cria_pessoa com objetivo de facilitar a execução de testes com Gteste.
 usuarios *cria_pessoaAuto(Grafo **G, char *nom, char *cpf, char *cep, char *cidade){
   int cont = 0, letra;
   struct usuarios *pont, *user;
 
+  // Bloco de codigos responsavel pela adição de um usuario ao grafo.
   user = (usuarios*)malloc(sizeof(usuarios));
   user->id = (*G)->N_usuarios;
   strcpy(user->nome, nom);
@@ -1069,7 +1273,7 @@ usuarios *cria_pessoaAuto(Grafo **G, char *nom, char *cpf, char *cep, char *cida
 
 
   letra = verifica_letra(nom[0]);
-  if(((*G)->listaAdj[letra]) == NULL){
+  if(((*G)->listaAdj[letra]) == NULL){  // Verifica se a lista de usuario está vazia.
     ((*G)->listaAdj[letra]) = user;
 
     for (cont = 0; cont < 26; ++cont){
@@ -1079,7 +1283,7 @@ usuarios *cria_pessoaAuto(Grafo **G, char *nom, char *cpf, char *cep, char *cida
     ((*G)->listaAdj[letra])->prox = NULL;
     (((*G)->listaAdj[letra])->numeroAmigos) = 0;
   }
-  else{
+  else{  // Verifica se a lista de usuario não está vazia.
     pont = ((*G)->listaAdj[letra]);
     while(pont->prox != NULL){
       pont = pont->prox;
@@ -1089,16 +1293,17 @@ usuarios *cria_pessoaAuto(Grafo **G, char *nom, char *cpf, char *cep, char *cida
     ((user)->prox) = NULL;
     (user)->numeroAmigos = 0;
   }
+  // Fim do bloco.
   (*G)->N_usuarios++;
 
   return user;
 }
 
+// Funcao menu --- Recebe como parametros um grafo (G).
 void menu(Grafo **G){
   int opc = -1;
 
   while(opc != 0){
-    system("clear || cls");
     printf(" -------------------------------------------------------\n");
     printf("|                           MENU                        | \n");
     printf("|1 - Criar pessoa                                       | \n");
@@ -1109,24 +1314,24 @@ void menu(Grafo **G){
     printf(" -------------------------------------------------------\n");
     scanf(" %d", &opc);
     switch(opc){
-      case(1):
+      case(1): // Case para criação de usuario.
       cria_pessoa(&(*G));
       break;
 
-      case(2):
+      case(2): // Case para edição de usuario.
       editar_pessoa(&(*G));
       break;
 
-      case(3):
+      case(3):  // Case para impressão de grafo.
       imprime_Grafo((*G));
       break;
 
-      case(4):
+      case(4):  // Case para destruição de grafo.
       destroi_Grafo(&(*G));
       break;
     }
   }
-  salva_Arquivo(&(*G));
+  salva_Arquivo(&(*G)); // Criação do arquivo BancoDeDados que contem todas as informações do grafo.
 }
 
 int main(int argc, char const *argv[]){
