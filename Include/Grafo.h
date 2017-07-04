@@ -51,10 +51,13 @@ typedef struct Grafo{
   struct transacoes *listaT;
 }Grafo;
 
-
 //Funcao cria_Grafo
 //Aloca espaço de memoria para criar uma estrutura do tipo Grafo que atribui NomedoGrafo para estrutura.
 Grafo *cria_Grafo();
+
+transacoes *procura_transacaoDeUsuario(Grafo **G, usuarios *User);
+
+transacoes *procura_categoria_pnome(transacoes *transacao, char *nome);
 
 //Funcao cria_transacao --- Recebe como Parametro um grafo(G) e um usuario(User); e retorna uma transacao.
 transacoes *cria_transacao(Grafo **G, usuarios *user);
@@ -74,6 +77,15 @@ transacoes *procura_nomeT(Grafo **G, char *categoriaT, char *nomeT);
 //Funcao procura_transacaoDeAmigos --- Recebe como Parametro grafo(G), um usuario(User) e uma string (categoriaT).
 //Retorna uma transacao.
 transacoes *procura_transacaoDeAmigos(Grafo **G, usuarios *User, char *categoriaT);
+
+//Funcao procura_transacaoDeUsuario --- Recebe como Parametro grafo(G), um usuario(User).
+//Retorna uma transacao.
+transacoes *procura_transacaoDeUsuario(Grafo **G, usuarios *User);
+
+
+//Funcao procura_transacaoDeUsuario --- Recebe como Parametro grafo(G), um usuario(User).
+//Retorna uma transacao.
+transacoes *procura_porId(transacoes *transacao, int id);
 
 //Funcao conclui_transacao --- Recebe como Parametro grafo(G), transacoes(Transacao) e um inteiro(ava1).
 //Retorna um usuario.
@@ -152,7 +164,11 @@ void imprime_Grafo(Grafo *G);
 //Funcao imprime amigos --- Recebe como Parametro um usuario(User) e imprime na tela todas as Amizades de um usuario.
 void imprime_amigos(usuarios *User);
 
+//Funcao imprime amigos --- Recebe como Parametro um usuario(User) e imprime na tela todas as Amizades de um usuario.
+void imprime_transacao(transacoes *transacao);
+
 //Funcao adiciona_amigos --- Recebe como Parametros um Grafo(G), dois usuarios(User e User1) e um inteiro.
 void adiciona_amigos(Grafo **G, usuarios **User, usuarios **User1, int cons);
+//Funcao eh_amigo --- Recebe como Parametro dois usuarios(User e User2) e retorna um valor booleano.
 
 #endif

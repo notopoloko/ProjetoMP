@@ -88,9 +88,6 @@ transacoes *procura_transacaoDeUsuario(Grafo **G, usuarios *User);
 //Retorna uma transacao.
 transacoes *procura_porId(transacoes *transacao, int id);
 
-
-void imprime_transacao(transacoes **tran);
-
 //Funcao conclui_transacao --- Recebe como Parametro grafo(G), transacoes(Transacao) e um inteiro(ava1).
 //Retorna um usuario.
 usuarios *conclui_transacao(Grafo **G, transacoes **Transacao, int aval);
@@ -167,6 +164,9 @@ void imprime_Grafo(Grafo *G);
 
 //Funcao imprime amigos --- Recebe como Parametro um usuario(User) e imprime na tela todas as Amizades de um usuario.
 void imprime_amigos(usuarios *User);
+
+//Funcao imprime amigos --- Recebe como Parametro um usuario(User) e imprime na tela todas as Amizades de um usuario.
+void imprime_transacao(transacoes *transacao);
 
 //Funcao adiciona_amigos --- Recebe como Parametros um Grafo(G), dois usuarios(User e User1) e um inteiro.
 void adiciona_amigos(Grafo **G, usuarios **User, usuarios **User1, int cons);
@@ -417,7 +417,7 @@ transacoes *cria_transacao(Grafo **G, usuarios *user){
     //Fim do bloco de criação de transação
     (*G)->N_transacoes++;
 
-    fp = fopen("Transacoes.txt", "a+");
+    fp = fopen("/home/aeron/ProjetoMP/LIB/Transacoes.txt", "a+");
     if(fp == NULL) // Verifica se o arquivo existe.
       printf("Erro, nao foi possivel abrir o arquivo\n");
     else{
@@ -609,6 +609,7 @@ transacoes *procura_transacaoDeAmigos(Grafo **G, usuarios *User, char *categoria
   return listadeTransacoes;
 }
 
+//Funcao procura_transacaoDeUsuario --- Recebe como parametros um grafo(G) e um usuario(User).
 transacoes *procura_transacaoDeUsuario(Grafo **G, usuarios *User){
   struct transacoes *listadeTransacoes = NULL, *pont, *Tr, *pont2;
 
@@ -640,15 +641,8 @@ transacoes *procura_transacaoDeUsuario(Grafo **G, usuarios *User){
       }
       pont = pont->proxT;
     }
-  }else{
-    printf("Usuario sem transações\n");
   }
 
-  pont = listadeTransacoes;
-  while(pont != NULL){
-    printf("Nome = %s Id = %d\n", pont->objeto, pont->idT);
-    pont = pont->proxT;
-  }
   return listadeTransacoes;
 }
 
@@ -775,6 +769,7 @@ void destroi_Grafo(Grafo **G){
     cria_Grafo();
   }
 }
+
  //Funcao imprime Grafo --- Recebe como Parametro um Grafo(G) e imprime na tela todos os usuarios e Amizades.
 void imprime_Grafo(Grafo *G){
   int i = 0;
@@ -788,6 +783,7 @@ void imprime_Grafo(Grafo *G){
         pont = G->listaAdj[i];
         while(pont != NULL){
           printf("        %s (%d)\n", pont->nome, pont->id);
+          imprime_transacao(procura_transacaoDeUsuario(&G, pont));
           imprime_amigos(pont);
           pont = pont->prox;
         }
@@ -802,16 +798,21 @@ void imprime_Grafo(Grafo *G){
   }
 }
 
-void imprime_transacao(transacoes **tran){
+//Funcao imprime_transacao --- Recebe como parametro uma transacao(tran)
+void imprime_transacao(transacoes *tran){
   transacoes *pont;
 
-  pont = (*tran);
-  while(pont != NULL){
-    printf(" %s  (%d)", pont->objeto, pont->idT);
-    pont = pont->proxT;
+  pont = (tran);
+  if(pont != NULL){
+    while(pont != NULL){
+      printf("Id = %d\n", pont->idT);
+      printf("Categoria = %s ---- Nome = %s ---- Valor = %.2f\n", pont->categoria, pont->objeto, pont->valor);
+      pont = pont->proxT;
+    }
   }
-  printf("}\n\n");
-  
+  else{
+    printf("Nao existe transacoes para esse usuario\n");
+  }        
 }
 
  //Funcao imprime Grafo --- Recebe como Parametro um Grafo(G) e imprime na tela todos os usuarios e Amizades.
@@ -1034,12 +1035,16 @@ usuarios *editar_pessoa(Grafo **G){
   struct transacoes *tran, *pont;
 
   while(user == NULL){
-    getchar();
     printf("\nAlterar usuario\n\n");
     printf("Digite o nome do usuario:\n");
     scanf(" %[^\n]", nom);
     user = procura_nome((*G), nom);
+    if(user == NULL){
+      system("cls || clear");
+      printf("Usuario nao encontrado\n\n");
+    }
   }
+  printf("Usuario encontrado\n");
   while(opc != 0){
     printf(" -------------------------------------------------------\n");
     printf("              Alterar configuracoes de %s               \n", user->nome);
@@ -1099,7 +1104,7 @@ usuarios *editar_pessoa(Grafo **G){
       opc = 0;
       while(opc1 != 0){
         printf(" -------------------------------------------------------\n");
-        printf("|                 Escolha uma acao                      | \n");
+        printf("|                 Escolha uma acao                      | \n\n");
         printf("|1 - Adiciona amigo                                     | \n");
         printf("|2 - Exclui amigo                                       | \n");
         printf("|0 - Sair                                               | \n");
@@ -1134,52 +1139,52 @@ usuarios *editar_pessoa(Grafo **G){
         exclui_usuario(&(*G), &user);
         opc = 0;
       break;
-      case(7): // Case que representa a criação de uma transação.
-        cria_transacao(&(*G), user);
+      case(7): // case que representa o menu de transação.
         opc1 = -1;
+        system("cls || clear");
         while(opc1 != 0){
           printf(" -------------------------------------------------------\n");
           printf("|                 Escolha uma acao                      | \n");
-          printf("|1 - procura_transacao por categoria                    | \n");
-          printf("|2 - procura_transacao por nome                         | \n");
-          printf("|3 - Exclui transação                                   | \n");
-          printf("|4 - Conclui transação                                   | \n");
+          printf("|1 - cria transacao                                     | \n");
+          printf("|2 - procura_transacao por categoria                    | \n");
+          printf("|3 - procura_transacao por nome                         | \n");
+          printf("|4 - Conclui transação                                  | \n");
+          printf("|5 - Exclui transação                                   | \n");
           printf("|0 - Sair                                               | \n");
           printf(" -------------------------------------------------------\n");
           scanf("%d", &opc1);
+          while(opc1 < 0 && opc1 > 5){
+            scanf("%d", &opc1);
+          }
           if(opc1 != 0){
             switch(opc1){
-              case(1): // Case que representa a alteração da cidade do usuario.
+              case(1): // Case que representa a criação de uma transação.
+              cria_transacao(&(*G), user);
+              system("cls || clear");
+              imprime_transacao((*G)->listaT);
+              break;
+
+              case(2): // Case que representa a pesquisa por categoria de uma transação.
               printf("Digite o nome da categoria:\n ");
               scanf(" %[^\n]", categoria);
               tran = procura_categoria(&(*G), categoria);
-              imprime_transacao(&tran);
+              system("cls || clear");
+              imprime_transacao(tran);
               break;
 
-              case(2): // Case que representa a alteração da cidade do usuario.
+              case(3): // Case que representa a pesquisa por categoria e por nome de uma transação.
               printf("Digite o nome da categoria:\n ");
               scanf(" %[^\n]", categoria);
               printf("Digite o nome da transação:\n ");
               scanf(" %[^\n]", nom);
               tran = procura_nomeT(&(*G), categoria, nom);
-              imprime_transacao(&tran);
+              system("cls || clear");
+              imprime_transacao(tran);
               break;
 
-              case(3): // Case que representa exclusão
+              case(4):  // Case que representa conclusão de um transação.
               pont = procura_transacaoDeUsuario(&(*G), user);
-              if(pont != NULL){
-                printf("Digite o id: \n");
-                scanf("%d", &id);
-                pont = procura_porId(pont, id);
-                exclui_transacao(&(*G), &pont);
-              }else{
-                printf("Nao existe transacoes para esse usuario\n");
-              }
-              opc1 = 0;
-              break;
-
-              case(4):  // Case que representa conclusão
-              pont = procura_transacaoDeUsuario(&(*G), user);
+              imprime_transacao(pont);
               if(pont != NULL){
                 printf("Digite o id: \n");
                 scanf("%d", &id);
@@ -1187,12 +1192,23 @@ usuarios *editar_pessoa(Grafo **G){
                 scanf("%d", &aval);
                 pont = procura_porId(pont, id);
                 conclui_transacao(&(*G), &pont, aval);
-              }else{
-                printf("Nao existe transacoes para esse usuario\n");
               }
-              break;
               opc1 = 0;
+              break;
+              
+              case(5): // Case que representa exclusão de um transação.
+              pont = procura_transacaoDeUsuario(&(*G), user);
+              imprime_transacao(pont);
+              if(pont != NULL){
+                printf("Digite o id: \n");
+                scanf("%d", &id);
+                pont = procura_porId(pont, id);
+                exclui_transacao(&(*G), &pont);
+              }
+              opc1 = 0;
+              break;
             }
+            system("cls || clear");
           }
         }
         break;
@@ -1252,6 +1268,7 @@ usuarios *cria_pessoa(Grafo **G){
   // Fim do bloco.
   (*G)->N_usuarios++;
 
+  system("cls || clear");
   return user;
 }
 
