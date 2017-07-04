@@ -148,3 +148,13 @@ Categoria = carros
 Criador = Rafael
 Valor = 200.20
 
+Id = 0
+Nome = loja
+Categoria = carro
+Criador = Marcelo
+Valor = 231.000000
+Id = 0
+Nome = 22
+Categoria = carro
+Criador = Marcelo
+Valor = 32.000000
