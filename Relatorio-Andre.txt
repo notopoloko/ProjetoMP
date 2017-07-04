@@ -1,10 +1,13 @@
-22/06/2017 | 1h43min | Correção de Erros e Adição de arquivos .o no gitignore
-28/06/2017 | 0h42min | Correção de erros em funções do código e adição de novas funções
-29/06/2017 | 2h12min | Elaboração do menu de transações (juntamente com Rafael Souza)
-	   | 0h24min | Elaboração de relatórios com Doxygen e GCov (juntamente com Rafael Souza)
-01/07/2017 | 1h15min | Adição das Historietas do Usuário (juntamente com Rafael Souza)
-02/07/2017 | 0h11min | Comentários nos módulos (juntamente com Rafael Amaral)
-           | 1h22min | Organização do projeto (juntamente com Rafael Souza)
+Relatório - André Filipe da Conceição		Matrícula: 15/0005547
+-----------------------------------------------------------------------------------------
+22/06/2017 | 01h43min | Correção de Erros e Adição de arquivos .o no gitignore
+28/06/2017 | 00h42min | Correção de erros em funções do código e adição de novas funções
+29/06/2017 | 02h12min | Elaboração do menu de transações (juntamente com Rafael Souza)
+	   | 00h24min | Elaboração de relatórios com Doxygen e GCov (juntamente com Rafael Souza)
+01/07/2017 | 01h15min | Adição das Historietas do Usuário (juntamente com Rafael Souza)
+02/07/2017 | 00h11min | Comentários nos módulos (juntamente com Rafael Amaral)
+           | 01h22min | Organização do projeto (juntamente com Rafael Souza)
+03/07/2017 | 02h47min | Elaboração de Diagramas de Casos de Uso, Atividades, Classes e Sequência
 --------------------------------------------------------------------------------------------------
-TOTAL	   | 7h49min | Finalização do Projeto
+TOTAL	   | 10h36min | Finalização do Projeto
 	   
