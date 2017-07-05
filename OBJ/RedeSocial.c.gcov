@@ -3,741 +3,1187 @@
         -:    0:Data:RedeSocial.gcda
         -:    0:Runs:1
         -:    0:Programs:1
-        -:    1:#include <stdio.h>
-        -:    2:#include <stdlib.h>
-        -:    3:#include <stdbool.h>
-        -:    4:#include <string.h>
-        -:    5:
-        -:    6://Variavel global que representa uma constante.
-        -:    7:int Const = 0;
-        -:    8:
-        -:    9://Estrutura do tipo grafo com um vetor de caracteres representando o nome do grafo, um inteiro representando
-        -:   10://o numero de usuarios do grafo e um ponteiro para outra estrutura do tipo usuarios.
-        -:   11:typedef struct listaAmigos{
-        -:   12:  char nomeAmigo[100];
-        -:   13:
-        -:   14:  struct amigos *proxAmigo, *antAmigo;
-        -:   15:}listaAmigos;
-        -:   16:
-        -:   17://Estrutura do tipo grafo com um vetor de caracteres representando o nome do grafo, um inteiro representando
-        -:   18://o numero de usuarios do grafo e um ponteiro para outra estrutura do tipo usuarios.
-        -:   19:typedef struct amigos{
-        -:   20:  char nomeAmigo[100];
-        -:   21:
-        -:   22:  struct amigos *proxAmigo, *antAmigo;
-        -:   23:}amigos;
-        -:   24:
-        -:   25://Estrutura do tipo usuarios com dois inteiros representando o nome do usuario e o numero de Amizades para cada usuario.
-        -:   26://Apresenta tambem um ponteiro(Tipo usuarios) que aponta para proxima usuario e um ponteira para uma estrutura do tipo Amizades.
-        -:   27:typedef struct usuarios{
-        -:   28:  int id;
-        -:   29:  char nome[100];
-        -:   30:  char cidade[30];
-        -:   31:  char cep[20];
-        -:   32:  char cpf[12];
-        -:   33:  int numeroAmigos;             //Inteiro que representa o numero de amigos de um usuario.
-        -:   34:
-        -:   35:  struct amigos *Amigos[26];
-        -:   36:  struct usuarios *prox, *ant;
-        -:   37:}usuarios;
-        -:   38:
-        -:   39://Estrutura do tipo grafo com um vetor de caracteres representando o nome do grafo, um inteiro representando
-        -:   40://o numero de usuarios do grafo e um ponteiro para outra estrutura do tipo usuarios.
-        -:   41:typedef struct Grafo{
-        -:   42:  int N_usuarios;
-        -:   43:  struct usuarios *listaAdj[26];
-        -:   44:}Grafo;
-        -:   45:
-        -:   46://Funcao cria_Grafo
-        -:   47://Aloca espaço de memoria para criar uma estrutura do tipo Grafo que atribui NomedoGrafo para estrutura.
-        -:   48:Grafo *cria_Grafo();
-        -:   49:
-        -:   50:usuarios *testaUsuario(usuarios *User);
-        -:   51:
-        -:   52:amigos *verifica_amizades(usuarios **User);
-        -:   53:
-        -:   54:usuarios *procura_usuario(Grafo *G);
-        -:   55:
-        -:   56:usuarios *procura_nome(Grafo *G, char *nom);
-        -:   57:
-        -:   58:usuarios *editar_pessoa(Grafo **G);
-        -:   59:
-        -:   60:usuarios *cria_pessoa(Grafo **G);
-        -:   61:
-        -:   62:usuarios *cria_pessoaAuto(Grafo **G, char *nome, char *cpf, char *cep, char *cidade);
-        -:   63:
-        -:   64:void menu(Grafo **G);
-        -:   65:
-        -:   66:FILE *salva_Arquivo(Grafo **G);
-        -:   67:
-        -:   68:int tamanho_Arquivo(char *nomeArquivo);
-        -:   69:
-        -:   70:int verifica_letra(char nome);
-        -:   71:
-        -:   72:void destroi_Grafo(Grafo **G);
-        -:   73:
-        -:   74:void exclui_usuario(Grafo **G, usuarios **User);
-        -:   75:
-        -:   76:void excluir_amigo(Grafo **G, usuarios **User, usuarios **User1, int cons);
-        -:   77:
-        -:   78://Funcao existe_Grafo --- Recebe como Parametro um Grafo(G) e retorna um valor verdadeiro,caso o grafo exista, e falso, caso nao exista grafo.
-        -:   79:bool existe_Grafo(Grafo *G);
-        -:   80:
-        -:   81://Funcao imprime Grafo --- Recebe como Parametro um Grafo(G) e imprime na tela todos os usuarios e Amizades.
-        -:   82:void imprime_Grafo(Grafo *G);
-        -:   83:
-        -:   84://Funcao imprime amigos --- Recebe como Parametro um usuario(User) e imprime na tela todas as Amizades de um usuario.
-        -:   85:void imprime_amigos(usuarios *User);
-        -:   86:
-        -:   87://Funcao adiciona_usuario --- Recebe como Parametros um Grafo(G) e um usuario(V).
-        -:   88:void adiciona_usuario(Grafo **G, usuarios **User);
-        -:   89:
-        -:   90://Funcao salva_Arquivo --- Recebe como Parametros um Grafo(G) e armazena os dados do grafo em um arquivo.
-        1:   91:FILE *salva_Arquivo(Grafo **G){
-        -:   92:  FILE *fp; 
-        -:   93:  usuarios *pont;
-        -:   94:  amigos *pontAmigos;
-        -:   95:  int i;
-        -:   96:
-        1:   97:  if(existe_Grafo(*G)){
-    #####:   98:    fp = fopen("BancodeDados.txt","w+");
-    #####:   99:    if (fp == NULL){
-        -:  100:    // Verifica se existe um arquivo bancoDados.txt.
-    #####:  101:      printf("Impossível criar arquivo");
-        -:  102:    }           
-        -:  103:    else{
-    #####:  104:      for(i = 0; i < 26; i++){
-    #####:  105:        pont = ((*G)->listaAdj[i]);
-    #####:  106:        while(pont != NULL){
-        -:  107:          //fprintf(fp,"----------------------------------------------------------------------------\n");
-    #####:  108:          fprintf(fp,"Nome = %s\n", pont->nome);
-        -:  109:          //fprintf(fp,"CPF = %s", pont->cpf);
-        -:  110:          //fprintf(fp,"Cep = %s", pont->cep);
-        -:  111:          //fprintf(fp,"Cidade = %s", pont->cidade);
-        -:  112:          //fprintf(fp,"Numero de amigos = %d", pont->numeroAmigos);
-    #####:  113:          pontAmigos = verifica_amizades(&pont);
-    #####:  114:          if(pontAmigos == NULL){
-    #####:  115:              fprintf(fp, "Amigos = { }\n");
-        -:  116:          }
-        -:  117:          else{
-    #####:  118:            fprintf(fp, "Amigos = {");
-    #####:  119:            while(pontAmigos != NULL){
-    #####:  120:              fprintf(fp, " %s ", pontAmigos->nomeAmigo);
-    #####:  121:              pontAmigos = pontAmigos->proxAmigo;
-        -:  122:            }
-    #####:  123:            fprintf(fp, "}\n");
-        -:  124:          }
-    #####:  125:          pont = pont->prox;
-        -:  126:        }
-        -:  127:      }
-        -:  128:    }
-        -:  129:  }else{
-        1:  130:    fp = fopen("BancodeDados.txt","r");
-        -:  131:  }
-        1:  132:  fclose(fp);
-        1:  133:  return fp;
-        -:  134:}
-        -:  135:
-        -:  136://Funcao cria_Grafo --- Recebe como Parametro um Grafo(G) e aloca espaço de memoria para criar uma estrutura do tipo Grafo.
-        2:  137:Grafo *cria_Grafo(){
-        -:  138:  struct Grafo *G;
-        2:  139:  int i = 0;
-        -:  140:
-        2:  141:  G = (Grafo *)malloc(sizeof(*G));
-        2:  142:  G->N_usuarios = 0;
-       56:  143:  while(i < 26){
-       52:  144:    G->listaAdj[i] = NULL;
-       52:  145:    i++;
-        -:  146:  }
-        2:  147:  return G;
-        -:  148:}
-        -:  149:
-    #####:  150:int tamanho_Arquivo(char *nomeArquivo){
-    #####:  151:  FILE *fp= fopen(nomeArquivo, "r");
-        -:  152:  int tamanho;
-        -:  153:
-    #####:  154:  if(fp == NULL){
-    #####:  155:      return 0;
-        -:  156:  }else{
-    #####:  157:    fseek(fp, 0, SEEK_END);
-    #####:  158:    tamanho = ftell(fp);
-    #####:  159:    fclose(fp);
-    #####:  160:    return tamanho;
-        -:  161:  }
-        -:  162:}
-        -:  163:
-        -:  164://Funcao existe_Grafo --- Recebe como Parametro um Grafo(G) e retorna um valor verdadeiro,caso o grafo exista, e falso, caso nao exista grafo.
-        2:  165:bool existe_Grafo(Grafo *G){
-        2:  166:  if(G->N_usuarios != 0){
-        1:  167:    return true;
-        -:  168:  }
-        -:  169:  else{
-        -:  170:    //printf("Nao existem usuarios na rede\n");
-        1:  171:    return false;
-        -:  172:  }
-        -:  173:}
-        -:  174:
-        -:  175://Funcao exclui_usuario --- Recebe como Parametro um Grafo(G), libera o espaço de memoria alocado para um usuario.
-        5:  176:void exclui_usuario(Grafo **G, usuarios **User){
-        -:  177:  int letra;
-        -:  178:  struct amigos *amigo, *pont;
-        -:  179:  struct usuarios *User2;
-        -:  180:
-        5:  181:  if((*User) != NULL){ //Assertiva para testar existencia de um usuario.
-        5:  182:    letra = verifica_letra((*User)->nome[0]);
-        5:  183:    amigo = (verifica_amizades(&(*User)));
-        5:  184:    if(amigo != NULL){ //Assertiva para testar se um usuario tem amizades.
-        2:  185:      pont = amigo;
-        8:  186:      while(pont != NULL){
-        4:  187:        User2 = procura_nome((*G), pont->nomeAmigo);
-        4:  188:        excluir_amigo(&(*G), &(*User), &User2, 0);
-        4:  189:        pont = pont->proxAmigo;
-        -:  190:      }
-        2:  191:      free(amigo);
-        -:  192:    }
-        5:  193:    if((*User)->ant != NULL && (*User)->prox != NULL){
-    #####:  194:      (*User)->ant->prox = (*User)->prox;
-    #####:  195:      (*User)->prox->ant = (*User)->ant;
-        -:  196:    }
-        5:  197:    if((*User)->ant == NULL && (*User)->prox != NULL){
-        1:  198:      (*User)->prox->ant = NULL;
-        1:  199:      ((*G)->listaAdj[letra]) = (*User)->prox;
-        -:  200:    }
-        5:  201:    if((*User)->ant == NULL && (*User)->prox == NULL){
-        4:  202:      ((*G)->listaAdj[letra]) = NULL;
-        -:  203:    }
-        5:  204:    if((*User)->ant != NULL && (*User)->prox == NULL){
-    #####:  205:      (*User)->ant->prox = NULL;
-        -:  206:    }
-        5:  207:    free((*User));
-        5:  208:    (*G)->N_usuarios--;
-        -:  209:  }
-        5:  210:} 
-        -:  211://Funcao verifica_amizades --- Recebe como Parametro um usuario(User) e retorna uma lista de amigos de User.
-       23:  212:amigos *verifica_amizades(usuarios **User){
-       23:  213:  int cont = 0, i = 0;
-        -:  214:  struct amigos *listaAmigos, *pont, *pont2, *iterator;
-        -:  215:
-       23:  216:  listaAmigos = NULL;
-       23:  217:  if((*User)->numeroAmigos != 0){
-      259:  218:    while(cont != ((*User)->numeroAmigos)){
-      233:  219:      pont = ((*User)->Amigos[i]);
-      486:  220:      while(pont != NULL){
-       20:  221:        pont2 = (amigos*)malloc(sizeof(amigos));
-       20:  222:        strcpy(pont2->nomeAmigo, pont->nomeAmigo);
-       20:  223:        if(cont == 0){
-       13:  224:          listaAmigos = pont2;
-       13:  225:          listaAmigos->proxAmigo = NULL;
-       13:  226:          listaAmigos->antAmigo = NULL;
-        -:  227:        }else{
-        7:  228:          iterator = listaAmigos;
-       14:  229:          while(iterator->proxAmigo != NULL){
-    #####:  230:            iterator = iterator->proxAmigo;
-        -:  231:          }
-        7:  232:          iterator->proxAmigo = pont2;
-        7:  233:          pont2->antAmigo = iterator;
-        7:  234:          pont2->proxAmigo = NULL;
-        -:  235:        }
-       20:  236:        pont = pont->proxAmigo;
-       20:  237:        cont++;
-        -:  238:      }
-      233:  239:      i++;
-        -:  240:    }
-        -:  241:  }
-       23:  242:  return listaAmigos;
-        -:  243:}
-        -:  244:
-        -:  245://Funcao destroi_Grafo --- Recebe como Parametro um Grafo(G) e libera cada espaço de memoria alocado dinamicamente.
-        1:  246:void destroi_Grafo(Grafo **G){
-        -:  247:  int i;
-        -:  248:  FILE *fp;
-        -:  249:  struct usuarios *pont;
-        -:  250:
-        1:  251:  if(existe_Grafo(*G)){
-       27:  252:    for(i = 0; i < 26; i++){
-       26:  253:      pont = (*G)->listaAdj[i];
-       55:  254:      while(pont != NULL){
-        3:  255:        exclui_usuario(&(*G), &(pont));
-        3:  256:        pont = pont->prox;
-        -:  257:      }
-        -:  258:    }
-        1:  259:    fp = fopen("BancodeDados.txt","w+");
-        1:  260:    fclose(fp);
-        1:  261:    free(*G);
-        1:  262:    cria_Grafo();
-        -:  263:  }
-        1:  264:}
-        -:  265:
-        -:  266: //Funcao imprime Grafo --- Recebe como Parametro um Grafo(G) e imprime na tela todos os usuarios e Amizades.
-        4:  267:void imprime_Grafo(Grafo *G){
-        4:  268:  int i = 0;
-        -:  269:  struct usuarios *pont;
-        -:  270:
-        4:  271:  if(G->N_usuarios > 0){
-        3:  272:    printf("Numero de usuarios = %d\n", G->N_usuarios);
-       84:  273:    while(i < 26){
-       78:  274:      if((G->listaAdj[i]) != NULL){
-        8:  275:        printf("\n[%c] ->\n", ('A'+i));
-        8:  276:        pont = G->listaAdj[i];
-       24:  277:        while(pont != NULL){
-        8:  278:          printf("        %s\n", pont->nome);
-        8:  279:          imprime_amigos(pont);
-        8:  280:          pont = pont->prox;
-        -:  281:        }
-        -:  282:      }
-        -:  283:      else{
-       70:  284:        printf("\n[%c] -> Esta vazio\n", ('A'+i));
-        -:  285:      }
-       78:  286:      i++;
-        -:  287:    }
-        -:  288:  }else{
-        1:  289:    printf("Rede Social sem usuarios\n");
-        -:  290:  }
-        4:  291:}
-        -:  292:
-        -:  293: //Funcao imprime Grafo --- Recebe como Parametro um Grafo(G) e imprime na tela todos os usuarios e Amizades.
-       17:  294:void imprime_amigos(usuarios *User){
-        -:  295:  amigos *pontAmigos;
-        -:  296:
-       17:  297:  pontAmigos = verifica_amizades(&(User));
-       17:  298:  if(pontAmigos == NULL){
-        7:  299:      printf("Amigos %s = { }\n", (User)->nome);
-        -:  300:  }
-        -:  301:  else{
-       10:  302:    printf("Amigos %s = {", (User)->nome);
-       34:  303:    while(pontAmigos != NULL){
-       14:  304:      printf(" %s ", pontAmigos->nomeAmigo);
-       14:  305:      pontAmigos = pontAmigos->proxAmigo;
-        -:  306:    }
-       10:  307:    printf("}\n\n");
-        -:  308:  }
-       17:  309:}
-        -:  310:
-        -:  311://Funcao procura_nome --- Recebe como Parametros um Grafo(G) e um nome.
-        -:  312://Retorna um usuario ou NULL caso não encontre o usuario.
-       12:  313:usuarios *procura_nome(Grafo *G, char *nom){
-        -:  314:  struct usuarios *User, *user1;
-       12:  315:  bool encontrado = false;
-        -:  316:  int letra;
-        -:  317:
-       12:  318:  letra = verifica_letra(nom[0]);
-       12:  319:  User = ((G->listaAdj[letra]));
-       40:  320:  while(User != NULL){
-       16:  321:    if(strcmp(nom, User->nome) == 0){
-       12:  322:      encontrado = true;
-       12:  323:      user1 = User;
-        -:  324:    }
-       16:  325:    User = User->prox;
-        -:  326:  }
-       12:  327:  if(encontrado){
-        -:  328:    //printf("Usuario %s encontrado!\n", user1->nome);
-       12:  329:    return user1;
-        -:  330:  }
-        -:  331:  else{
-        -:  332:    //printf("\nUsuario %s Nao Encontrado!!\n", nom);
-    #####:  333:    return NULL;
-        -:  334:  }
-        -:  335:}
-        -:  336:
-        -:  337://Funcao procura_usuario --- Recebe como Parametros um Grafo(G).
-        -:  338://Retorna um usuario ou NULL caso não encontre o usuario.
-        4:  339:usuarios *procura_usuario(Grafo *G){
-        -:  340:  struct usuarios *User, *user1;
-        4:  341:  bool encontrado = false;
-        -:  342:  char nom[100];
-        -:  343:  int letra;
-        -:  344:
-        4:  345:  printf("Digite o nome do usuario:\n");
-        4:  346:  getchar();
-        4:  347:  scanf(" %[^\n]", nom);
-        -:  348:
-        4:  349:  letra = verifica_letra(nom[0]);
-        4:  350:  User = ((G->listaAdj[letra]));
-       13:  351:  while(User != NULL){
-        5:  352:    if(strcmp(nom, User->nome) == 0){
-        4:  353:      encontrado = true;
-        4:  354:      user1 = User;
-        -:  355:    }
-        5:  356:    User = User->prox;
-        -:  357:  }
-        4:  358:  if(encontrado){
-        -:  359:    //printf("Usuario %s encontrado!\n", user1->nome);
-        4:  360:    return user1;
-        -:  361:  }
-        -:  362:  else{
-        -:  363:       // printf("\nUsuario %s Nao Encontrado!!\n", nom);
-    #####:  364:    return NULL;
-        -:  365:  }
-        -:  366:}
-        -:  367:
-        -:  368: //Funcao excluir_amigo --- Recebe como Parametros um Grafo(G), um usuario e um inteiro que serve como um marcador.
-       10:  369:void excluir_amigo(Grafo **G, usuarios **User, usuarios **User1, int cons){
-        -:  370:  int letra;
-        -:  371:  struct amigos *pont;
-        -:  372:
-       10:  373:  if((*User)->numeroAmigos != 0){
-       10:  374:    letra = verifica_letra(((*User1)->nome[0]));
-       10:  375:    pont = ((*User)->Amigos[letra]);
-       30:  376:    while(pont != NULL){
-        -:  377:      //Assertiva pro caso de Só um amigo.
-       10:  378:      if(strcmp(pont->nomeAmigo, (*User1)->nome) == 0){
-       10:  379:        if(pont->proxAmigo == NULL && pont->antAmigo == NULL){
-       10:  380:          free(((*User)->Amigos[letra]));
-       10:  381:          ((*User)->Amigos[letra]) = NULL;
-        -:  382:        }
-        -:  383:        //Assertiva pro caso do amigo ser o primeiro da hashtable.
-       10:  384:        if(pont->antAmigo == NULL && pont->proxAmigo != NULL){
-    #####:  385:          ((*User)->Amigos[letra]) = pont->proxAmigo;
-    #####:  386:          pont->proxAmigo->antAmigo = NULL;
-    #####:  387:          free(pont);
-        -:  388:        }
-        -:  389:        //Assertiva pra um amigo entre outros amigos.
-       10:  390:        if(pont->antAmigo != NULL && pont->proxAmigo != NULL){
-    #####:  391:          pont->antAmigo->proxAmigo = pont->proxAmigo;
-    #####:  392:          pont->proxAmigo->antAmigo = pont->antAmigo;
-    #####:  393:          free(pont);
-        -:  394:        }
-       10:  395:        pont = NULL;
-       10:  396:        (*User)->numeroAmigos--;
-        -:  397:      }
-        -:  398:      else{
-    #####:  399:        pont = pont->proxAmigo;
-        -:  400:      }
-        -:  401:    }
-       10:  402:    if(cons == 0){
-        5:  403:      excluir_amigo(&(*G), &(*User1), &(*User), 1);
-        -:  404:    }
-        -:  405:  }else{
-    #####:  406:      printf("Usuario sem amizades para exclusão\n");
-        -:  407:  }
-       10:  408:}
-        -:  409:
-        -:  410: //Funcao adiciona_amigos --- Recebe como Parametros um Grafo(G), dois usuarios e um inteiro que serve como um marcador.
-       10:  411:void adiciona_amigos(Grafo **G, usuarios **User1, usuarios **User2, int cons){
-        -:  412:  int letra;
-        -:  413:  struct amigos *pont, *amigo;
-        -:  414:
-       10:  415:  if((*User1)->id != (*User2)->id){
-       10:  416:    amigo = (amigos*)malloc(sizeof(amigos));
-       10:  417:    strcpy(amigo->nomeAmigo, (*User2)->nome);
-        -:  418:
-       10:  419:    letra = verifica_letra(((*User2)->nome[0]));
-       10:  420:    if(((*User1)->Amigos[letra]) == NULL){
-       10:  421:      ((*User1)->Amigos[letra]) = (amigo);
-       10:  422:      ((*User1)->Amigos[letra])->proxAmigo = NULL;
-       10:  423:      ((*User1)->Amigos[letra])->antAmigo = NULL;
-        -:  424:    }
-        -:  425:    else{
-    #####:  426:      pont = ((*User1)->Amigos[letra]);
-    #####:  427:      while(pont->proxAmigo != NULL){
-    #####:  428:        pont = pont->proxAmigo;
-        -:  429:      }
-    #####:  430:      pont->proxAmigo = (amigo);
-    #####:  431:      amigo->antAmigo = pont;
-    #####:  432:      amigo->proxAmigo = NULL;
-        -:  433:    }
-       10:  434:    (*User1)->numeroAmigos++;
-       10:  435:    if(cons == 0){
-        5:  436:      adiciona_amigos(&(*G), &(*User2), &(*User1), 1);
-        -:  437:    }
-        -:  438:  }else{
-    #####:  439:    printf("O usuario nao pode se adicionar como amigo\n");
-        -:  440:  }
-       10:  441:}
-        -:  442:
-       46:  443:int verifica_letra(char nome){
-       46:  444:  int cont = 0, letra = -1;
-        -:  445:
-      868:  446:  while(cont < 26){
-      776:  447:    if((nome == ('A'+cont)) || ((nome) == ('a'+cont))){
-       46:  448:      letra = cont;
-       46:  449:      cont = 26;
-        -:  450:    }
-        -:  451:    else{
-      730:  452:      cont++;
-        -:  453:    }
-        -:  454:  }
-       46:  455:  return letra;
-        -:  456:}
-        -:  457:
-    #####:  458:usuarios *testaUsuario(usuarios *User){
-    #####:  459:  if(User == NULL){
-    #####:  460:    printf("Usuario nao encontrado\n");
-        -:  461:  }else{
-    #####:  462:    printf("Usuario %s encontrado!\n", User->nome);
-        -:  463:  }
-        -:  464:
-    #####:  465:  return User;
-        -:  466:}
-        -:  467:
-    #####:  468:usuarios *edita_nome(Grafo **G, usuarios **user, char *nom){
-        -:  469:  struct usuarios *userAux2, *userAux;
-        -:  470:  struct amigos *Aux;
-        -:  471:
-    #####:  472:  userAux = cria_pessoaAuto(&(*G), nom, ((*user)->cpf), ((*user)->cep), ((*user)->cidade));
-    #####:  473:  userAux->id = (*user)->id;
-    #####:  474:  Aux = verifica_amizades(&(*user));
-    #####:  475:  while(Aux != NULL){
-    #####:  476:    userAux2 = procura_nome((*G), Aux->nomeAmigo);
-    #####:  477:    adiciona_amigos(&(*G), &userAux2, &userAux, 0);
-    #####:  478:    Aux = Aux->proxAmigo;
-        -:  479:  }
-    #####:  480:  exclui_usuario(&(*G), &(*user));
-        -:  481:
-    #####:  482:  return userAux;
-        -:  483:}
-        -:  484:
-    #####:  485:usuarios *edita_cidade(Grafo **G, usuarios **user, char *cidade){
-    #####:  486:  strcpy((*user)->cidade, cidade);
-        -:  487:
-    #####:  488:  return (*user);
-        -:  489:}
-        -:  490:
-    #####:  491:usuarios *edita_cep(Grafo **G, usuarios **user, char *cep){
-    #####:  492:  strcpy((*user)->cep, cep);
-        -:  493:
-    #####:  494:  return (*user);
-        -:  495:}
-        -:  496:
-    #####:  497:usuarios *edita_cpf(Grafo **G, usuarios **user, char *cpf){
-    #####:  498:  strcpy((*user)->cpf, cpf);
-        -:  499:
-    #####:  500:  return (*user);
-        -:  501:}
-        6:  502:usuarios *editar_pessoa(Grafo **G){
-        6:  503:  system("cls || clear");
-        -:  504:  char nom[100], cidade[30], cep[20], cpf[12];
-        6:  505:  int opc = -1, opc1 = -1;
-        6:  506:  struct usuarios *user = NULL, *user2 = NULL, *userAux2, *userAux;
-        -:  507:  struct amigos *Aux;
-        -:  508:
-       18:  509:  while(user == NULL){
-        6:  510:    getchar();
-        6:  511:    printf("\nAlterar usuario\n\n");
-        6:  512:    printf("Digite o nome do usuario:\n");
-        6:  513:    scanf(" %[^\n]", nom);
-        6:  514:    user = procura_nome((*G), nom);
-        -:  515:  }
-       18:  516:  while(opc != 0){
-        6:  517:    printf(" -------------------------------------------------------\n");
-        6:  518:    printf("              Alterar configuracoes de %s               \n", user->nome);
-        6:  519:    printf("|1 - Nome                                               | \n");
-        6:  520:    printf("|2 - Cidade                                             | \n");
-        6:  521:    printf("|3 - Cep                                                | \n");
-        6:  522:    printf("|4 - Cpf                                                | \n");
-        6:  523:    printf("|5 - Amizades                                           | \n");
-        6:  524:    printf("|6 - Excluir conta                                      | \n");
-        6:  525:    printf("|0 - Sair                                               | \n");
-        6:  526:    printf(" -------------------------------------------------------\n");
-        6:  527:    scanf(" %d", &opc);
-        6:  528:    switch(opc){
-        -:  529:      case(1):
-        1:  530:      printf("Digite o novo nome: ");
-        1:  531:      scanf(" %[^\n]", nom);
-        1:  532:      userAux = cria_pessoaAuto(&(*G), nom, (user->cpf), (user->cep), (user->cidade));
-        1:  533:      userAux->id = user->id;
-        1:  534:      Aux = verifica_amizades(&user);
-        4:  535:      while(Aux != NULL){
-        2:  536:        userAux2 = procura_nome((*G), Aux->nomeAmigo);
-        2:  537:        adiciona_amigos(&(*G), &userAux2, &userAux, 0);
-        2:  538:        Aux = Aux->proxAmigo;
-        -:  539:      }
-        1:  540:      exclui_usuario(&(*G), &(user));
-        1:  541:      opc = 0;
-        1:  542:      break;
-        -:  543:
-        -:  544:      case(2):
-        1:  545:      printf("Digite a nova cidade: ");
-        1:  546:      scanf(" %[^\n]", cidade);
-        1:  547:      strcpy(user->cidade, cidade);
-        1:  548:      opc = 0;
-        1:  549:      break;
-        -:  550:
-        -:  551:      case(3):
-        1:  552:      printf("Digite o novo cep: ");
-        1:  553:      scanf(" %[^\n]", cep);
-        1:  554:      strcpy(user->cep, cep);
-        1:  555:      opc = 0;
-        1:  556:      break;
-        -:  557:
-        -:  558:      case(4):
-        1:  559:      strcpy(user->nome, nom);
-        1:  560:      printf("Digite o novo cpf: ");
-        1:  561:      scanf(" %[^\n]", cpf);
-        1:  562:      strcpy(user->cpf, cpf);
-        1:  563:      opc = 0;
-        1:  564:      break;
-        -:  565:
-        -:  566:      case(5):
-        1:  567:      imprime_amigos(user);
-        1:  568:      opc = 0;
-        7:  569:      while(opc1 != 0){
-        5:  570:        printf(" -------------------------------------------------------\n");
-        5:  571:        printf("|                 Escolha uma acao                      | \n");
-        5:  572:        printf("|1 - Adiciona amigo                                     | \n");
-        5:  573:        printf("|2 - Exclui amigo                                       | \n");
-        5:  574:        printf("|0 - Sair                                               | \n");
-        5:  575:        printf(" -------------------------------------------------------\n");
-        5:  576:        scanf("%d", &opc1);
-        5:  577:        if(opc1 != 0){
-        4:  578:          system("cls || clear");
-        4:  579:          imprime_amigos(user);
-        4:  580:          user2 = procura_usuario((*G));
-        4:  581:          if(user2 != NULL){
-        4:  582:            if(user->id != user2->id){
-        4:  583:              if(opc1 == 1){
-        3:  584:                  adiciona_amigos(&(*G), &user, &user2, 0);
-        3:  585:                  printf("Amigo adicionado!!\n");
-        3:  586:                  imprime_amigos(user);
-        -:  587:              }
-        4:  588:              if(opc1 == 2){
-        1:  589:                  excluir_amigo(&(*G), &user, &user2, 0);
-        1:  590:                  imprime_amigos(user);
-        -:  591:              }
-        -:  592:            }else{
-    #####:  593:              system("clear || cls");
-        -:  594:            }
-        -:  595:          }else{
-    #####:  596:            printf("\nUsuario nao encontrado!!\n");
-    #####:  597:            imprime_amigos(user);
-        -:  598:          }
-        -:  599:        }
-        -:  600:      }
-        1:  601:      break;
-        -:  602:      case(6):
-        1:  603:        exclui_usuario(&(*G), &user);
-        1:  604:        opc = 0;
-        1:  605:      break;
-        -:  606:
-        -:  607:    }
-        -:  608:  }
-        6:  609:  system("cls || clear");
-        6:  610:  return user;
-        -:  611:}
-        -:  612:
-        4:  613:usuarios *cria_pessoa(Grafo **G){
-        -:  614:  char nom[100], cidade[30], cep[20], cpf[12];
-        4:  615:  int cont = 0, letra;
-        -:  616:  struct usuarios *pont, *user;
-        -:  617:
-        4:  618:  user = (usuarios*)malloc(sizeof(usuarios));
-        4:  619:  printf("Digite o seu nome: ");
-        4:  620:  user->id = (*G)->N_usuarios;
-        4:  621:  scanf(" %[^\n]", nom);
-        4:  622:  getchar();
-        4:  623:  strcpy(user->nome, nom);
-        4:  624:  printf("Digite o seu cpf: ");
-        4:  625:  scanf(" %[^\n]", cpf);
-        4:  626:  strcpy(user->cpf, cpf);
-        4:  627:  printf("Digite a sua cidade: ");
-        4:  628:  scanf(" %[^\n]", cidade);
-        4:  629:  strcpy(user->cidade, cidade);
-        4:  630:  printf("Digite o seu cep: ");
-        4:  631:  scanf(" %[^\n]", cep);
-        4:  632:  strcpy(user->cep, cep);
-        -:  633:
-        -:  634:
-        4:  635:  letra = verifica_letra(nom[0]);
-        4:  636:  if(((*G)->listaAdj[letra]) == NULL){
-        3:  637:    ((*G)->listaAdj[letra]) = user;
-        -:  638:
-       81:  639:    for (cont = 0; cont < 26; ++cont){
-       78:  640:      ((*G)->listaAdj[letra])->Amigos[cont] = NULL;
-        -:  641:    }
-        3:  642:    ((*G)->listaAdj[letra])->ant = NULL;
-        3:  643:    ((*G)->listaAdj[letra])->prox = NULL;
-        3:  644:    (((*G)->listaAdj[letra])->numeroAmigos) = 0;
-        -:  645:  }
-        -:  646:  else{
-        1:  647:    pont = ((*G)->listaAdj[letra]);
-        2:  648:    while(pont->prox != NULL){
-    #####:  649:      pont = pont->prox;
-        -:  650:    }
-        1:  651:    pont->prox = (user);
-        1:  652:    ((user)->ant) = pont;
-        1:  653:    ((user)->prox) = NULL;
-        1:  654:    (user)->numeroAmigos = 0;
-        -:  655:  }
-        4:  656:  (*G)->N_usuarios++;
-        -:  657:
-        4:  658:  return user;
-        -:  659:}
-        -:  660:
-        1:  661:usuarios *cria_pessoaAuto(Grafo **G, char *nom, char *cpf, char *cep, char *cidade){
-        1:  662:  int cont = 0, letra;
-        -:  663:  struct usuarios *pont, *user;
-        -:  664:
-        1:  665:  user = (usuarios*)malloc(sizeof(usuarios));
-        1:  666:  user->id = (*G)->N_usuarios;
-        1:  667:  strcpy(user->nome, nom);
-        1:  668:  strcpy(user->cpf, cpf);
-        1:  669:  strcpy(user->cidade, cidade);
-        1:  670:  strcpy(user->cep, cep);
-        -:  671:
-        -:  672:
-        1:  673:  letra = verifica_letra(nom[0]);
-        1:  674:  if(((*G)->listaAdj[letra]) == NULL){
-        1:  675:    ((*G)->listaAdj[letra]) = user;
-        -:  676:
-       27:  677:    for (cont = 0; cont < 26; ++cont){
-       26:  678:      ((*G)->listaAdj[letra])->Amigos[cont] = NULL;
-        -:  679:    }
-        1:  680:    ((*G)->listaAdj[letra])->ant = NULL;
-        1:  681:    ((*G)->listaAdj[letra])->prox = NULL;
-        1:  682:    (((*G)->listaAdj[letra])->numeroAmigos) = 0;
-        -:  683:  }
-        -:  684:  else{
-    #####:  685:    pont = ((*G)->listaAdj[letra]);
-    #####:  686:    while(pont->prox != NULL){
-    #####:  687:      pont = pont->prox;
-        -:  688:    }
-    #####:  689:    pont->prox = (user);
-    #####:  690:    ((user)->ant) = pont;
-    #####:  691:    ((user)->prox) = NULL;
-    #####:  692:    (user)->numeroAmigos = 0;
-        -:  693:  }
-        1:  694:  (*G)->N_usuarios++;
-        -:  695:
-        1:  696:  return user;
-        -:  697:}
-        -:  698:
-        1:  699:void menu(Grafo **G){
-        1:  700:  int opc = -1;
-        -:  701:
-       18:  702:  while(opc != 0){
-       16:  703:    printf(" -------------------------------------------------------\n");
-       16:  704:    printf("|                           MENU                        | \n");
-       16:  705:    printf("|1 - Criar pessoa                                       | \n");
-       16:  706:    printf("|2 - Editar pessoa                                      | \n");
-       16:  707:    printf("|3 - Imprimir rede social                               | \n");
-       16:  708:    printf("|4 - Destroi rede social                                | \n");
-       16:  709:    printf("|0 - Sair                                               | \n");
-       16:  710:    printf(" -------------------------------------------------------\n");
-       16:  711:    scanf(" %d", &opc);
-       16:  712:    if(opc < 0 && opc > 4){
-    #####:  713:      printf("Valor invalido\n");
-        -:  714:    }
-        -:  715:
-       16:  716:    switch(opc){
-        -:  717:      system("clear || cls");
-        -:  718:      case(1):
-        4:  719:      cria_pessoa(&(*G));
-        4:  720:      break;
-        -:  721:
-        -:  722:      case(2):
-        6:  723:      editar_pessoa(&(*G));
-        6:  724:      break;
-        -:  725:
-        -:  726:      case(3):
-        4:  727:      imprime_Grafo((*G));
-        4:  728:      break;
-        -:  729:
-        -:  730:      case(4):
-        1:  731:      destroi_Grafo(&(*G));
-        1:  732:      break;
-        -:  733:    }
-        -:  734:  }
-        1:  735:  salva_Arquivo(&(*G));
-        1:  736:}
-        -:  737:
-
+        -:    1:/*EOF*/
+        -:    2:/*EOF*/
+        -:    3:/*EOF*/
+        -:    4:/*EOF*/
+        -:    5:/*EOF*/
+        -:    6:/*EOF*/
+        -:    7:/*EOF*/
+        -:    8:/*EOF*/
+        -:    9:/*EOF*/
+        -:   10:/*EOF*/
+       11:   11:/*EOF*/
+        -:   12:/*EOF*/
+       11:   13:/*EOF*/
+        -:   14:/*EOF*/
+       11:   15:/*EOF*/
+       55:   16:/*EOF*/
+       22:   17:/*EOF*/
+        4:   18:/*EOF*/
+        -:   19:/*EOF*/
+       22:   20:/*EOF*/
+        -:   21:/*EOF*/
+       11:   22:/*EOF*/
+        -:   23:/*EOF*/
+        -:   24:/*EOF*/
+        -:   25:/*EOF*/
+        2:   26:/*EOF*/
+        -:   27:/*EOF*/
+        -:   28:/*EOF*/
+        -:   29:/*EOF*/
+        -:   30:/*EOF*/
+        2:   31:/*EOF*/
+        2:   32:/*EOF*/
+       10:   33:/*EOF*/
+        4:   34:/*EOF*/
+        4:   35:/*EOF*/
+       26:   36:/*EOF*/
+       11:   37:/*EOF*/
+        -:   38:/*EOF*/
+        7:   39:/*EOF*/
+        -:   40:/*EOF*/
+        -:   41:/*EOF*/
+        3:   42:/*EOF*/
+        3:   43:/*EOF*/
+        3:   44:/*EOF*/
+        3:   45:/*EOF*/
+        2:   46:/*EOF*/
+        2:   47:/*EOF*/
+        2:   48:/*EOF*/
+        -:   49:/*EOF*/
+        1:   50:/*EOF*/
+        1:   51:/*EOF*/
+    #####:   52:/*EOF*/
+        -:   53:/*EOF*/
+        1:   54:/*EOF*/
+        1:   55:/*EOF*/
+        1:   56:/*EOF*/
+        -:   57:/*EOF*/
+        -:   58:/*EOF*/
+        -:   59:/*EOF*/
+        -:   60:/*EOF*/
+       11:   61:/*EOF*/
+        -:   62:/*EOF*/
+        4:   63:/*EOF*/
+        -:   64:/*EOF*/
+        -:   65:/*EOF*/
+        2:   66:/*EOF*/
+        2:   67:/*EOF*/
+        2:   68:/*EOF*/
+        2:   69:/*EOF*/
+    #####:   70:/*EOF*/
+        -:   71:/*EOF*/
+        2:   72:/*EOF*/
+        8:   73:/*EOF*/
+        3:   74:/*EOF*/
+        3:   75:/*EOF*/
+        3:   76:/*EOF*/
+        -:   77:/*EOF*/
+        2:   78:/*EOF*/
+        -:   79:/*EOF*/
+        2:   80:/*EOF*/
+        -:   81:/*EOF*/
+        -:   82:/*EOF*/
+        2:   83:/*EOF*/
+        -:   84:/*EOF*/
+        -:   85:/*EOF*/
+        -:   86:/*EOF*/
+        1:   87:/*EOF*/
+        -:   88:/*EOF*/
+        -:   89:/*EOF*/
+        -:   90:/*EOF*/
+        -:   91:/*EOF*/
+        -:   92:/*EOF*/
+        1:   93:/*EOF*/
+        1:   94:/*EOF*/
+        1:   95:/*EOF*/
+        -:   96:/*EOF*/
+    #####:   97:/*EOF*/
+        -:   98:/*EOF*/
+        -:   99:/*EOF*/
+       27:  100:/*EOF*/
+       26:  101:/*EOF*/
+       28:  102:/*EOF*/
+        1:  103:/*EOF*/
+        1:  104:/*EOF*/
+        1:  105:/*EOF*/
+        1:  106:/*EOF*/
+        1:  107:/*EOF*/
+        1:  108:/*EOF*/
+        1:  109:/*EOF*/
+        1:  110:/*EOF*/
+        1:  111:/*EOF*/
+        -:  112:/*EOF*/
+        -:  113:/*EOF*/
+    #####:  114:/*EOF*/
+    #####:  115:/*EOF*/
+    #####:  116:/*EOF*/
+    #####:  117:/*EOF*/
+        -:  118:/*EOF*/
+    #####:  119:/*EOF*/
+        -:  120:/*EOF*/
+        1:  121:/*EOF*/
+        -:  122:/*EOF*/
+        -:  123:/*EOF*/
+        -:  124:/*EOF*/
+        -:  125:/*EOF*/
+    #####:  126:/*EOF*/
+        -:  127:/*EOF*/
+        1:  128:/*EOF*/
+        1:  129:/*EOF*/
+        -:  130:/*EOF*/
+        -:  131:/*EOF*/
+        -:  132:/*EOF*/
+       19:  133:/*EOF*/
+        -:  134:/*EOF*/
+       19:  135:/*EOF*/
+        -:  136:/*EOF*/
+       19:  137:/*EOF*/
+       19:  138:/*EOF*/
+       19:  139:/*EOF*/
+       19:  140:/*EOF*/
+     1007:  141:/*EOF*/
+      494:  142:/*EOF*/
+      494:  143:/*EOF*/
+        -:  144:/*EOF*/
+       19:  145:/*EOF*/
+        -:  146:/*EOF*/
+        -:  147:/*EOF*/
+        -:  148:/*EOF*/
+        -:  149:/*EOF*/
+        2:  150:/*EOF*/
+        -:  151:/*EOF*/
+        -:  152:/*EOF*/
+        2:  153:/*EOF*/
+        2:  154:/*EOF*/
+        1:  155:/*EOF*/
+        -:  156:/*EOF*/
+        -:  157:/*EOF*/
+        -:  158:/*EOF*/
+        2:  159:/*EOF*/
+        2:  160:/*EOF*/
+        -:  161:/*EOF*/
+        2:  162:/*EOF*/
+        -:  163:/*EOF*/
+        -:  164:/*EOF*/
+        -:  165:/*EOF*/
+        4:  166:/*EOF*/
+        -:  167:/*EOF*/
+        -:  168:/*EOF*/
+        4:  169:/*EOF*/
+       14:  170:/*EOF*/
+        5:  171:/*EOF*/
+        4:  172:/*EOF*/
+        3:  173:/*EOF*/
+        3:  174:/*EOF*/
+        -:  175:/*EOF*/
+        4:  176:/*EOF*/
+    #####:  177:/*EOF*/
+    #####:  178:/*EOF*/
+    #####:  179:/*EOF*/
+        -:  180:/*EOF*/
+        4:  181:/*EOF*/
+    #####:  182:/*EOF*/
+    #####:  183:/*EOF*/
+    #####:  184:/*EOF*/
+        -:  185:/*EOF*/
+        4:  186:/*EOF*/
+        1:  187:/*EOF*/
+        1:  188:/*EOF*/
+        -:  189:/*EOF*/
+        4:  190:/*EOF*/
+        -:  191:/*EOF*/
+        -:  192:/*EOF*/
+        1:  193:/*EOF*/
+        -:  194:/*EOF*/
+        -:  195:/*EOF*/
+        4:  196:/*EOF*/
+        4:  197:/*EOF*/
+        -:  198:/*EOF*/
+    #####:  199:/*EOF*/
+        -:  200:/*EOF*/
+        4:  201:/*EOF*/
+        -:  202:/*EOF*/
+        -:  203:/*EOF*/
+        -:  204:/*EOF*/
+    #####:  205:/*EOF*/
+        -:  206:/*EOF*/
+        -:  207:/*EOF*/
+        -:  208:/*EOF*/
+        -:  209:/*EOF*/
+        -:  210:/*EOF*/
+    #####:  211:/*EOF*/
+    #####:  212:/*EOF*/
+        -:  213:/*EOF*/
+    #####:  214:/*EOF*/
+    #####:  215:/*EOF*/
+    #####:  216:/*EOF*/
+    #####:  217:/*EOF*/
+    #####:  218:/*EOF*/
+    #####:  219:/*EOF*/
+    #####:  220:/*EOF*/
+    #####:  221:/*EOF*/
+    #####:  222:/*EOF*/
+    #####:  223:/*EOF*/
+    #####:  224:/*EOF*/
+        -:  225:/*EOF*/
+    #####:  226:/*EOF*/
+    #####:  227:/*EOF*/
+    #####:  228:/*EOF*/
+    #####:  229:/*EOF*/
+        -:  230:/*EOF*/
+    #####:  231:/*EOF*/
+    #####:  232:/*EOF*/
+    #####:  233:/*EOF*/
+        -:  234:/*EOF*/
+    #####:  235:/*EOF*/
+    #####:  236:/*EOF*/
+    #####:  237:/*EOF*/
+        -:  238:/*EOF*/
+        -:  239:/*EOF*/
+    #####:  240:/*EOF*/
+        -:  241:/*EOF*/
+    #####:  242:/*EOF*/
+    #####:  243:/*EOF*/
+    #####:  244:/*EOF*/
+        -:  245:/*EOF*/
+    #####:  246:/*EOF*/
+    #####:  247:/*EOF*/
+    #####:  248:/*EOF*/
+    #####:  249:/*EOF*/
+    #####:  250:/*EOF*/
+        -:  251:/*EOF*/
+    #####:  252:/*EOF*/
+        -:  253:/*EOF*/
+        -:  254:/*EOF*/
+    #####:  255:/*EOF*/
+        -:  256:/*EOF*/
+        -:  257:/*EOF*/
+        -:  258:/*EOF*/
+        -:  259:/*EOF*/
+        -:  260:/*EOF*/
+        4:  261:/*EOF*/
+        -:  262:/*EOF*/
+        -:  263:/*EOF*/
+        -:  264:/*EOF*/
+        4:  265:/*EOF*/
+        4:  266:/*EOF*/
+        4:  267:/*EOF*/
+        4:  268:/*EOF*/
+        4:  269:/*EOF*/
+        4:  270:/*EOF*/
+        4:  271:/*EOF*/
+        4:  272:/*EOF*/
+        4:  273:/*EOF*/
+        4:  274:/*EOF*/
+        3:  275:/*EOF*/
+        3:  276:/*EOF*/
+        3:  277:/*EOF*/
+        -:  278:/*EOF*/
+        1:  279:/*EOF*/
+        1:  280:/*EOF*/
+    #####:  281:/*EOF*/
+        -:  282:/*EOF*/
+        1:  283:/*EOF*/
+        1:  284:/*EOF*/
+        1:  285:/*EOF*/
+        -:  286:/*EOF*/
+        4:  287:/*EOF*/
+        -:  288:/*EOF*/
+        -:  289:/*EOF*/
+        4:  290:/*EOF*/
+        4:  291:/*EOF*/
+    #####:  292:/*EOF*/
+        -:  293:/*EOF*/
+        4:  294:/*EOF*/
+        4:  295:/*EOF*/
+        4:  296:/*EOF*/
+        4:  297:/*EOF*/
+        4:  298:/*EOF*/
+        -:  299:/*EOF*/
+        4:  300:/*EOF*/
+        -:  301:/*EOF*/
+        4:  302:/*EOF*/
+        -:  303:/*EOF*/
+        -:  304:/*EOF*/
+        -:  305:/*EOF*/
+        -:  306:/*EOF*/
+        5:  307:/*EOF*/
+        5:  308:/*EOF*/
+        -:  309:/*EOF*/
+        5:  310:/*EOF*/
+       17:  311:/*EOF*/
+        6:  312:/*EOF*/
+        -:  313:/*EOF*/
+        -:  314:/*EOF*/
+        5:  315:/*EOF*/
+        5:  316:/*EOF*/
+        5:  317:/*EOF*/
+        5:  318:/*EOF*/
+        5:  319:/*EOF*/
+        5:  320:/*EOF*/
+        5:  321:/*EOF*/
+        4:  322:/*EOF*/
+        4:  323:/*EOF*/
+        4:  324:/*EOF*/
+        -:  325:/*EOF*/
+        1:  326:/*EOF*/
+        1:  327:/*EOF*/
+    #####:  328:/*EOF*/
+        -:  329:/*EOF*/
+        1:  330:/*EOF*/
+        1:  331:/*EOF*/
+        1:  332:/*EOF*/
+        -:  333:/*EOF*/
+        -:  334:/*EOF*/
+        -:  335:/*EOF*/
+        6:  336:/*EOF*/
+        -:  337:/*EOF*/
+        -:  338:/*EOF*/
+        5:  339:/*EOF*/
+        -:  340:/*EOF*/
+        -:  341:/*EOF*/
+    #####:  342:/*EOF*/
+        -:  343:/*EOF*/
+        -:  344:/*EOF*/
+    #####:  345:/*EOF*/
+    #####:  346:/*EOF*/
+    #####:  347:/*EOF*/
+    #####:  348:/*EOF*/
+        -:  349:/*EOF*/
+    #####:  350:/*EOF*/
+        -:  351:/*EOF*/
+        -:  352:/*EOF*/
+    #####:  353:/*EOF*/
+        -:  354:/*EOF*/
+        -:  355:/*EOF*/
+        -:  356:/*EOF*/
+        -:  357:/*EOF*/
+        1:  358:/*EOF*/
+        1:  359:/*EOF*/
+        -:  360:/*EOF*/
+        -:  361:/*EOF*/
+        1:  362:/*EOF*/
+        5:  363:/*EOF*/
+       17:  364:/*EOF*/
+       15:  365:/*EOF*/
+        2:  366:/*EOF*/
+       26:  367:/*EOF*/
+       12:  368:/*EOF*/
+        -:  369:/*EOF*/
+        2:  370:/*EOF*/
+        -:  371:/*EOF*/
+        -:  372:/*EOF*/
+        2:  373:/*EOF*/
+        2:  374:/*EOF*/
+        2:  375:/*EOF*/
+        2:  376:/*EOF*/
+        2:  377:/*EOF*/
+        2:  378:/*EOF*/
+        2:  379:/*EOF*/
+        1:  380:/*EOF*/
+        1:  381:/*EOF*/
+        1:  382:/*EOF*/
+        -:  383:/*EOF*/
+        1:  384:/*EOF*/
+        1:  385:/*EOF*/
+    #####:  386:/*EOF*/
+        -:  387:/*EOF*/
+        1:  388:/*EOF*/
+        1:  389:/*EOF*/
+        1:  390:/*EOF*/
+        -:  391:/*EOF*/
+        -:  392:/*EOF*/
+        -:  393:/*EOF*/
+        -:  394:/*EOF*/
+        -:  395:/*EOF*/
+        2:  396:/*EOF*/
+        -:  397:/*EOF*/
+        -:  398:/*EOF*/
+        1:  399:/*EOF*/
+        -:  400:/*EOF*/
+        -:  401:/*EOF*/
+        -:  402:/*EOF*/
+        -:  403:/*EOF*/
+        2:  404:/*EOF*/
+        2:  405:/*EOF*/
+        -:  406:/*EOF*/
+        -:  407:/*EOF*/
+        2:  408:/*EOF*/
+        2:  409:/*EOF*/
+        2:  410:/*EOF*/
+        6:  411:/*EOF*/
+       10:  412:/*EOF*/
+        4:  413:/*EOF*/
+        -:  414:/*EOF*/
+        -:  415:/*EOF*/
+        1:  416:/*EOF*/
+        1:  417:/*EOF*/
+        1:  418:/*EOF*/
+        1:  419:/*EOF*/
+        1:  420:/*EOF*/
+        1:  421:/*EOF*/
+        1:  422:/*EOF*/
+        1:  423:/*EOF*/
+        1:  424:/*EOF*/
+        1:  425:/*EOF*/
+        -:  426:/*EOF*/
+    #####:  427:/*EOF*/
+    #####:  428:/*EOF*/
+    #####:  429:/*EOF*/
+        -:  430:/*EOF*/
+    #####:  431:/*EOF*/
+    #####:  432:/*EOF*/
+    #####:  433:/*EOF*/
+        -:  434:/*EOF*/
+        -:  435:/*EOF*/
+        -:  436:/*EOF*/
+        4:  437:/*EOF*/
+        -:  438:/*EOF*/
+        2:  439:/*EOF*/
+        -:  440:/*EOF*/
+        -:  441:/*EOF*/
+    #####:  442:/*EOF*/
+        -:  443:/*EOF*/
+        -:  444:/*EOF*/
+        2:  445:/*EOF*/
+        -:  446:/*EOF*/
+        -:  447:/*EOF*/
+        -:  448:/*EOF*/
+    #####:  449:/*EOF*/
+    #####:  450:/*EOF*/
+        -:  451:/*EOF*/
+    #####:  452:/*EOF*/
+    #####:  453:/*EOF*/
+    #####:  454:/*EOF*/
+    #####:  455:/*EOF*/
+        -:  456:/*EOF*/
+        -:  457:/*EOF*/
+    #####:  458:/*EOF*/
+    #####:  459:/*EOF*/
+    #####:  460:/*EOF*/
+    #####:  461:/*EOF*/
+    #####:  462:/*EOF*/
+    #####:  463:/*EOF*/
+    #####:  464:/*EOF*/
+    #####:  465:/*EOF*/
+    #####:  466:/*EOF*/
+    #####:  467:/*EOF*/
+        -:  468:/*EOF*/
+    #####:  469:/*EOF*/
+    #####:  470:/*EOF*/
+    #####:  471:/*EOF*/
+        -:  472:/*EOF*/
+    #####:  473:/*EOF*/
+    #####:  474:/*EOF*/
+    #####:  475:/*EOF*/
+        -:  476:/*EOF*/
+        -:  477:/*EOF*/
+    #####:  478:/*EOF*/
+        -:  479:/*EOF*/
+        -:  480:/*EOF*/
+        -:  481:/*EOF*/
+    #####:  482:/*EOF*/
+        -:  483:/*EOF*/
+        -:  484:/*EOF*/
+        -:  485:/*EOF*/
+        -:  486:/*EOF*/
+        -:  487:/*EOF*/
+        2:  488:/*EOF*/
+        2:  489:/*EOF*/
+        -:  490:/*EOF*/
+        -:  491:/*EOF*/
+        2:  492:/*EOF*/
+    #####:  493:/*EOF*/
+        -:  494:/*EOF*/
+        2:  495:/*EOF*/
+        2:  496:/*EOF*/
+        2:  497:/*EOF*/
+        -:  498:/*EOF*/
+        2:  499:/*EOF*/
+        -:  500:/*EOF*/
+        -:  501:/*EOF*/
+        -:  502:/*EOF*/
+        -:  503:/*EOF*/
+       17:  504:/*EOF*/
+       17:  505:/*EOF*/
+       15:  506:/*EOF*/
+        -:  507:/*EOF*/
+        -:  508:/*EOF*/
+        -:  509:/*EOF*/
+        2:  510:/*EOF*/
+        -:  511:/*EOF*/
+        -:  512:/*EOF*/
+        -:  513:/*EOF*/
+        -:  514:/*EOF*/
+       36:  515:/*EOF*/
+        -:  516:/*EOF*/
+        -:  517:/*EOF*/
+        -:  518:/*EOF*/
+        -:  519:/*EOF*/
+       36:  520:/*EOF*/
+       36:  521:/*EOF*/
+       36:  522:/*EOF*/
+       36:  523:/*EOF*/
+       13:  524:/*EOF*/
+       43:  525:/*EOF*/
+       15:  526:/*EOF*/
+       15:  527:/*EOF*/
+       15:  528:/*EOF*/
+        -:  529:/*EOF*/
+       13:  530:/*EOF*/
+        -:  531:/*EOF*/
+       36:  532:/*EOF*/
+    #####:  533:/*EOF*/
+    #####:  534:/*EOF*/
+        -:  535:/*EOF*/
+       36:  536:/*EOF*/
+    #####:  537:/*EOF*/
+    #####:  538:/*EOF*/
+        -:  539:/*EOF*/
+       36:  540:/*EOF*/
+       36:  541:/*EOF*/
+        -:  542:/*EOF*/
+       36:  543:/*EOF*/
+    #####:  544:/*EOF*/
+        -:  545:/*EOF*/
+       36:  546:/*EOF*/
+       36:  547:/*EOF*/
+        -:  548:/*EOF*/
+       36:  549:/*EOF*/
+        -:  550:/*EOF*/
+        -:  551:/*EOF*/
+        -:  552:/*EOF*/
+       61:  553:/*EOF*/
+       61:  554:/*EOF*/
+        -:  555:/*EOF*/
+        -:  556:/*EOF*/
+       61:  557:/*EOF*/
+       61:  558:/*EOF*/
+     1176:  559:/*EOF*/
+      571:  560:/*EOF*/
+      693:  561:/*EOF*/
+        -:  562:/*EOF*/
+       61:  563:/*EOF*/
+       61:  564:/*EOF*/
+       61:  565:/*EOF*/
+       61:  566:/*EOF*/
+       34:  567:/*EOF*/
+       34:  568:/*EOF*/
+       34:  569:/*EOF*/
+        -:  570:/*EOF*/
+       27:  571:/*EOF*/
+       43:  572:/*EOF*/
+        8:  573:/*EOF*/
+        -:  574:/*EOF*/
+       27:  575:/*EOF*/
+       27:  576:/*EOF*/
+       27:  577:/*EOF*/
+        -:  578:/*EOF*/
+        -:  579:/*EOF*/
+       61:  580:/*EOF*/
+       61:  581:/*EOF*/
+        -:  582:/*EOF*/
+      571:  583:/*EOF*/
+        -:  584:/*EOF*/
+        -:  585:/*EOF*/
+       61:  586:/*EOF*/
+        -:  587:/*EOF*/
+        -:  588:/*EOF*/
+        -:  589:/*EOF*/
+       10:  590:/*EOF*/
+        -:  591:/*EOF*/
+        -:  592:/*EOF*/
+        -:  593:/*EOF*/
+        -:  594:/*EOF*/
+       10:  595:/*EOF*/
+      243:  596:/*EOF*/
+      234:  597:/*EOF*/
+      294:  598:/*EOF*/
+       30:  599:/*EOF*/
+       30:  600:/*EOF*/
+        -:  601:/*EOF*/
+        -:  602:/*EOF*/
+        9:  603:/*EOF*/
+        9:  604:/*EOF*/
+        9:  605:/*EOF*/
+        9:  606:/*EOF*/
+        -:  607:/*EOF*/
+       10:  608:/*EOF*/
+        -:  609:/*EOF*/
+        -:  610:/*EOF*/
+    #####:  611:/*EOF*/
+    #####:  612:/*EOF*/
+        -:  613:/*EOF*/
+        -:  614:/*EOF*/
+    #####:  615:/*EOF*/
+    #####:  616:/*EOF*/
+    #####:  617:/*EOF*/
+    #####:  618:/*EOF*/
+    #####:  619:/*EOF*/
+    #####:  620:/*EOF*/
+    #####:  621:/*EOF*/
+    #####:  622:/*EOF*/
+    #####:  623:/*EOF*/
+    #####:  624:/*EOF*/
+    #####:  625:/*EOF*/
+        -:  626:/*EOF*/
+        -:  627:/*EOF*/
+        -:  628:/*EOF*/
+    #####:  629:/*EOF*/
+        -:  630:/*EOF*/
+    #####:  631:/*EOF*/
+        -:  632:/*EOF*/
+        -:  633:/*EOF*/
+    #####:  634:/*EOF*/
+        -:  635:/*EOF*/
+    #####:  636:/*EOF*/
+        -:  637:/*EOF*/
+        -:  638:/*EOF*/
+    #####:  639:/*EOF*/
+        -:  640:/*EOF*/
+        -:  641:/*EOF*/
+    #####:  642:/*EOF*/
+    #####:  643:/*EOF*/
+    #####:  644:/*EOF*/
+    #####:  645:/*EOF*/
+    #####:  646:/*EOF*/
+    #####:  647:/*EOF*/
+        -:  648:/*EOF*/
+        -:  649:/*EOF*/
+        -:  650:/*EOF*/
+    #####:  651:/*EOF*/
+        -:  652:/*EOF*/
+    #####:  653:/*EOF*/
+        -:  654:/*EOF*/
+        -:  655:/*EOF*/
+    #####:  656:/*EOF*/
+        -:  657:/*EOF*/
+        -:  658:/*EOF*/
+    #####:  659:/*EOF*/
+    #####:  660:/*EOF*/
+    #####:  661:/*EOF*/
+        -:  662:/*EOF*/
+        -:  663:/*EOF*/
+    #####:  664:/*EOF*/
+    #####:  665:/*EOF*/
+    #####:  666:/*EOF*/
+    #####:  667:/*EOF*/
+        -:  668:/*EOF*/
+    #####:  669:/*EOF*/
+        -:  670:/*EOF*/
+    #####:  671:/*EOF*/
+        -:  672:/*EOF*/
+        -:  673:/*EOF*/
+        -:  674:/*EOF*/
+       33:  675:/*EOF*/
+        -:  676:/*EOF*/
+       33:  677:/*EOF*/
+        -:  678:/*EOF*/
+        -:  679:/*EOF*/
+       33:  680:/*EOF*/
+       33:  681:/*EOF*/
+       97:  682:/*EOF*/
+       32:  683:/*EOF*/
+       32:  684:/*EOF*/
+       32:  685:/*EOF*/
+        -:  686:/*EOF*/
+       32:  687:/*EOF*/
+        -:  688:/*EOF*/
+       33:  689:/*EOF*/
+        -:  690:/*EOF*/
+       32:  691:/*EOF*/
+        -:  692:/*EOF*/
+        -:  693:/*EOF*/
+        -:  694:/*EOF*/
+        1:  695:/*EOF*/
+        -:  696:/*EOF*/
+        -:  697:/*EOF*/
+        -:  698:/*EOF*/
+        -:  699:/*EOF*/
+        -:  700:/*EOF*/
+    #####:  701:/*EOF*/
+        -:  702:/*EOF*/
+    #####:  703:/*EOF*/
+        -:  704:/*EOF*/
+        -:  705:/*EOF*/
+        -:  706:/*EOF*/
+    #####:  707:/*EOF*/
+    #####:  708:/*EOF*/
+    #####:  709:/*EOF*/
+        -:  710:/*EOF*/
+    #####:  711:/*EOF*/
+    #####:  712:/*EOF*/
+    #####:  713:/*EOF*/
+    #####:  714:/*EOF*/
+    #####:  715:/*EOF*/
+    #####:  716:/*EOF*/
+        -:  717:/*EOF*/
+    #####:  718:/*EOF*/
+        -:  719:/*EOF*/
+    #####:  720:/*EOF*/
+        -:  721:/*EOF*/
+    #####:  722:/*EOF*/
+        -:  723:/*EOF*/
+        -:  724:/*EOF*/
+        -:  725:/*EOF*/
+    #####:  726:/*EOF*/
+        -:  727:/*EOF*/
+        -:  728:/*EOF*/
+        -:  729:/*EOF*/
+        -:  730:/*EOF*/
+       30:  731:/*EOF*/
+        -:  732:/*EOF*/
+        -:  733:/*EOF*/
+        -:  734:/*EOF*/
+       30:  735:/*EOF*/
+       30:  736:/*EOF*/
+       30:  737:/*EOF*/
+       90:  738:/*EOF*/
+       30:  739:/*EOF*/
+       30:  740:/*EOF*/
+       30:  741:/*EOF*/
+       30:  742:/*EOF*/
+        -:  743:/*EOF*/
+       30:  744:/*EOF*/
+    #####:  745:/*EOF*/
+    #####:  746:/*EOF*/
+    #####:  747:/*EOF*/
+        -:  748:/*EOF*/
+       30:  749:/*EOF*/
+    #####:  750:/*EOF*/
+    #####:  751:/*EOF*/
+    #####:  752:/*EOF*/
+        -:  753:/*EOF*/
+       30:  754:/*EOF*/
+       30:  755:/*EOF*/
+        -:  756:/*EOF*/
+        -:  757:/*EOF*/
+    #####:  758:/*EOF*/
+        -:  759:/*EOF*/
+        -:  760:/*EOF*/
+       30:  761:/*EOF*/
+       15:  762:/*EOF*/
+        -:  763:/*EOF*/
+        -:  764:/*EOF*/
+    #####:  765:/*EOF*/
+        -:  766:/*EOF*/
+       30:  767:/*EOF*/
+        -:  768:/*EOF*/
+        -:  769:/*EOF*/
+       30:  770:/*EOF*/
+        -:  771:/*EOF*/
+        -:  772:/*EOF*/
+        -:  773:/*EOF*/
+       30:  774:/*EOF*/
+        -:  775:/*EOF*/
+       30:  776:/*EOF*/
+       30:  777:/*EOF*/
+       30:  778:/*EOF*/
+       30:  779:/*EOF*/
+       30:  780:/*EOF*/
+       30:  781:/*EOF*/
+       30:  782:/*EOF*/
+       30:  783:/*EOF*/
+        -:  784:/*EOF*/
+        -:  785:/*EOF*/
+    #####:  786:/*EOF*/
+    #####:  787:/*EOF*/
+    #####:  788:/*EOF*/
+        -:  789:/*EOF*/
+    #####:  790:/*EOF*/
+    #####:  791:/*EOF*/
+    #####:  792:/*EOF*/
+        -:  793:/*EOF*/
+        -:  794:/*EOF*/
+       30:  795:/*EOF*/
+       30:  796:/*EOF*/
+       15:  797:/*EOF*/
+        -:  798:/*EOF*/
+        -:  799:/*EOF*/
+    #####:  800:/*EOF*/
+        -:  801:/*EOF*/
+       30:  802:/*EOF*/
+        -:  803:/*EOF*/
+        -:  804:/*EOF*/
+        -:  805:/*EOF*/
+      166:  806:/*EOF*/
+      166:  807:/*EOF*/
+        -:  808:/*EOF*/
+     4772:  809:/*EOF*/
+     2303:  810:/*EOF*/
+      166:  811:/*EOF*/
+      166:  812:/*EOF*/
+        -:  813:/*EOF*/
+        -:  814:/*EOF*/
+     2137:  815:/*EOF*/
+        -:  816:/*EOF*/
+        -:  817:/*EOF*/
+      166:  818:/*EOF*/
+        -:  819:/*EOF*/
+        -:  820:/*EOF*/
+        -:  821:/*EOF*/
+        -:  822:/*EOF*/
+        1:  823:/*EOF*/
+        -:  824:/*EOF*/
+        -:  825:/*EOF*/
+        -:  826:/*EOF*/
+        1:  827:/*EOF*/
+        1:  828:/*EOF*/
+        1:  829:/*EOF*/
+        1:  830:/*EOF*/
+    #####:  831:/*EOF*/
+    #####:  832:/*EOF*/
+    #####:  833:/*EOF*/
+        -:  834:/*EOF*/
+        1:  835:/*EOF*/
+        -:  836:/*EOF*/
+        1:  837:/*EOF*/
+        -:  838:/*EOF*/
+        -:  839:/*EOF*/
+        -:  840:/*EOF*/
+        -:  841:/*EOF*/
+        1:  842:/*EOF*/
+        1:  843:/*EOF*/
+        -:  844:/*EOF*/
+        1:  845:/*EOF*/
+        -:  846:/*EOF*/
+        -:  847:/*EOF*/
+        -:  848:/*EOF*/
+        -:  849:/*EOF*/
+        1:  850:/*EOF*/
+        1:  851:/*EOF*/
+        -:  852:/*EOF*/
+        1:  853:/*EOF*/
+        -:  854:/*EOF*/
+        -:  855:/*EOF*/
+        -:  856:/*EOF*/
+        -:  857:/*EOF*/
+        1:  858:/*EOF*/
+        1:  859:/*EOF*/
+        -:  860:/*EOF*/
+        1:  861:/*EOF*/
+        -:  862:/*EOF*/
+        -:  863:/*EOF*/
+        -:  864:/*EOF*/
+        -:  865:/*EOF*/
+    #####:  866:/*EOF*/
+    #####:  867:/*EOF*/
+        -:  868:/*EOF*/
+    #####:  869:/*EOF*/
+    #####:  870:/*EOF*/
+        -:  871:/*EOF*/
+        -:  872:/*EOF*/
+        -:  873:/*EOF*/
+    #####:  874:/*EOF*/
+    #####:  875:/*EOF*/
+    #####:  876:/*EOF*/
+    #####:  877:/*EOF*/
+    #####:  878:/*EOF*/
+    #####:  879:/*EOF*/
+        -:  880:/*EOF*/
+    #####:  881:/*EOF*/
+    #####:  882:/*EOF*/
+    #####:  883:/*EOF*/
+    #####:  884:/*EOF*/
+    #####:  885:/*EOF*/
+    #####:  886:/*EOF*/
+    #####:  887:/*EOF*/
+    #####:  888:/*EOF*/
+    #####:  889:/*EOF*/
+    #####:  890:/*EOF*/
+    #####:  891:/*EOF*/
+    #####:  892:/*EOF*/
+    #####:  893:/*EOF*/
+    #####:  894:/*EOF*/
+        -:  895:/*EOF*/
+    #####:  896:/*EOF*/
+    #####:  897:/*EOF*/
+    #####:  898:/*EOF*/
+    #####:  899:/*EOF*/
+    #####:  900:/*EOF*/
+    #####:  901:/*EOF*/
+    #####:  902:/*EOF*/
+    #####:  903:/*EOF*/
+    #####:  904:/*EOF*/
+        -:  905:/*EOF*/
+    #####:  906:/*EOF*/
+    #####:  907:/*EOF*/
+        -:  908:/*EOF*/
+    #####:  909:/*EOF*/
+        -:  910:/*EOF*/
+        -:  911:/*EOF*/
+    #####:  912:/*EOF*/
+    #####:  913:/*EOF*/
+    #####:  914:/*EOF*/
+        -:  915:/*EOF*/
+    #####:  916:/*EOF*/
+    #####:  917:/*EOF*/
+        -:  918:/*EOF*/
+        -:  919:/*EOF*/
+    #####:  920:/*EOF*/
+    #####:  921:/*EOF*/
+    #####:  922:/*EOF*/
+        -:  923:/*EOF*/
+    #####:  924:/*EOF*/
+    #####:  925:/*EOF*/
+        -:  926:/*EOF*/
+        -:  927:/*EOF*/
+    #####:  928:/*EOF*/
+    #####:  929:/*EOF*/
+    #####:  930:/*EOF*/
+        -:  931:/*EOF*/
+    #####:  932:/*EOF*/
+    #####:  933:/*EOF*/
+        -:  934:/*EOF*/
+        -:  935:/*EOF*/
+    #####:  936:/*EOF*/
+    #####:  937:/*EOF*/
+    #####:  938:/*EOF*/
+    #####:  939:/*EOF*/
+    #####:  940:/*EOF*/
+    #####:  941:/*EOF*/
+    #####:  942:/*EOF*/
+    #####:  943:/*EOF*/
+    #####:  944:/*EOF*/
+    #####:  945:/*EOF*/
+    #####:  946:/*EOF*/
+    #####:  947:/*EOF*/
+    #####:  948:/*EOF*/
+    #####:  949:/*EOF*/
+    #####:  950:/*EOF*/
+    #####:  951:/*EOF*/
+    #####:  952:/*EOF*/
+    #####:  953:/*EOF*/
+    #####:  954:/*EOF*/
+    #####:  955:/*EOF*/
+        -:  956:/*EOF*/
+    #####:  957:/*EOF*/
+    #####:  958:/*EOF*/
+    #####:  959:/*EOF*/
+        -:  960:/*EOF*/
+        -:  961:/*EOF*/
+    #####:  962:/*EOF*/
+        -:  963:/*EOF*/
+        -:  964:/*EOF*/
+    #####:  965:/*EOF*/
+    #####:  966:/*EOF*/
+        -:  967:/*EOF*/
+        -:  968:/*EOF*/
+        -:  969:/*EOF*/
+    #####:  970:/*EOF*/
+        -:  971:/*EOF*/
+    #####:  972:/*EOF*/
+    #####:  973:/*EOF*/
+    #####:  974:/*EOF*/
+        -:  975:/*EOF*/
+    #####:  976:/*EOF*/
+    #####:  977:/*EOF*/
+    #####:  978:/*EOF*/
+    #####:  979:/*EOF*/
+    #####:  980:/*EOF*/
+    #####:  981:/*EOF*/
+    #####:  982:/*EOF*/
+    #####:  983:/*EOF*/
+    #####:  984:/*EOF*/
+    #####:  985:/*EOF*/
+    #####:  986:/*EOF*/
+    #####:  987:/*EOF*/
+    #####:  988:/*EOF*/
+    #####:  989:/*EOF*/
+        -:  990:/*EOF*/
+    #####:  991:/*EOF*/
+    #####:  992:/*EOF*/
+        -:  993:/*EOF*/
+    #####:  994:/*EOF*/
+    #####:  995:/*EOF*/
+    #####:  996:/*EOF*/
+    #####:  997:/*EOF*/
+        -:  998:/*EOF*/
+        -:  999:/*EOF*/
+    #####: 1000:/*EOF*/
+    #####: 1001:/*EOF*/
+    #####: 1002:/*EOF*/
+    #####: 1003:/*EOF*/
+    #####: 1004:/*EOF*/
+        -: 1005:/*EOF*/
+        -: 1006:/*EOF*/
+    #####: 1007:/*EOF*/
+    #####: 1008:/*EOF*/
+    #####: 1009:/*EOF*/
+    #####: 1010:/*EOF*/
+    #####: 1011:/*EOF*/
+    #####: 1012:/*EOF*/
+    #####: 1013:/*EOF*/
+        -: 1014:/*EOF*/
+        -: 1015:/*EOF*/
+    #####: 1016:/*EOF*/
+    #####: 1017:/*EOF*/
+    #####: 1018:/*EOF*/
+    #####: 1019:/*EOF*/
+    #####: 1020:/*EOF*/
+    #####: 1021:/*EOF*/
+    #####: 1022:/*EOF*/
+    #####: 1023:/*EOF*/
+        -: 1024:/*EOF*/
+    #####: 1025:/*EOF*/
+        -: 1026:/*EOF*/
+    #####: 1027:/*EOF*/
+    #####: 1028:/*EOF*/
+        -: 1029:/*EOF*/
+        -: 1030:/*EOF*/
+    #####: 1031:/*EOF*/
+    #####: 1032:/*EOF*/
+    #####: 1033:/*EOF*/
+    #####: 1034:/*EOF*/
+    #####: 1035:/*EOF*/
+    #####: 1036:/*EOF*/
+        -: 1037:/*EOF*/
+    #####: 1038:/*EOF*/
+        -: 1039:/*EOF*/
+    #####: 1040:/*EOF*/
+    #####: 1041:/*EOF*/
+        -: 1042:/*EOF*/
+        -: 1043:/*EOF*/
+        -: 1044:/*EOF*/
+    #####: 1045:/*EOF*/
+        -: 1046:/*EOF*/
+        -: 1047:/*EOF*/
+    #####: 1048:/*EOF*/
+    #####: 1049:/*EOF*/
+        -: 1050:/*EOF*/
+        -: 1051:/*EOF*/
+        -: 1052:/*EOF*/
+        -: 1053:/*EOF*/
+    #####: 1054:/*EOF*/
+        -: 1055:/*EOF*/
+    #####: 1056:/*EOF*/
+        -: 1057:/*EOF*/
+        -: 1058:/*EOF*/
+        -: 1059:/*EOF*/
+    #####: 1060:/*EOF*/
+    #####: 1061:/*EOF*/
+    #####: 1062:/*EOF*/
+    #####: 1063:/*EOF*/
+    #####: 1064:/*EOF*/
+    #####: 1065:/*EOF*/
+    #####: 1066:/*EOF*/
+    #####: 1067:/*EOF*/
+    #####: 1068:/*EOF*/
+    #####: 1069:/*EOF*/
+    #####: 1070:/*EOF*/
+    #####: 1071:/*EOF*/
+    #####: 1072:/*EOF*/
+    #####: 1073:/*EOF*/
+    #####: 1074:/*EOF*/
+    #####: 1075:/*EOF*/
+        -: 1076:/*EOF*/
+        -: 1077:/*EOF*/
+    #####: 1078:/*EOF*/
+    #####: 1079:/*EOF*/
+    #####: 1080:/*EOF*/
+        -: 1081:/*EOF*/
+    #####: 1082:/*EOF*/
+    #####: 1083:/*EOF*/
+        -: 1084:/*EOF*/
+    #####: 1085:/*EOF*/
+    #####: 1086:/*EOF*/
+    #####: 1087:/*EOF*/
+        -: 1088:/*EOF*/
+        -: 1089:/*EOF*/
+    #####: 1090:/*EOF*/
+    #####: 1091:/*EOF*/
+    #####: 1092:/*EOF*/
+        -: 1093:/*EOF*/
+    #####: 1094:/*EOF*/
+    #####: 1095:/*EOF*/
+    #####: 1096:/*EOF*/
+    #####: 1097:/*EOF*/
+        -: 1098:/*EOF*/
+        -: 1099:/*EOF*/
+    #####: 1100:/*EOF*/
+        -: 1101:/*EOF*/
+    #####: 1102:/*EOF*/
+        -: 1103:/*EOF*/
+        -: 1104:/*EOF*/
+        -: 1105:/*EOF*/
+        -: 1106:/*EOF*/
+        -: 1107:/*EOF*/
+       36: 1108:/*EOF*/
+       36: 1109:/*EOF*/
+        -: 1110:/*EOF*/
+        -: 1111:/*EOF*/
+        -: 1112:/*EOF*/
+       36: 1113:/*EOF*/
+       36: 1114:/*EOF*/
+       36: 1115:/*EOF*/
+       36: 1116:/*EOF*/
+       36: 1117:/*EOF*/
+       36: 1118:/*EOF*/
+       36: 1119:/*EOF*/
+        -: 1120:/*EOF*/
+        -: 1121:/*EOF*/
+       36: 1122:/*EOF*/
+       36: 1123:/*EOF*/
+       36: 1124:/*EOF*/
+        -: 1125:/*EOF*/
+      972: 1126:/*EOF*/
+      936: 1127:/*EOF*/
+        -: 1128:/*EOF*/
+       36: 1129:/*EOF*/
+       36: 1130:/*EOF*/
+       36: 1131:/*EOF*/
+        -: 1132:/*EOF*/
+        -: 1133:/*EOF*/
+    #####: 1134:/*EOF*/
+    #####: 1135:/*EOF*/
+    #####: 1136:/*EOF*/
+        -: 1137:/*EOF*/
+    #####: 1138:/*EOF*/
+    #####: 1139:/*EOF*/
+    #####: 1140:/*EOF*/
+    #####: 1141:/*EOF*/
+        -: 1142:/*EOF*/
+        -: 1143:/*EOF*/
+       36: 1144:/*EOF*/
+        -: 1145:/*EOF*/
+       36: 1146:/*EOF*/
+        -: 1147:/*EOF*/
+        -: 1148:/*EOF*/
+        -: 1149:/*EOF*/
+    #####: 1150:/*EOF*/
+        -: 1151:/*EOF*/
+    #####: 1152:/*EOF*/
+        -: 1153:/*EOF*/
+    #####: 1154:/*EOF*/
+    #####: 1155:/*EOF*/
+    #####: 1156:/*EOF*/
+    #####: 1157:/*EOF*/
+    #####: 1158:/*EOF*/
+    #####: 1159:/*EOF*/
+    #####: 1160:/*EOF*/
+    #####: 1161:/*EOF*/
+    #####: 1162:/*EOF*/
+    #####: 1163:/*EOF*/
+    #####: 1164:/*EOF*/
+    #####: 1165:/*EOF*/
+        -: 1166:/*EOF*/
+    #####: 1167:/*EOF*/
+    #####: 1168:/*EOF*/
+        -: 1169:/*EOF*/
+        -: 1170:/*EOF*/
+    #####: 1171:/*EOF*/
+    #####: 1172:/*EOF*/
+        -: 1173:/*EOF*/
+        -: 1174:/*EOF*/
+    #####: 1175:/*EOF*/
+    #####: 1176:/*EOF*/
+        -: 1177:/*EOF*/
+        -: 1178:/*EOF*/
+    #####: 1179:/*EOF*/
+    #####: 1180:/*EOF*/
+        -: 1181:/*EOF*/
+        -: 1182:/*EOF*/
+    #####: 1183:/*EOF*/
+    #####: 1184:/*EOF*/

@@ -3,1363 +3,1289 @@
         -:    0:Data:ArquivoTeste.gcda
         -:    0:Runs:1
         -:    0:Programs:1
-        -:    1:#include <stdio.h>
-        -:    2:#include <stdlib.h>
-        -:    3:#include <stdbool.h>
-        -:    4:#include <string.h>
-        -:    5:
-        -:    6://Variavel global que representa uma constante.
-        -:    7:int Const = 0;
-        -:    8:
-        -:    9://Estrutura com uma string com o nome do objeto(objeto), um inteiro (id), e o criador da transação(criador).
-        -:   10:typedef struct transacoes{
-        -:   11:  char objeto[100];
-        -:   12:  char categoria[100];
-        -:   13:  float valor;  
-        -:   14:  int idT;
-        -:   15:
-        -:   16:  struct transacoes *proxT, *antT;
-        -:   17:  struct usuarios *criador;
-        -:   18:}transacoes;
-        -:   19:
-        -:   20://Estrutura com o nome de um amigo, um id  de um amigo e ponteiros para o proximo amigo.
-        -:   21:typedef struct amigos{
-        -:   22:  char nomeAmigo[100];
-        -:   23:  int idAmigo;
-        -:   24:
-        -:   25:  struct amigos *proxAmigo, *antAmigo;
-        -:   26:}amigos;
-        -:   27:
-        -:   28://Estrutura do tipo usuarios com dois inteiros representando o nome do usuario e o numero de Amizades para cada usuario.
-        -:   29://Apresenta tambem um ponteiro(Tipo usuarios) que aponta para proxima usuario e um ponteira para uma estrutura do tipo Amizades.
-        -:   30:typedef struct usuarios{
-        -:   31:  int id;
-        -:   32:  char nome[100];
-        -:   33:  char cidade[30];
-        -:   34:  char cep[20];
-        -:   35:  char cpf[12];
-        -:   36:  char senha[30];
-        -:   37:  int avaliacao;  
-        -:   38:  int numeroAmigos;             //Inteiro que representa o numero de amigos de um usuario.
-        -:   39:
-        -:   40:  struct amigos *Amigos[26];
-        -:   41:  struct usuarios *prox, *ant;
-        -:   42:}usuarios;
-        -:   43:
-        -:   44://Estrutura do tipo grafo com um vetor de caracteres representando o nome do grafo, um inteiro representando
-        -:   45://o numero de usuarios do grafo e um ponteiro para outra estrutura do tipo usuarios.
-        -:   46:typedef struct Grafo{
-        -:   47:  int N_usuarios;
-        -:   48:  int N_transacoes;
-        -:   49:
-        -:   50:  struct usuarios *listaAdj[26];
-        -:   51:  struct transacoes *listaT;
-        -:   52:}Grafo;
-        -:   53:
-        -:   54:
-        -:   55://Funcao cria_Grafo
-        -:   56://Aloca espaço de memoria para criar uma estrutura do tipo Grafo que atribui NomedoGrafo para estrutura.
-        -:   57:Grafo *cria_Grafo();
-        -:   58:
-        -:   59:transacoes *procura_transacaoDeUsuario(Grafo **G, usuarios *User);
-        -:   60:
-        -:   61:transacoes *procura_categoria_pnome(transacoes *transacao, char *nome);
-        -:   62:
-        -:   63://Funcao cria_transacao --- Recebe como Parametro um grafo(G) e um usuario(User); e retorna uma transacao.
-        -:   64:transacoes *cria_transacao(Grafo **G, usuarios *user);
-        -:   65:
-        -:   66://Funcao cria_transacaoAuto --- Recebe como Parametro um grafo(G), um usuario(User), uma string(nomeT), uma string(categoriaT) e um float(val)
-        -:   67://E retorna uma transacao.
-        -:   68:transacoes *cria_transacaoAuto(Grafo **G, usuarios *user, char *nomeT, char *categoriaT, float val);
-        -:   69:
-        -:   70://Funcao procura_categoria --- Recebe como Parametro um grafo(G) e uma string(categoria).
-        -:   71://E retorna uma lista de transacoes.
-        -:   72:transacoes *procura_categoria(Grafo **G, char *categoriaT);
-        -:   73:
-        -:   74://Funcao procura_nomeT --- Recebe como Parametro um grafo(G), uma string(categoria) e uma string (nomeT).
-        -:   75://E retorna uma lista de transacoes.
-        -:   76:transacoes *procura_nomeT(Grafo **G, char *categoriaT, char *nomeT);
-        -:   77:
-        -:   78://Funcao procura_transacaoDeAmigos --- Recebe como Parametro grafo(G), um usuario(User) e uma string (categoriaT).
-        -:   79://Retorna uma transacao.
-        -:   80:transacoes *procura_transacaoDeAmigos(Grafo **G, usuarios *User, char *categoriaT);
-        -:   81:
-        -:   82://Funcao procura_transacaoDeUsuario --- Recebe como Parametro grafo(G), um usuario(User).
-        -:   83://Retorna uma transacao.
-        -:   84:transacoes *procura_transacaoDeUsuario(Grafo **G, usuarios *User);
-        -:   85:
-        -:   86:
-        -:   87://Funcao procura_transacaoDeUsuario --- Recebe como Parametro grafo(G), um usuario(User).
-        -:   88://Retorna uma transacao.
-        -:   89:transacoes *procura_porId(transacoes *transacao, int id);
-        -:   90:
-        -:   91://Funcao conclui_transacao --- Recebe como Parametro grafo(G), transacoes(Transacao) e um inteiro(ava1).
-        -:   92://Retorna um usuario.
-        -:   93:usuarios *conclui_transacao(Grafo **G, transacoes **Transacao, int aval);
-        -:   94:
-        -:   95://Funcao exclui_transacao --- Recebe como Parametro grafo(G) e transacoes(Transacao).
-        -:   96:void exclui_transacao(Grafo **G, transacoes **Transacao);
-        -:   97:
-        -:   98://Funcao circulo_amigos --- Recebe como Parametro um usuario(User); e retorna uma lista de amigos de amigos.
-        -:   99:amigos *circulo_amigosLista(Grafo **G, usuarios **User);
-        -:  100:
-        -:  101://Funcao verifica_amizades --- Recebe como Parametro um usuario(User) e retorna uma lista de amigos de User.
-        -:  102:amigos *verifica_amizades(usuarios **User);
-        -:  103:
-        -:  104://Funcao testaUsuario --- Recebe como Parametro um usuario(User); e retorna um usuario.
-        -:  105:usuarios *testaUsuario(usuarios *User);
-        -:  106:
-        -:  107://Funcao procura_usuario --- Recebe como Parametro grafo(G); e retorna um usuario.
-        -:  108:usuarios *procura_usuario(Grafo *G);
-        -:  109:
-        -:  110://Funcao procura_nome --- Recebe como Parametro grafo(G) e uma string(nom); e retorna um usuario.
-        -:  111:usuarios *procura_nome(Grafo *G, char *nom);
-        -:  112:
-        -:  113://Funcao editar_pessoa --- Recebe como Parametro grafo(G); e retorna um usuario.
-        -:  114:usuarios *editar_pessoa(Grafo **G);
-        -:  115:
-        -:  116://Funcao cria_pessoa --- Recebe como Parametro grafo(G); e retorna um usuario.
-        -:  117:usuarios *cria_pessoa(Grafo **G);
-        -:  118:
-        -:  119://Funcao cria_pessoaAuto --- Recebe como Parametro grafo(G), uma string(nome), uma string(cpf),uma string(cep) e uma string(cidade).
-        -:  120://Retorna um usuario.
-        -:  121:usuarios *cria_pessoaAuto(Grafo **G, char *nom, char *cpf, char *cep, char *cidade);
-        -:  122:
-        -:  123://Funcao edita_cidade --- Recebe como Parametro grafo(G), um usuario(User) e uma string(cidade); e retorna um usuario.
-        -:  124:usuarios *edita_cidade(Grafo **G, usuarios **user, char *cidade);
-        -:  125:
-        -:  126://Funcao edita_cep --- Recebe como Parametro grafo(G), um usuario(User) e uma string(cep); e retorna um usuario.
-        -:  127:usuarios *edita_cep(Grafo **G, usuarios **user, char *cep);
-        -:  128:
-        -:  129://Funcao edita_cep --- Recebe como Parametro grafo(G), um usuario(User) e uma string(cpf); e retorna um usuario.
-        -:  130:usuarios *edita_cpf(Grafo **G, usuarios **user, char *cpf);
-        -:  131:
-        -:  132://Funcao edita_cep --- Recebe como Parametro grafo(G), um usuario(User) e uma string(nom); e retorna um usuario.
-        -:  133:usuarios *edita_nome(Grafo **G, usuarios **user, char *nom);
-        -:  134:
-        -:  135://Funcao salva_Arquivo --- Recebe como Parametros um Grafo(G) e armazena os dados do grafo em um arquivo.
-        -:  136:FILE *salva_Arquivo(Grafo **G);
-        -:  137:
-        -:  138://Funcao menu --- Recebe como Parametros um Grafo(G).
-        -:  139:void menu(Grafo **G);
-        -:  140:
-        -:  141://Funcao eh_amigo --- Recebe como Parametros um usuario(User) e um usuario(User2); e retorna um booleano.
-        -:  142:bool eh_amigo(usuarios *User, usuarios *User2);
-        -:  143:
-        -:  144://Funcao tamanho_Arquivo --- Recebe como Parametros uma string(nomeArquivo);e retorna um inteiro.
-        -:  145:int tamanho_Arquivo(char *nomeArquivo);
-        -:  146:
-        -:  147://Funcao verifica_letra --- Recebe como Parametros uma string(nome);e retorna um inteiro.
-        -:  148:int verifica_letra(char nome);
-        -:  149:
-        -:  150://Funcao destroi_Grafo --- Recebe como Parametros um Grafo(G).
-        -:  151:void destroi_Grafo(Grafo **G);
-        -:  152:
-        -:  153://Funcao exclui_usuario --- Recebe como Parametros um Grafo(G) e um usuario(User).
-        -:  154:void exclui_usuario(Grafo **G, usuarios **User);
-        -:  155:
-        -:  156://Funcao e excluir_amigo --- Recebe como Parametros um Grafo(G), um usuarios(User), um usuario(User1) e um inteiro(cons).
-        -:  157:void excluir_amigo(Grafo **G, usuarios **User, usuarios **User1, int cons);
-        -:  158:
-        -:  159://Funcao existe_Grafo --- Recebe como Parametro um Grafo(G) e retorna um valor verdadeiro,caso o grafo exista, e falso, caso nao exista grafo.
-        -:  160:bool existe_Grafo(Grafo *G);
-        -:  161:
-        -:  162://Funcao imprime Grafo --- Recebe como Parametro um Grafo(G) e imprime na tela todos os usuarios e Amizades.
-        -:  163:void imprime_Grafo(Grafo *G);
-        -:  164:
-        -:  165://Funcao imprime amigos --- Recebe como Parametro um usuario(User) e imprime na tela todas as Amizades de um usuario.
-        -:  166:void imprime_amigos(usuarios *User);
-        -:  167:
-        -:  168://Funcao imprime amigos --- Recebe como Parametro um usuario(User) e imprime na tela todas as Amizades de um usuario.
-        -:  169:void imprime_transacao(transacoes *transacao);
-        -:  170:
-        -:  171://Funcao adiciona_amigos --- Recebe como Parametros um Grafo(G), dois usuarios(User e User1) e um inteiro.
-        -:  172:void adiciona_amigos(Grafo **G, usuarios **User, usuarios **User1, int cons);
-        -:  173://Funcao eh_amigo --- Recebe como Parametro dois usuarios(User e User2) e retorna um valor booleano.
-        -:  174:
-        2:  175:transacoes *procura_porId(transacoes *transacao, int id){
-        -:  176:  struct transacoes *pont;
-        -:  177:
-        2:  178:  pont = (transacao);
-        4:  179:  while(pont != NULL){
-        2:  180:    if(pont->idT == id){
-        2:  181:      return pont;
-        -:  182:    }
-    #####:  183:    pont = pont->proxT;
-        -:  184:  }
-        -:  185:
-    #####:  186:  return pont;
-        -:  187:}
-        -:  188:
-    #####:  189:bool eh_amigo(usuarios *User, usuarios *User2){
-        -:  190:  struct amigos *pont;
-    #####:  191:  bool encontrado = false;
-        -:  192:
-    #####:  193:  pont = verifica_amizades(&(User));
-    #####:  194:  while(pont != NULL){
-    #####:  195:    if(pont->idAmigo == (User2)->id){  // Assertiva para verificar se dois usuarios são amigos.
-    #####:  196:      encontrado = true;
-        -:  197:    }
-    #####:  198:    pont = pont->proxAmigo;
-        -:  199:  }
-    #####:  200:  return encontrado;
-        -:  201:}
-        -:  202:
-        -:  203://Funcao circulo_amigos --- Recebe como Parametro um grafo(G) e um usuario(User) e retorna uma lista de amigos de amigos.
-    #####:  204:amigos *circulo_amigosLista(Grafo **G, usuarios **User){
-        -:  205:  struct usuarios *user2;
-        -:  206:  struct amigos *pont, *pont2, *lista, *aux, *pont3;
-        -:  207:  FILE *fp;
-        -:  208:
-    #####:  209:  pont = verifica_amizades(&(*User)); // cria uma lista de amigos de user.
-    #####:  210:  lista = NULL;
-    #####:  211:  while(pont != NULL){
-    #####:  212:    user2 = procura_nome((*G), pont->nomeAmigo); // Retorna um usuario(user2) partindo da lista de amigos de user.
-    #####:  213:    pont2 = verifica_amizades(&user2);  // Retorna uma lista de amigos de user2.
-    #####:  214:    while(pont2 != NULL){
-    #####:  215:      if((eh_amigo((*User), (procura_nome((*G), pont2->nomeAmigo))) == false)){  // Assertiva para verificar se um elemento da
-        -:  216:                                                                                  // lista de amigos de user2 é amigo de user.
-    #####:  217:        if((*User)->id != pont2->idAmigo){  // Asertiva para que o proprio user não seja adicionado a nova lista de amigos de amigos de user.
-        -:  218:
-        -:  219:          //Esse bloco de codigo é responsavel por criar uma lista de amigos de amigos de user.
-    #####:  220:          pont3 = (amigos*)malloc(sizeof(amigos));
-    #####:  221:          strcpy(pont3->nomeAmigo, pont2->nomeAmigo);
-    #####:  222:          pont3->idAmigo = pont2->idAmigo;
-    #####:  223:          if(lista == NULL){
-    #####:  224:            lista = pont3;
-    #####:  225:            lista->proxAmigo = NULL;
-    #####:  226:            lista->antAmigo = NULL;
-        -:  227:          }else{
-    #####:  228:            aux = lista;
-    #####:  229:            while(aux->proxAmigo != NULL){
-    #####:  230:                aux = aux->proxAmigo;
-        -:  231:            }
-    #####:  232:            aux->proxAmigo = pont3;
-    #####:  233:            pont3->antAmigo = aux;
-    #####:  234:            pont3->proxAmigo = NULL;
-        -:  235:          }
-        -:  236:          // Fim do bloco de criação de lista
-        -:  237:        }
-        -:  238:      }
-    #####:  239:      pont2 = pont2->proxAmigo;
-        -:  240:    }
-    #####:  241:    pont = pont->proxAmigo;
-        -:  242:  }
-        -:  243:  //Esse bloco de codigo é responsavel por criar um arquivo com a lista de amigos de amigos de user.
-    #####:  244:  if(lista != NULL){ // Assertiva para verificar se a lista existe.
-    #####:  245:    pont = lista;
-    #####:  246:    fp = fopen("/home/aeron/proj4/ProjetoMP/LIB/CirculoDeAmigos.txt", "w+");
-    #####:  247:    if(fp == NULL) // Assertiva para verificar se o arquivo existe.
-    #####:  248:      printf("Erro, nao foi possivel abrir o arquivo\n");
-        -:  249:    else{
-    #####:  250:      fprintf(fp, "--------------------- AmigosDeAmigos de %s ---------------------------------\n", (*User)->nome);
-    #####:  251:      while(pont != NULL){
-    #####:  252:        fprintf(fp, "Id = %d\n", pont->idAmigo);
-    #####:  253:        fprintf(fp, "Nome = %s\n", pont->nomeAmigo);
-    #####:  254:        pont = pont->proxAmigo;
-        -:  255:      }
-    #####:  256:      fprintf(fp, "---------------------------------------------------------------------------------\n\n");
-        -:  257:    }
-    #####:  258:    fclose(fp);
-        -:  259:  }
-        -:  260:
-    #####:  261:  return lista;
-        -:  262:}
-        -:  263:
-        -:  264://Funcao salva_Arquivo --- Recebe como Parametros um Grafo(G) e armazena os dados do grafo em um arquivo.
-        1:  265:FILE *salva_Arquivo(Grafo **G){
-        -:  266:  FILE *fp; 
-        -:  267:  usuarios *pont;
-        -:  268:  amigos *pontAmigos;
-        -:  269:  int i;
-        -:  270:
-        1:  271:  if(existe_Grafo(*G)){ // Assertiva para verificar a existencia do Grafo
-    #####:  272:    fp = fopen("/home/aeron/proj4/ProjetoMP/LIB/BancodeDados.txt","w+");
-    #####:  273:    if (fp == NULL){
-        -:  274:    // Verifica se existe um arquivo bancoDados.txt.
-    #####:  275:      printf("Impossível criar arquivo");
-        -:  276:    }           
-        -:  277:    else{
-    #####:  278:      for(i = 0; i < 26; i++){
-    #####:  279:        pont = ((*G)->listaAdj[i]);
-    #####:  280:        while(pont != NULL){
-    #####:  281:          fprintf(fp,"----------------------------------------------------------------------------\n");
-    #####:  282:          fprintf(fp,"Nome = %s\n", pont->nome);
-    #####:  283:          fprintf(fp,"CPF = %s\n", pont->cpf);
-    #####:  284:          fprintf(fp,"Cep = %s\n", pont->cep);
-    #####:  285:          fprintf(fp,"Cidade = %s\n", pont->cidade);
-    #####:  286:          fprintf(fp,"Numero de amigos = %d\n", pont->numeroAmigos);
-    #####:  287:          pontAmigos = verifica_amizades(&pont);
-    #####:  288:          if(pontAmigos == NULL){ // Assertiva que verifica se uma lista de amigos nao existe
-    #####:  289:              fprintf(fp, "Amigos = { }\n");
-        -:  290:          }
-        -:  291:          else{ 
-    #####:  292:            fprintf(fp, "Amigos = {");
-    #####:  293:            while(pontAmigos != NULL){
-    #####:  294:              fprintf(fp, " %s ", pontAmigos->nomeAmigo);
-    #####:  295:              pontAmigos = pontAmigos->proxAmigo;
-        -:  296:            }
-    #####:  297:            fprintf(fp, "}\n");
-        -:  298:          }
-    #####:  299:          pont = pont->prox;
-        -:  300:        }
-        -:  301:      }
-        -:  302:    }
-        -:  303:  }else{
-        1:  304:    fp = fopen("/home/aeron/proj4/ProjetoMP/LIB/BancodeDados.txt","r");
-        -:  305:  }
-        1:  306:  fclose(fp);
-        1:  307:  return fp;
-        -:  308:}
-        -:  309:
-        -:  310://Funcao cria_Grafo --- Recebe como Parametro um Grafo(G) e aloca espaço de memoria para criar uma estrutura do tipo Grafo.
-        2:  311:Grafo *cria_Grafo(){
-        -:  312:  struct Grafo *G;
-        2:  313:  int i = 0;
-        -:  314:
-        2:  315:  G = (Grafo *)malloc(sizeof(*G));
-        2:  316:  G->N_usuarios = 0;
-        2:  317:  G->listaT = NULL;
-        2:  318:  G->N_transacoes = 0;
-       56:  319:  while(i < 26){ //Laço para declarar todas hashtable como NULL.
-       52:  320:    G->listaAdj[i] = NULL;
-       52:  321:    i++;
-        -:  322:  }
-        2:  323:  return G;
-        -:  324:}
-        -:  325:
-        -:  326://Funcao conclui_transacao --- Recebe como parametros um grafo(G), uma transação(Transacao) e um valor inteiro(aval).
-        -:  327:// Retorna um usuário criador da transação.
-        1:  328:usuarios *conclui_transacao(Grafo **G, transacoes **Transacao, int aval){
-        -:  329:  struct usuarios *User;
-        -:  330:
-        1:  331:  User = (*Transacao)->criador;
-        1:  332:  if((User->avaliacao) != 0){ // Assertiva para testar se o usuario foi avaliado.
-    #####:  333:    aval = ((User->avaliacao) + aval) / 2;  // Se o usuario for avaliado, a nova avaliação é somada a a avaliação antiga.
-        -:  334:                                            // A nova avaliaçao será uma media disso.
-        -:  335:  }
-        -:  336:
-        1:  337:  User->avaliacao = aval;
-        1:  338:  exclui_transacao(&(*G), &(*Transacao));
-        -:  339:  
-        1:  340:  return User;
-        -:  341:}
-        -:  342:
-        -:  343://Funcao exclui_transacao --- Recebe como parametros um grafo(G) e uma transação(Transacao).
-        2:  344:void exclui_transacao(Grafo **G, transacoes **Transacao){
-        -:  345:  struct transacoes *pont;
-        -:  346:
-        2:  347:  pont = (*G)->listaT;
-        6:  348:  while(pont != NULL){ // Verifica se existe transações e entra em uma laço que percorre toda a lista de transações.
-        2:  349:    if(pont->idT == (*Transacao)->idT){   //Assertiva para verificar se Transacao equivale a um elemento da lista de transaçãoes.
-        2:  350:      if((*Transacao)->proxT == NULL && (*Transacao)->antT == NULL){
-        2:  351:        ((*G)->listaT) = NULL;
-        2:  352:        free((*Transacao));
-        -:  353:      }
-        2:  354:      if((*Transacao)->proxT != NULL && (*Transacao)->antT == NULL){   //Assertiva para verificar se Transacao é o inicio da lista.
-    #####:  355:        ((*G)->listaT) = (*Transacao)->proxT;
-    #####:  356:        (*Transacao)->proxT->antT = ((*G)->listaT);
-    #####:  357:        free((*Transacao));
-        -:  358:      }
-        2:  359:      if((*Transacao)->proxT != NULL && (*Transacao)->antT != NULL){  //Assertiva para verificar se Transacao está entre outras transações.
-    #####:  360:        (*Transacao)->proxT->antT = (*Transacao)->antT;
-    #####:  361:        (*Transacao)->antT->proxT = (*Transacao)->proxT;
-    #####:  362:        free((*Transacao));
-        -:  363:      }
-        2:  364:      if((*Transacao)->proxT == NULL && (*Transacao)->antT != NULL){  //Assertiva para verificar se Transacao é o fim da lista.
-    #####:  365:        (*Transacao)->antT->proxT = NULL;
-    #####:  366:        free((*Transacao));
-        -:  367:      }
-        2:  368:      pont = NULL;
-        -:  369:    }
-        -:  370:    else{
-    #####:  371:      pont = pont->proxT;
-        -:  372:    }
-        -:  373:  }
-        2:  374:  if((*G)->N_transacoes > 0){   //Assertiva para verificar se existe transações na lista.
-        2:  375:    (*G)->N_transacoes--;
-        -:  376:  }else{
-    #####:  377:    (*G)->N_transacoes = 0;
-        -:  378:  }
-        2:  379:}
-        -:  380:
-        -:  381://Funcao cria_transacao --- Recebe como parametros um grafo(G) e um usuario(user).
-        -:  382:// Retorna uma transação criada.
-        2:  383:transacoes *cria_transacao(Grafo **G, usuarios *user){
-        -:  384:  struct transacoes *Tr, *pont;
-        -:  385:  char nomeT[100], categoriaT[100];
-        -:  386:  float val;
-        -:  387:  FILE *fp; 
-        -:  388:  
-        2:  389:  if(existe_Grafo(*G)){ // Assertiva para verificar a existencia do Grafo
-        2:  390:    Tr = (transacoes*)malloc(sizeof(transacoes));
-        -:  391:    
-        2:  392:    printf("Digite a categoria da transacao: \n");
-        2:  393:    scanf(" %[^\n]", categoriaT);
-        2:  394:    strcpy(Tr->categoria, categoriaT);
-        2:  395:    printf("Digite o titulo da transacao: \n");
-        2:  396:    scanf(" %[^\n]", nomeT);
-        2:  397:    strcpy(Tr->objeto, nomeT);
-        2:  398:    printf("Digite o o valor do objeto de transacao: \n");
-        2:  399:    scanf(" %f", &val);
-        2:  400:    Tr->idT = (*G)->N_transacoes;
-        2:  401:    Tr->criador = user;
-        2:  402:    Tr->valor = val;
-        -:  403:    //Esse bloco de codigo é responsavel por adicionar uma transação à lista de transações.
-        2:  404:    if((*G)->listaT == NULL){
-        2:  405:      (*G)->listaT = Tr;
-        2:  406:      (*G)->listaT->antT = NULL;
-        2:  407:      (*G)->listaT->proxT = NULL;
-        -:  408:    }else{
-    #####:  409:      pont = (*G)->listaT;
-    #####:  410:      while(pont->proxT != NULL){
-    #####:  411:        pont = pont->proxT;
-        -:  412:      }
-    #####:  413:      Tr->antT = pont;
-    #####:  414:      Tr->proxT = NULL;
-    #####:  415:      pont->proxT = Tr;
-        -:  416:    }
-        -:  417:    //Fim do bloco de criação de transação
-        2:  418:    (*G)->N_transacoes++;
-        -:  419:
-        2:  420:    fp = fopen("/home/aeron/ProjetoMP/LIB/Transacoes.txt", "a+");
-        2:  421:    if(fp == NULL) // Verifica se o arquivo existe.
-    #####:  422:      printf("Erro, nao foi possivel abrir o arquivo\n");
-        -:  423:    else{
-        2:  424:      fprintf(fp, "Id = %d\n", Tr->idT);
-        2:  425:      fprintf(fp, "Nome = %s\n", Tr->objeto);
-        2:  426:      fprintf(fp, "Categoria = %s\n", Tr->categoria);
-        2:  427:      fprintf(fp, "Criador = %s\n", Tr->criador->nome);
-        2:  428:      fprintf(fp, "Valor = %f\n", Tr->valor);
-        -:  429:    }
-        2:  430:    fclose(fp);
-        -:  431:  }
-        -:  432:
-        2:  433:  return Tr;
-        -:  434:}
-        -:  435:
-        -:  436://Funcao cria_transacao --- Recebe como parametros um grafo(G) e um usuario(user).
-        -:  437:// Retorna uma transação criada.
-        -:  438:// Esta função é uma copia da função cria_transacao, ela foi utilizada nos testes do Gteste para agilizar o processo de testes.
-    #####:  439:transacoes *cria_transacaoAuto(Grafo **G, usuarios *user, char *nomeT, char *categoriaT, float val){
-        -:  440:  struct transacoes *Tr, *pont;
-        -:  441:  FILE *fp;
-        -:  442:
-    #####:  443:  if(existe_Grafo(*G)){ // Assertiva para verificar a existencia do Grafo
-    #####:  444:    Tr = (transacoes*)malloc(sizeof(transacoes));
-    #####:  445:    strcpy(Tr->categoria, categoriaT);
-    #####:  446:    strcpy(Tr->objeto, nomeT);
-    #####:  447:    Tr->idT = (*G)->N_transacoes;
-    #####:  448:    Tr->criador = user;
-    #####:  449:    Tr->valor = val;
-    #####:  450:    Tr->proxT = NULL;
-    #####:  451:    Tr->antT = NULL;
-    #####:  452:    if((*G)->listaT == NULL){
-    #####:  453:      (*G)->listaT = Tr;
-    #####:  454:      (*G)->listaT->antT = NULL;
-    #####:  455:      (*G)->listaT->proxT = NULL;
-        -:  456:    }else{
-    #####:  457:      pont = (*G)->listaT;
-    #####:  458:      while(pont->proxT != NULL){
-    #####:  459:        pont = pont->proxT;
-        -:  460:      }
-    #####:  461:      Tr->antT = pont;
-    #####:  462:      Tr->proxT = NULL;
-    #####:  463:      pont->proxT = Tr;
-        -:  464:    }
-    #####:  465:    (*G)->N_transacoes++;
-        -:  466:
-        -:  467:
-    #####:  468:    fp = fopen("/home/aeron/proj4/ProjetoMP/LIB/Transacoes.txt", "a+");
-    #####:  469:    if(fp == NULL)
-    #####:  470:      printf("Erro, nao foi possivel abrir o arquivo\n");
-        -:  471:    else{
-    #####:  472:      fprintf(fp, "Id = %d\n", Tr->idT);
-    #####:  473:      fprintf(fp, "Nome = %s\n", Tr->objeto);
-    #####:  474:      fprintf(fp, "Categoria = %s\n", Tr->categoria);
-    #####:  475:      fprintf(fp, "Criador = %s\n", Tr->criador->nome);
-    #####:  476:      fprintf(fp, "Valor = %.2f\n\n", Tr->valor);
-        -:  477:    }
-    #####:  478:    fclose(fp);
-        -:  479:  }
-    #####:  480:  return Tr;
-        -:  481:}
-        -:  482:
-        -:  483://Funcao procura_transacao --- Recebe como parametros um grafo(G) e uma string(categoriaT).
-        -:  484:// Retorna uma transação.
-        3:  485:transacoes *procura_categoria(Grafo **G, char *categoriaT){
-        3:  486:  struct transacoes *Tr, *listadeTransacoes = NULL, *pont, *pont2;
-        -:  487:
-        3:  488:  pont = (*G)->listaT;
-        9:  489:  while(pont != NULL){
-        3:  490:    if(strcmp(pont->categoria, categoriaT) == 0){ // Assertiva para verificar se uma categoria da lista de transações é igual à categoriaT.
-        -:  491:
-        -:  492:      // Esse bloco de código é responsavel pela criação de uma lista de transações que tiverem a categoria igual à categoriaT.
-        3:  493:      Tr = (transacoes*)malloc(sizeof(transacoes));
-        3:  494:      Tr->idT = pont->idT;
-        3:  495:      Tr->criador = pont->criador;
-        3:  496:      Tr->valor = pont->valor;
-        3:  497:      strcpy(Tr->categoria, pont->categoria);
-        3:  498:      strcpy(Tr->objeto, pont->objeto);
-        3:  499:      if(listadeTransacoes == NULL){
-        3:  500:        listadeTransacoes = Tr;
-        3:  501:        listadeTransacoes->proxT = NULL;
-        3:  502:        listadeTransacoes->antT = NULL;
-        -:  503:      }else{
-    #####:  504:        pont2 = listadeTransacoes;
-    #####:  505:        while(pont2->proxT != NULL){
-    #####:  506:          pont2 = pont2->proxT;
-        -:  507:        }
-    #####:  508:        Tr->antT = pont;
-    #####:  509:        Tr->proxT = NULL;
-    #####:  510:        pont2->proxT = Tr;
-        -:  511:      }
-        -:  512:      // Fim do bloco
-        -:  513:    }
-        3:  514:    pont = pont->proxT;
-        -:  515:  }
-        -:  516:
-        3:  517:  return listadeTransacoes;
-        -:  518:}
-        -:  519:
-        -:  520://Funcao procura_nomeT --- Recebe como Parametro um grafo(G), uma string(categoria) e uma string (nomeT).
-        -:  521://E retorna uma lista de transacoes.
-        1:  522:transacoes *procura_nomeT(Grafo **G, char *categoriaT, char *nomeT){
-        1:  523:  struct transacoes *listadeTransacoes = NULL, *pont, *Tr, *pont2;
-        -:  524:  int i , j;
-        -:  525:
-        1:  526:  pont = procura_categoria(&(*G), categoriaT);  // retorna uma lista de transações com categorias iguais à categoria enviada como parametro da função.
-        3:  527:  while(pont != NULL){
-        5:  528:    for(i = 0; (pont->objeto[i]); i++){
-        4:  529:      if((pont->objeto[i]) == nomeT[0]){      // Assertiva que verifica se a primeira letra do objeto é igual a letra do nome mandado como parametro.
-        1:  530:        j = 1;
-        6:  531:        while(((pont->objeto[i+j]) == nomeT[j])){  // Assertiva que verifica se as letras seguintes do objeto são iguais a letra do nome mandado como parametro.
-        4:  532:          j++;
-        -:  533:        }
-        1:  534:        if(j >= 3){ // Assertiva que verifica se o minimo de letras para uma busca por nome foi satisfeita.
-        -:  535:
-        -:  536:         // Esse bloco de código é responsavel pela criação de uma lista de transações que tiverem o nome do objeto igual ao nomeT.
-        1:  537:          Tr = (transacoes*)malloc(sizeof(transacoes));
-        1:  538:          Tr->idT = pont->idT;
-        1:  539:          Tr->criador = pont->criador;
-        1:  540:          Tr->valor = pont->valor;
-        1:  541:          strcpy(Tr->categoria, pont->categoria);
-        1:  542:          strcpy(Tr->objeto, pont->objeto);
-        1:  543:          if(listadeTransacoes == NULL){
-        1:  544:            listadeTransacoes = Tr;
-        1:  545:            listadeTransacoes->proxT = NULL;
-        1:  546:            listadeTransacoes->antT = NULL;
-        -:  547:          }else{
-    #####:  548:            pont2 = listadeTransacoes;
-    #####:  549:            while(pont2->proxT != NULL){
-    #####:  550:              pont2 = pont2->proxT;
-        -:  551:            }
-    #####:  552:            Tr->antT = pont2;
-    #####:  553:            Tr->proxT = NULL;
-    #####:  554:            pont2->proxT = Tr;
-        -:  555:          }
-        -:  556:          //Fim do bloco
-        -:  557:        }
-        -:  558:      }
-        -:  559:    }
-        1:  560:    pont = pont->proxT;
-        -:  561:  }
-        -:  562:
-        1:  563:  return listadeTransacoes;
-        -:  564:}
-        -:  565:
-        -:  566:// Funcao procura_transacaoDeAmigos - Recebe um Grafo(G), um usuario (User) e uma string (Categoria) como parametros.
-        -:  567:// Procura em uma lista de transações se existe a categoria enviada como parametro e depois pesquisa se algum de seus amigos é o criador dessa transação.
-    #####:  568:transacoes *procura_transacaoDeAmigos(Grafo **G, usuarios *User, char *categoriaT){
-    #####:  569:  struct transacoes *listadeTransacoes = NULL, *pont, *Tr, *pont2;
-        -:  570:  struct amigos *amigoT;
-        -:  571:
-    #####:  572:  amigoT = verifica_amizades(&(User));
-    #####:  573:  pont = procura_categoria(&(*G), categoriaT);
-    #####:  574:  if(pont != NULL){ 
-    #####:  575:    while(pont != NULL){
-    #####:  576:      while(amigoT != NULL){
-    #####:  577:        if(pont->criador->id == amigoT->idAmigo){  // Assertiva que verifica se o criador de uma transações representa uma amigo de user.
-        -:  578:
-        -:  579:          //Esse bloco é responsavel por criar uma lista de transações em que seus criadores sejam amigos de user.
-    #####:  580:          Tr = (transacoes*)malloc(sizeof(transacoes));
-    #####:  581:          Tr->idT = pont->idT;
-    #####:  582:          Tr->criador = pont->criador;
-    #####:  583:          Tr->valor = pont->valor;
-    #####:  584:          strcpy(Tr->categoria, pont->categoria);
-    #####:  585:          strcpy(Tr->objeto, pont->objeto);
-    #####:  586:          if(listadeTransacoes == NULL){
-    #####:  587:            listadeTransacoes = Tr;
-    #####:  588:            listadeTransacoes->proxT = NULL;
-    #####:  589:            listadeTransacoes->antT = NULL;
-        -:  590:          }else{
-    #####:  591:            pont2 = listadeTransacoes;
-    #####:  592:            while(pont2->proxT != NULL){
-    #####:  593:              pont2 = pont2->proxT;
-        -:  594:            }
-    #####:  595:            Tr->antT = pont2;
-    #####:  596:            Tr->proxT = NULL;
-    #####:  597:            pont2->proxT = Tr;
-        -:  598:          }
-        -:  599:          //Fim do bloco
-        -:  600:        }
-    #####:  601:        amigoT = amigoT->proxAmigo;
-        -:  602:      }
-    #####:  603:      pont = pont->proxT;
-        -:  604:    }
-        -:  605:  }else{
-    #####:  606:    printf("Categoria nao encontrada\n");
-        -:  607:  }
-        -:  608:
-    #####:  609:  return listadeTransacoes;
-        -:  610:}
-        -:  611:
-        -:  612://Funcao procura_transacaoDeUsuario --- Recebe como parametros um grafo(G) e um usuario(User).
-        5:  613:transacoes *procura_transacaoDeUsuario(Grafo **G, usuarios *User){
-        5:  614:  struct transacoes *listadeTransacoes = NULL, *pont, *Tr, *pont2;
-        -:  615:
-        5:  616:  pont = (*G)->listaT;
-        5:  617:  if(pont != NULL){ 
-        6:  618:    while(pont != NULL){
-        2:  619:      if(pont->criador->id == User->id){  // Assertiva que verifica se o criador de uma transações representa um user.
-        -:  620:  
-        -:  621:        //Esse bloco é responsavel por criar uma lista de transações em que seus criadores sejam amigos de user.
-        2:  622:        Tr = (transacoes*)malloc(sizeof(transacoes));
-        2:  623:        Tr->idT = pont->idT;
-        2:  624:        Tr->criador = pont->criador;
-        2:  625:        Tr->valor = pont->valor;
-        2:  626:        strcpy(Tr->categoria, pont->categoria);
-        2:  627:        strcpy(Tr->objeto, pont->objeto);
-        2:  628:        if(listadeTransacoes == NULL){
-        2:  629:          listadeTransacoes = Tr;
-        2:  630:          listadeTransacoes->proxT = NULL;
-        2:  631:          listadeTransacoes->antT = NULL;
-        -:  632:        }else{
-    #####:  633:          pont2 = listadeTransacoes;
-    #####:  634:          while(pont2->proxT != NULL){
-    #####:  635:            pont2 = pont2->proxT;
-        -:  636:          }
-    #####:  637:          Tr->antT = pont2;
-    #####:  638:          Tr->proxT = NULL;
-    #####:  639:          pont2->proxT = Tr;
-        -:  640:        }
-        -:  641:      }
-        2:  642:      pont = pont->proxT;
-        -:  643:    }
-        -:  644:  }
-        -:  645:
-        5:  646:  return listadeTransacoes;
-        -:  647:}
-        -:  648:
-        -:  649://Funcao tamanho_Arquivo - Recebe como parametro uma string (nomeArquivo).
-        -:  650://Retorna um valor inteiro que representa o tamanho do arquivo.
-    #####:  651:int tamanho_Arquivo(char *nomeArquivo){
-    #####:  652:  FILE *fp= fopen(nomeArquivo, "r");
-        -:  653:  int tamanho;
-        -:  654:
-    #####:  655:  if(fp == NULL){ // Verifica se o arquivo existe.
-    #####:  656:      return 0;
-        -:  657:  }else{
-    #####:  658:    fseek(fp, 0, SEEK_END);
-    #####:  659:    tamanho = ftell(fp);
-    #####:  660:    fclose(fp);
-        -:  661:
-    #####:  662:    return tamanho;
-        -:  663:  }
-        -:  664:}
-        -:  665:
-        -:  666://Funcao existe_Grafo --- Recebe como Parametro um Grafo(G) e retorna um valor verdadeiro,caso o grafo exista, e falso, caso nao exista grafo.
-        4:  667:bool existe_Grafo(Grafo *G){
-        4:  668:  if(G->N_usuarios != 0){  // Verifica se o numero de usuarios é maior que 0.
-        3:  669:    return true;
-        -:  670:  }
-        -:  671:  else{
-        -:  672:    //printf("Nao existem usuarios na rede\n");
-        1:  673:    return false;
-        -:  674:  }
-        -:  675:}
-        -:  676:
-        -:  677://Funcao exclui_usuario --- Recebe como Parametro um Grafo(G), libera o espaço de memoria alocado para um usuario.
-        4:  678:void exclui_usuario(Grafo **G, usuarios **User){
-        -:  679:  int letra;
-        -:  680:  struct amigos *amigo, *pont;
-        -:  681:  struct usuarios *User2;
-        -:  682:
-        4:  683:  if((*User) != NULL){ //Assertiva para testar existencia de um usuario.
-        4:  684:    letra = verifica_letra((*User)->nome[0]);
-        4:  685:    amigo = (verifica_amizades(&(*User)));
-        4:  686:    if(amigo != NULL){ //Assertiva para testar se um usuario tem amizades.
-        1:  687:      pont = amigo;
-        3:  688:      while(pont != NULL){
-        1:  689:        User2 = procura_nome((*G), pont->nomeAmigo);
-        1:  690:        excluir_amigo(&(*G), &(*User), &User2, 0);
-        1:  691:        pont = pont->proxAmigo;
-        -:  692:      }
-        1:  693:      free(amigo);
-        -:  694:    }
-        4:  695:    if((*User)->ant != NULL && (*User)->prox != NULL){ // Verifica se o usuario a ser excluido está entre outros usuarios.
-    #####:  696:      (*User)->ant->prox = (*User)->prox;
-    #####:  697:      (*User)->prox->ant = (*User)->ant;
-        -:  698:    }
-        4:  699:    if((*User)->ant == NULL && (*User)->prox != NULL){ // Verifica se o usuario a ser excluido está no inicio da lista e se existe outros usuarios a sua frente.
-    #####:  700:      (*User)->prox->ant = NULL;
-    #####:  701:      ((*G)->listaAdj[letra]) = (*User)->prox;
-        -:  702:    }
-        4:  703:    if((*User)->ant == NULL && (*User)->prox == NULL){ // Verifica se o usuario a ser excluido está no inicio da lista e se não existe outros usuarios a sua frente.
-        4:  704:      ((*G)->listaAdj[letra]) = NULL;
-        -:  705:    }
-        4:  706:    if((*User)->ant != NULL && (*User)->prox == NULL){ // Verifica se o usuario a ser excluido está no final da lista.
-    #####:  707:      (*User)->ant->prox = NULL;
-        -:  708:    }
-        4:  709:    free((*User));
-        4:  710:    (*G)->N_usuarios--;
-        -:  711:  }
-        4:  712:} 
-        -:  713:
-        -:  714://Funcao verifica_amizades --- Recebe como Parametro um usuario(User).
-        -:  715://Retorna uma lista de amigos de User.
-       17:  716:amigos *verifica_amizades(usuarios **User){
-       17:  717:  int cont = 0, i = 0;
-        -:  718:  struct amigos *listaAmigos, *pont, *pont2, *iterator;
-        -:  719:
-       17:  720:  listaAmigos = NULL;
-       17:  721:  if((*User)->numeroAmigos != 0){ // Assertiva para verificar se o usuario tem amigos.
-       96:  722:    while(cont != ((*User)->numeroAmigos)){
-       84:  723:      pont = ((*User)->Amigos[i]);
-      176:  724:      while(pont != NULL){
-        -:  725:        // Bloco de codigo responsavel por criar a lista de amigos de User.
-        8:  726:        pont2 = (amigos*)malloc(sizeof(amigos));
-        8:  727:        strcpy(pont2->nomeAmigo, pont->nomeAmigo);
-        8:  728:        pont2->idAmigo = pont->idAmigo;
-        8:  729:        if(cont == 0){
-        6:  730:          listaAmigos = pont2;
-        6:  731:          listaAmigos->proxAmigo = NULL;
-        6:  732:          listaAmigos->antAmigo = NULL;
-        -:  733:        }else{
-        2:  734:          iterator = listaAmigos;
-        4:  735:          while(iterator->proxAmigo != NULL){
-    #####:  736:            iterator = iterator->proxAmigo;
-        -:  737:          }
-        2:  738:          iterator->proxAmigo = pont2;
-        2:  739:          pont2->antAmigo = iterator;
-        2:  740:          pont2->proxAmigo = NULL;
-        -:  741:        }
-        -:  742:        // Fim do bloco
-        8:  743:        pont = pont->proxAmigo;
-        8:  744:        cont++;
-        -:  745:      }
-       84:  746:      i++;
-        -:  747:    }
-        -:  748:  }
-       17:  749:  return listaAmigos;
-        -:  750:}
-        -:  751:
-        -:  752://Funcao destroi_Grafo --- Recebe como Parametro um Grafo(G) e libera cada espaço de memoria alocado dinamicamente.
-        1:  753:void destroi_Grafo(Grafo **G){
-        -:  754:  int i;
-        -:  755:  FILE *fp;
-        -:  756:  struct usuarios *pont;
-        -:  757:
-        1:  758:  if(existe_Grafo(*G)){ // Verifica se o Grafo existe.
-       27:  759:    for(i = 0; i < 26; i++){
-       26:  760:      pont = (*G)->listaAdj[i];
-       54:  761:      while(pont != NULL){
-        2:  762:        exclui_usuario(&(*G), &(pont));
-        2:  763:        pont = pont->prox;
-        -:  764:      }
-        -:  765:    }
-        1:  766:    fp = fopen("/home/aeron/proj4/ProjetoMP/LIB/BancodeDados.txt","w");
-        1:  767:    fclose(fp);
-        1:  768:    free(*G);
-        1:  769:    cria_Grafo();
-        -:  770:  }
-        1:  771:}
-        -:  772:
-        -:  773: //Funcao imprime Grafo --- Recebe como Parametro um Grafo(G) e imprime na tela todos os usuarios e Amizades.
-        2:  774:void imprime_Grafo(Grafo *G){
-        2:  775:  int i = 0;
-        -:  776:  struct usuarios *pont;
-        -:  777:
-        2:  778:  if(G->N_usuarios > 0){
-        2:  779:    printf("Numero de usuarios = %d\n", G->N_usuarios);
-       56:  780:    while(i < 26){
-       52:  781:      if((G->listaAdj[i]) != NULL){
-        3:  782:        printf("\n[%c] ->\n", ('A'+i));
-        3:  783:        pont = G->listaAdj[i];
-        9:  784:        while(pont != NULL){
-        3:  785:          printf("        %s (%d)\n", pont->nome, pont->id);
-        3:  786:          imprime_transacao(procura_transacaoDeUsuario(&G, pont));
-        3:  787:          imprime_amigos(pont);
-        3:  788:          pont = pont->prox;
-        -:  789:        }
-        -:  790:      }
-        -:  791:      else{
-       49:  792:        printf("\n[%c] -> Esta vazio\n", ('A'+i));
-        -:  793:      }
-       52:  794:      i++;
-        -:  795:    }
-        -:  796:  }else{
-    #####:  797:    printf("Rede Social sem usuarios\n");
-        -:  798:  }
-        2:  799:}
-        -:  800:
-        -:  801://Funcao imprime_transacao --- Recebe como parametro uma transacao(tran)
-       10:  802:void imprime_transacao(transacoes *tran){
-        -:  803:  transacoes *pont;
-        -:  804:
-       10:  805:  pont = (tran);
-       10:  806:  if(pont != NULL){
-       21:  807:    while(pont != NULL){
-        7:  808:      printf("Id = %d\n", pont->idT);
-        7:  809:      printf("Categoria = %s ---- Nome = %s ---- Valor = %.2f\n", pont->categoria, pont->objeto, pont->valor);
-        7:  810:      pont = pont->proxT;
-        -:  811:    }
-        -:  812:  }
-        -:  813:  else{
-        3:  814:    printf("Nao existe transacoes para esse usuario\n");
-        -:  815:  }        
-       10:  816:}
-        -:  817:
-        -:  818: //Funcao imprime Grafo --- Recebe como Parametro um Grafo(G) e imprime na tela todos os usuarios e Amizades.
-       12:  819:void imprime_amigos(usuarios *User){
-        -:  820:  amigos *pontAmigos;
-        -:  821:
-       12:  822:  pontAmigos = verifica_amizades(&(User));
-       12:  823:  if(pontAmigos == NULL){
-        7:  824:      printf("Amigos %s = { }\n", (User)->nome);
-        -:  825:  }
-        -:  826:  else{
-        5:  827:    printf("Amigos %s = {", (User)->nome);
-       17:  828:    while(pontAmigos != NULL){
-        7:  829:      printf(" %s  (%d)", pontAmigos->nomeAmigo, pontAmigos->idAmigo);
-        7:  830:      pontAmigos = pontAmigos->proxAmigo;
-        -:  831:    }
-        5:  832:    printf("}\n\n");
-        -:  833:  }
-       12:  834:}
-        -:  835:
-        -:  836://Funcao procura_nome --- Recebe como Parametros um Grafo(G) e um nome.
-        -:  837://Retorna um usuario ou NULL caso não encontre o usuario.
-        8:  838:usuarios *procura_nome(Grafo *G, char *nom){
-        -:  839:  struct usuarios *User, *user1;
-        8:  840:  bool encontrado = false;
-        -:  841:  int letra;
-        -:  842:
-        8:  843:  letra = verifica_letra(nom[0]);
-        8:  844:  User = ((G->listaAdj[letra]));
-       24:  845:  while(User != NULL){
-        8:  846:    if(strcmp(nom, User->nome) == 0){
-        7:  847:      encontrado = true;
-        7:  848:      user1 = User;
-        -:  849:    }
-        8:  850:    User = User->prox;
-        -:  851:  }
-        8:  852:  if(encontrado){
-        -:  853:    //printf("Usuario %s encontrado!\n", user1->nome);
-        7:  854:    return user1;
-        -:  855:  }
-        -:  856:  else{
-        -:  857:   //printf("\nUsuario %s Nao Encontrado!!\n", nom);
-        1:  858:    return NULL;
-        -:  859:  }
-        -:  860:}
-        -:  861:
-        -:  862://Funcao procura_usuario --- Recebe como Parametros um Grafo(G).
-        -:  863://Retorna um usuario ou NULL caso não encontre o usuario.
-        4:  864:usuarios *procura_usuario(Grafo *G){
-        -:  865:  struct usuarios *User, *user1;
-        4:  866:  bool encontrado = false;
-        -:  867:  char nom[100];
-        -:  868:  int letra;
-        -:  869:
-        4:  870:  printf("Digite o nome do usuario:\n");
-        4:  871:  getchar();
-        4:  872:  scanf(" %[^\n]", nom);
-        -:  873:
-        4:  874:  letra = verifica_letra(nom[0]);
-        4:  875:  User = ((G->listaAdj[letra]));
-       11:  876:  while(User != NULL){
-        3:  877:    if(strcmp(nom, User->nome) == 0){
-        3:  878:      encontrado = true;
-        3:  879:      user1 = User;
-        -:  880:    }
-        3:  881:    User = User->prox;
-        -:  882:  }
-        4:  883:  if(encontrado){
-        -:  884:    //printf("Usuario %s encontrado!\n", user1->nome);
-        3:  885:    return user1;
-        -:  886:  }
-        -:  887:  else{
-        -:  888:    //printf("\nUsuario %s Nao Encontrado!!\n", nom);
-        1:  889:    return NULL;
-        -:  890:  }
-        -:  891:}
-        -:  892:
-        -:  893: //Funcao excluir_amigo --- Recebe como Parametros um Grafo(G), um usuario e um inteiro que serve como um marcador.
-        4:  894:void excluir_amigo(Grafo **G, usuarios **User, usuarios **User1, int cons){
-        -:  895:  int letra;
-        -:  896:  struct amigos *pont;
-        -:  897:
-        4:  898:  if((*User)->numeroAmigos != 0){
-        4:  899:    letra = verifica_letra(((*User1)->nome[0]));
-        4:  900:    pont = ((*User)->Amigos[letra]);
-       12:  901:    while(pont != NULL){
-        4:  902:      if(strcmp(pont->nomeAmigo, (*User1)->nome) == 0){   //Assertiva pro caso de Só um amigo.
-        4:  903:        if(pont->proxAmigo == NULL && pont->antAmigo == NULL){
-        4:  904:          free(((*User)->Amigos[letra]));
-        4:  905:          ((*User)->Amigos[letra]) = NULL;
-        -:  906:        }
-        4:  907:        if(pont->antAmigo == NULL && pont->proxAmigo != NULL){       //Assertiva pro caso do amigo ser o primeiro da hashtable.
-    #####:  908:          ((*User)->Amigos[letra]) = pont->proxAmigo;
-    #####:  909:          pont->proxAmigo->antAmigo = NULL;
-    #####:  910:          free(pont);
-        -:  911:        }
-        4:  912:        if(pont->antAmigo != NULL && pont->proxAmigo != NULL){       //Assertiva pra um amigo entre outros amigos.
-    #####:  913:          pont->antAmigo->proxAmigo = pont->proxAmigo;
-    #####:  914:          pont->proxAmigo->antAmigo = pont->antAmigo;
-    #####:  915:          free(pont);
-        -:  916:        }
-        4:  917:        pont = NULL;
-        4:  918:        (*User)->numeroAmigos--;
-        -:  919:      }
-        -:  920:      else{
-    #####:  921:        pont = pont->proxAmigo;
-        -:  922:      }
-        -:  923:    }
-        4:  924:    if(cons == 0){ // cons representa uma constante. Quando cons = 0 significa que é o primeiro acesso a esta função.
-        2:  925:      excluir_amigo(&(*G), &(*User1), &(*User), 1);
-        -:  926:    }
-        -:  927:  }else{
-    #####:  928:      printf("Usuario sem amizades para exclusão\n");
-        -:  929:  }
-        4:  930:}
-        -:  931:
-        -:  932: //Funcao adiciona_amigos --- Recebe como Parametros um Grafo(G), dois usuarios e um inteiro que serve como um marcador.
-        4:  933:void adiciona_amigos(Grafo **G, usuarios **User1, usuarios **User2, int cons){
-        -:  934:  int letra;
-        -:  935:  struct amigos *pont, *amigo;
-        -:  936:
-        4:  937:  if((*User1)->id != (*User2)->id){  // Assertiva responsavel por não deixar que um usuário se auto adicione como amigo.
-        -:  938:    // Bloco de codigo responsavel por adicionar elementos a hashtable de amigos.
-        4:  939:    amigo = (amigos*)malloc(sizeof(amigos));
-        4:  940:    amigo->idAmigo = (*User2)->id;
-        4:  941:    strcpy(amigo->nomeAmigo, (*User2)->nome);
-        4:  942:    letra = verifica_letra(((*User2)->nome[0]));
-        4:  943:    if(((*User1)->Amigos[letra]) == NULL){ // Verifica se a lista está vazia.
-        4:  944:      ((*User1)->Amigos[letra]) = (amigo);
-        4:  945:      ((*User1)->Amigos[letra])->proxAmigo = NULL;
-        4:  946:      ((*User1)->Amigos[letra])->antAmigo = NULL;
-        -:  947:    }
-        -:  948:    else{
-    #####:  949:      pont = ((*User1)->Amigos[letra]);
-    #####:  950:      while(pont->proxAmigo != NULL){
-    #####:  951:        pont = pont->proxAmigo;
-        -:  952:      }
-    #####:  953:      pont->proxAmigo = (amigo);
-    #####:  954:      amigo->antAmigo = pont;
-    #####:  955:      amigo->proxAmigo = NULL;
-        -:  956:    }
-        -:  957:    // Fim do bloco.
-        4:  958:    (*User1)->numeroAmigos++;
-        4:  959:    if(cons == 0){  // cons representa uma constante. Quando cons = 0 significa que é o primeiro acesso a esta função.
-        2:  960:      adiciona_amigos(&(*G), &(*User2), &(*User1), 1);
-        -:  961:    }
-        -:  962:  }else{
-    #####:  963:    printf("O usuario nao pode se adicionar como amigo\n");
-        -:  964:  }
-        4:  965:}
-        -:  966:
-        -:  967:// Funcao Verifica_letra --- Recebe como parametro um caracter.
-        -:  968:// Retorna -1, caso o caracter não represente uma  letra, ou um valor de 0 a 26 caso contrario.
-       28:  969:int verifica_letra(char nome){
-       28:  970:  int cont = 0, letra = -1;
-        -:  971:
-      479:  972:  while(cont < 26){  // 26 representa o total de letras do alfabeto.
-      423:  973:    if((nome == ('A'+cont)) || ((nome) == ('a'+cont))){  // Verifica se o caracter é igual uma letra mais o contador.
-       28:  974:      letra = cont;
-       28:  975:      cont = 26;
-        -:  976:    }
-        -:  977:    else{
-      395:  978:      cont++;
-        -:  979:    }
-        -:  980:  }
-       28:  981:  return letra;
-        -:  982:}
-        -:  983:
-        -:  984:// Funcao edita_nome --- Recebe como parametros um grafo(G), um usuario (user) e uma string(nom).
-        -:  985:// Retorna um usuario com a modificação feita.
-    #####:  986:usuarios *edita_nome(Grafo **G, usuarios **user, char *nom){
-        -:  987:  struct usuarios *userAux2, *userAux;
-        -:  988:  struct amigos *Aux;
-        -:  989:
-    #####:  990:  userAux = cria_pessoaAuto(&(*G), nom, ((*user)->cpf), ((*user)->cep), ((*user)->cidade));
-    #####:  991:  userAux->id = (*user)->id;
-    #####:  992:  Aux = verifica_amizades(&(*user));
-    #####:  993:  while(Aux != NULL){
-    #####:  994:    userAux2 = procura_nome((*G), Aux->nomeAmigo);
-    #####:  995:    adiciona_amigos(&(*G), &userAux2, &userAux, 0);
-    #####:  996:    Aux = Aux->proxAmigo;
-        -:  997:  }
-    #####:  998:  exclui_usuario(&(*G), &(*user));
-        -:  999:
-    #####: 1000:  return userAux;
-        -: 1001:}
-        -: 1002:
-        -: 1003:// Funcao edita_cidade --- Recebe como parametros um grafo(G), um usuario (user) e uma string(cidade).
-        -: 1004:// Retorna um usuario com a modificação feita.
-    #####: 1005:usuarios *edita_cidade(Grafo **G, usuarios **user, char *cidade){
-    #####: 1006:  strcpy((*user)->cidade, cidade);
-        -: 1007:
-    #####: 1008:  return (*user);
-        -: 1009:}
-        -: 1010:
-        -: 1011:// Funcao edita_cep --- Recebe como parametros um grafo(G), um usuario (user) e uma string(cep).
-        -: 1012:// Retorna um usuario com a modificação feita.
-    #####: 1013:usuarios *edita_cep(Grafo **G, usuarios **user, char *cep){
-    #####: 1014:  strcpy((*user)->cep, cep);
-        -: 1015:
-    #####: 1016:  return (*user);
-        -: 1017:}
-        -: 1018:
-        -: 1019:// Funcao edita_cpf --- Recebe como parametros um grafo(G), um usuario (user) e uma string(cpf).
-        -: 1020:// Retorna um usuario com a modificação feita.
-    #####: 1021:usuarios *edita_cpf(Grafo **G, usuarios **user, char *cpf){
-    #####: 1022:  strcpy((*user)->cpf, cpf);
-        -: 1023:
-    #####: 1024:  return (*user);
-        -: 1025:}
-        -: 1026:
-        -: 1027:// Funcao editar_pessoa --- Recebe como parametro um grafo(G).
-        -: 1028:// Retorna um usuario com as modificações feitas.
-        6: 1029:usuarios *editar_pessoa(Grafo **G){
-        6: 1030:  system("cls || clear");
-        -: 1031:  char nom[100], cidade[30], cep[20], cpf[12], categoria[50];
-        6: 1032:  int opc = -1, opc1 = -1, id, aval;
-        6: 1033:  struct usuarios *user = NULL, *user2 = NULL, *userAux2, *userAux;
-        -: 1034:  struct amigos *Aux;
-        -: 1035:  struct transacoes *tran, *pont;
-        -: 1036:
-       19: 1037:  while(user == NULL){
-        7: 1038:    printf("\nAlterar usuario\n\n");
-        7: 1039:    printf("Digite o nome do usuario:\n");
-        7: 1040:    scanf(" %[^\n]", nom);
-        7: 1041:    user = procura_nome((*G), nom);
-        7: 1042:    if(user == NULL){
-        1: 1043:      system("cls || clear");
-        1: 1044:      printf("Usuario nao encontrado\n\n");
-        -: 1045:    }
-        -: 1046:  }
-        6: 1047:  printf("Usuario encontrado\n");
-       20: 1048:  while(opc != 0){
-        8: 1049:    printf(" -------------------------------------------------------\n");
-        8: 1050:    printf("              Alterar configuracoes de %s               \n", user->nome);
-        8: 1051:    printf("|1 - Nome                                               | \n");
-        8: 1052:    printf("|2 - Cidade                                             | \n");
-        8: 1053:    printf("|3 - Cep                                                | \n");
-        8: 1054:    printf("|4 - Cpf                                                | \n");
-        8: 1055:    printf("|5 - Amizades                                           | \n");
-        8: 1056:    printf("|6 - Excluir conta                                      | \n");
-        8: 1057:    printf("|7 - Transacoes                                         | \n");
-        8: 1058:    printf("|0 - Sair                                               | \n");
-        8: 1059:    printf(" -------------------------------------------------------\n");
-        8: 1060:    scanf(" %d", &opc);
-        8: 1061:    switch(opc){
-        -: 1062:      case(1): // Case que representa a alteração de nome do usuario.
-        1: 1063:      printf("Digite o novo nome: ");
-        1: 1064:      scanf(" %[^\n]", nom);
-        1: 1065:      userAux = cria_pessoaAuto(&(*G), nom, (user->cpf), (user->cep), (user->cidade));
-        1: 1066:      userAux->id = user->id;
-        1: 1067:      Aux = verifica_amizades(&user);
-        2: 1068:      while(Aux != NULL){
-    #####: 1069:        userAux2 = procura_nome((*G), Aux->nomeAmigo);
-    #####: 1070:        adiciona_amigos(&(*G), &userAux2, &userAux, 0);
-    #####: 1071:        Aux = Aux->proxAmigo;
-        -: 1072:      }
-        1: 1073:      exclui_usuario(&(*G), &(user));
-        1: 1074:      opc = 0;
-        -: 1075:      //printf("Nome Alterado!!!\n");
-        1: 1076:      break;
-        -: 1077:
-        -: 1078:      case(2): // Case que representa a alteração da cidade do usuario.
-        1: 1079:      printf("Digite a nova cidade: ");
-        1: 1080:      scanf(" %[^\n]", cidade);
-        1: 1081:      strcpy(user->cidade, cidade);
-        -: 1082:      //printf("Cidade Alterada!!!\n");
-        1: 1083:      opc = 0;
-        1: 1084:      break;
-        -: 1085:
-        -: 1086:      case(3): // Case que representa a alteração de cep do usuario.
-        1: 1087:      printf("Digite o novo cep: ");
-        1: 1088:      scanf(" %[^\n]", cep);
-        1: 1089:      strcpy(user->cep, cep);
-        -: 1090:      //printf("Cep Alterado!!!\n");
-        1: 1091:      opc = 0;
-        1: 1092:      break;
-        -: 1093:
-        -: 1094:      case(4): // Case que representa a alteração de cpf do usuario.
-        1: 1095:      printf("Digite o novo cpf: ");
-        1: 1096:      scanf(" %[^\n]", cpf);
-        1: 1097:      strcpy(user->cpf, cpf);
-        -: 1098:      //printf("Cpf Alterado!!!\n");
-        1: 1099:      opc = 0;
-        1: 1100:      break;
-        -: 1101:
-        -: 1102:      case(5):
-        1: 1103:      imprime_amigos(user);
-        1: 1104:      opc = 0;
-        7: 1105:      while(opc1 != 0){
-        5: 1106:        printf(" -------------------------------------------------------\n");
-        5: 1107:        printf("|                 Escolha uma acao                      | \n\n");
-        5: 1108:        printf("|1 - Adiciona amigo                                     | \n");
-        5: 1109:        printf("|2 - Exclui amigo                                       | \n");
-        5: 1110:        printf("|0 - Sair                                               | \n");
-        5: 1111:        printf(" -------------------------------------------------------\n");
-        5: 1112:        scanf("%d", &opc1);
-        5: 1113:        if(opc1 != 0){
-        4: 1114:          system("cls || clear");
-        4: 1115:          imprime_amigos(user);
-        4: 1116:          user2 = procura_usuario((*G));
-        4: 1117:          if(user2 != NULL){ // Verifica se user2 existe.
-        3: 1118:            if(user->id != user2->id){ // verifica se user e user2 é o mesmo usuario.
-        3: 1119:              if(opc1 == 1){  // if que representa a adição de um amigo.
-        2: 1120:                  adiciona_amigos(&(*G), &user, &user2, 0);
-        2: 1121:                  printf("Amigo adicionado!!\n");
-        2: 1122:                  imprime_amigos(user);
-        -: 1123:              }
-        3: 1124:              if(opc1 == 2){  // if que representa a exclusão de um amigo.
-        1: 1125:                  excluir_amigo(&(*G), &user, &user2, 0);
-        1: 1126:                  imprime_amigos(user);
-        -: 1127:              }
-        -: 1128:            }else{
-    #####: 1129:              system("clear || cls");
-        -: 1130:            }
-        -: 1131:          }else{
-        1: 1132:            printf("\nUsuario nao encontrado!!\n");
-        1: 1133:            imprime_amigos(user);
-        -: 1134:          }
-        -: 1135:        }
-        -: 1136:      }
-        1: 1137:      break;
-        -: 1138:      case(6): // Case que representa a exclusão de um usuario.
-        1: 1139:        exclui_usuario(&(*G), &user);
-        1: 1140:        opc = 0;
-        1: 1141:      break;
-        -: 1142:      case(7): // case que representa o menu de transação.
-        2: 1143:        opc1 = -1;
-        2: 1144:        system("cls || clear");
-       11: 1145:        while(opc1 != 0){
-        7: 1146:          printf(" -------------------------------------------------------\n");
-        7: 1147:          printf("|                 Escolha uma acao                      | \n");
-        7: 1148:          printf("|1 - cria transacao                                     | \n");
-        7: 1149:          printf("|2 - procura_transacao por categoria                    | \n");
-        7: 1150:          printf("|3 - procura_transacao por nome                         | \n");
-        7: 1151:          printf("|4 - Conclui transação                                  | \n");
-        7: 1152:          printf("|5 - Exclui transação                                   | \n");
-        7: 1153:          printf("|0 - Sair                                               | \n");
-        7: 1154:          printf(" -------------------------------------------------------\n");
-        7: 1155:          scanf("%d", &opc1);
-       14: 1156:          while(opc1 < 0 && opc1 > 5){
-    #####: 1157:            scanf("%d", &opc1);
-        -: 1158:          }
-        7: 1159:          if(opc1 != 0){
-        7: 1160:            switch(opc1){
-        -: 1161:              case(1): // Case que representa a criação de uma transação.
-        2: 1162:              cria_transacao(&(*G), user);
-        2: 1163:              system("cls || clear");
-        2: 1164:              imprime_transacao((*G)->listaT);
-        2: 1165:              break;
-        -: 1166:
-        -: 1167:              case(2): // Case que representa a pesquisa por categoria de uma transação.
-        2: 1168:              printf("Digite o nome da categoria:\n ");
-        2: 1169:              scanf(" %[^\n]", categoria);
-        2: 1170:              tran = procura_categoria(&(*G), categoria);
-        2: 1171:              system("cls || clear");
-        2: 1172:              imprime_transacao(tran);
-        2: 1173:              break;
-        -: 1174:
-        -: 1175:              case(3): // Case que representa a pesquisa por categoria e por nome de uma transação.
-        1: 1176:              printf("Digite o nome da categoria:\n ");
-        1: 1177:              scanf(" %[^\n]", categoria);
-        1: 1178:              printf("Digite o nome da transação:\n ");
-        1: 1179:              scanf(" %[^\n]", nom);
-        1: 1180:              tran = procura_nomeT(&(*G), categoria, nom);
-        1: 1181:              system("cls || clear");
-        1: 1182:              imprime_transacao(tran);
-        1: 1183:              break;
-        -: 1184:
-        -: 1185:              case(4):  // Case que representa conclusão de um transação.
-        1: 1186:              pont = procura_transacaoDeUsuario(&(*G), user);
-        1: 1187:              imprime_transacao(pont);
-        1: 1188:              if(pont != NULL){
-        1: 1189:                printf("Digite o id: \n");
-        1: 1190:                scanf("%d", &id);
-        1: 1191:                printf("Avalie a transação: \n");
-        1: 1192:                scanf("%d", &aval);
-        1: 1193:                pont = procura_porId(pont, id);
-        1: 1194:                conclui_transacao(&(*G), &pont, aval);
-        -: 1195:              }
-        1: 1196:              opc1 = 0;
-        1: 1197:              break;
-        -: 1198:              
-        -: 1199:              case(5): // Case que representa exclusão de um transação.
-        1: 1200:              pont = procura_transacaoDeUsuario(&(*G), user);
-        1: 1201:              imprime_transacao(pont);
-        1: 1202:              if(pont != NULL){
-        1: 1203:                printf("Digite o id: \n");
-        1: 1204:                scanf("%d", &id);
-        1: 1205:                pont = procura_porId(pont, id);
-        1: 1206:                exclui_transacao(&(*G), &pont);
-        -: 1207:              }
-        1: 1208:              opc1 = 0;
-        1: 1209:              break;
-        -: 1210:            }
-        7: 1211:            system("cls || clear");
-        -: 1212:          }
-        -: 1213:        }
-        2: 1214:        break;
-        -: 1215:    }
-        -: 1216:  }
-        6: 1217:  system("cls || clear");
-        6: 1218:  return user;
-        -: 1219:}
-        -: 1220:
-        -: 1221:// Funcao cria_pessoa --- Recebe como parametro um grafo(G).
-        -: 1222:// Retorna o usuario criado.
-        3: 1223:usuarios *cria_pessoa(Grafo **G){
-        -: 1224:  char nom[100], cidade[30], cep[20], cpf[12];
-        3: 1225:  int cont = 0, letra;
-        -: 1226:  struct usuarios *pont, *user;
-        -: 1227:  
-        -: 1228:  // Bloco de codigos responsavel pela adição de um usuario ao grafo.
-        3: 1229:  user = (usuarios*)malloc(sizeof(usuarios));
-        3: 1230:  printf("Digite o seu nome: ");
-        3: 1231:  user->id = (*G)->N_usuarios;
-        3: 1232:  scanf(" %[^\n]", nom);
-        3: 1233:  getchar();
-        3: 1234:  strcpy(user->nome, nom);
-        3: 1235:  printf("Digite o seu cpf: ");
-        3: 1236:  scanf(" %[^\n]", cpf);
-        3: 1237:  strcpy(user->cpf, cpf);
-        3: 1238:  printf("Digite a sua cidade: ");
-        3: 1239:  scanf(" %[^\n]", cidade);
-        3: 1240:  strcpy(user->cidade, cidade);
-        3: 1241:  printf("Digite o seu cep: ");
-        3: 1242:  scanf(" %[^\n]", cep);
-        3: 1243:  strcpy(user->cep, cep);
-        3: 1244:  user->avaliacao = 0;
-        -: 1245:
-        -: 1246:
-        3: 1247:  letra = verifica_letra(nom[0]);
-        3: 1248:  if(((*G)->listaAdj[letra]) == NULL){  // Verifica se a lista de usuario está vazia.
-        3: 1249:    ((*G)->listaAdj[letra]) = user;
-        -: 1250:
-       81: 1251:    for (cont = 0; cont < 26; ++cont){
-       78: 1252:      ((*G)->listaAdj[letra])->Amigos[cont] = NULL;
-        -: 1253:    }
-        3: 1254:    ((*G)->listaAdj[letra])->ant = NULL;
-        3: 1255:    ((*G)->listaAdj[letra])->prox = NULL;
-        3: 1256:    (((*G)->listaAdj[letra])->numeroAmigos) = 0;
-        -: 1257:  }
-        -: 1258:  else{
-    #####: 1259:    pont = ((*G)->listaAdj[letra]);
-    #####: 1260:    while(pont->prox != NULL){
-    #####: 1261:      pont = pont->prox;
-        -: 1262:    }
-    #####: 1263:    pont->prox = (user);
-    #####: 1264:    ((user)->ant) = pont;
-    #####: 1265:    ((user)->prox) = NULL;
-    #####: 1266:    (user)->numeroAmigos = 0;
-        -: 1267:  }
-        -: 1268:  // Fim do bloco.
-        3: 1269:  (*G)->N_usuarios++;
-        -: 1270:
-        3: 1271:  system("cls || clear");
-        3: 1272:  return user;
-        -: 1273:}
-        -: 1274:
-        -: 1275:// Funcao cria_pessoaAuto --- Recebe como parametros um grafo(G) e quatro strings(nom, cpf, cep, cidade).
-        -: 1276:// Retorna o usuario criado.
-        -: 1277:// Copia da função cria_pessoa com objetivo de facilitar a execução de testes com Gteste.
-        1: 1278:usuarios *cria_pessoaAuto(Grafo **G, char *nom, char *cpf, char *cep, char *cidade){
-        1: 1279:  int cont = 0, letra;
-        -: 1280:  struct usuarios *pont, *user;
-        -: 1281:
-        -: 1282:  // Bloco de codigos responsavel pela adição de um usuario ao grafo.
-        1: 1283:  user = (usuarios*)malloc(sizeof(usuarios));
-        1: 1284:  user->id = (*G)->N_usuarios;
-        1: 1285:  strcpy(user->nome, nom);
-        1: 1286:  strcpy(user->cpf, cpf);
-        1: 1287:  strcpy(user->cidade, cidade);
-        1: 1288:  strcpy(user->cep, cep);
-        1: 1289:  user->avaliacao = 0;
-        -: 1290:
-        -: 1291:
-        1: 1292:  letra = verifica_letra(nom[0]);
-        1: 1293:  if(((*G)->listaAdj[letra]) == NULL){  // Verifica se a lista de usuario está vazia.
-        1: 1294:    ((*G)->listaAdj[letra]) = user;
-        -: 1295:
-       27: 1296:    for (cont = 0; cont < 26; ++cont){
-       26: 1297:      ((*G)->listaAdj[letra])->Amigos[cont] = NULL;
-        -: 1298:    }
-        1: 1299:    ((*G)->listaAdj[letra])->ant = NULL;
-        1: 1300:    ((*G)->listaAdj[letra])->prox = NULL;
-        1: 1301:    (((*G)->listaAdj[letra])->numeroAmigos) = 0;
-        -: 1302:  }
-        -: 1303:  else{  // Verifica se a lista de usuario não está vazia.
-    #####: 1304:    pont = ((*G)->listaAdj[letra]);
-    #####: 1305:    while(pont->prox != NULL){
-    #####: 1306:      pont = pont->prox;
-        -: 1307:    }
-    #####: 1308:    pont->prox = (user);
-    #####: 1309:    ((user)->ant) = pont;
-    #####: 1310:    ((user)->prox) = NULL;
-    #####: 1311:    (user)->numeroAmigos = 0;
-        -: 1312:  }
-        -: 1313:  // Fim do bloco.
-        1: 1314:  (*G)->N_usuarios++;
-        -: 1315:
-        1: 1316:  return user;
-        -: 1317:}
-        -: 1318:
-        -: 1319:// Funcao menu --- Recebe como parametros um grafo (G).
-        1: 1320:void menu(Grafo **G){
-        1: 1321:  int opc = -1;
-        -: 1322:
-       15: 1323:  while(opc != 0){
-       13: 1324:    printf(" -------------------------------------------------------\n");
-       13: 1325:    printf("|                           MENU                        | \n");
-       13: 1326:    printf("|1 - Criar pessoa                                       | \n");
-       13: 1327:    printf("|2 - Editar pessoa                                      | \n");
-       13: 1328:    printf("|3 - Imprimir rede social                               | \n");
-       13: 1329:    printf("|4 - Destroi rede social                                | \n");
-       13: 1330:    printf("|0 - Sair                                               | \n");
-       13: 1331:    printf(" -------------------------------------------------------\n");
-       13: 1332:    scanf(" %d", &opc);
-       13: 1333:    switch(opc){
-        -: 1334:      case(1): // Case para criação de usuario.
-        3: 1335:      cria_pessoa(&(*G));
-        3: 1336:      break;
-        -: 1337:
-        -: 1338:      case(2): // Case para edição de usuario.
-        6: 1339:      editar_pessoa(&(*G));
-        6: 1340:      break;
-        -: 1341:
-        -: 1342:      case(3):  // Case para impressão de grafo.
-        2: 1343:      imprime_Grafo((*G));
-        2: 1344:      break;
-        -: 1345:
-        -: 1346:      case(4):  // Case para destruição de grafo.
-        1: 1347:      destroi_Grafo(&(*G));
-        1: 1348:      break;
-        -: 1349:    }
-        -: 1350:  }
-        1: 1351:  salva_Arquivo(&(*G)); // Criação do arquivo BancoDeDados que contem todas as informações do grafo.
-        1: 1352:}
-        -: 1353:
-        1: 1354:int main(int argc, char const *argv[]){
-        -: 1355:  struct Grafo *G;
-        -: 1356:
-        1: 1357:  G = cria_Grafo();
-        1: 1358:  menu(&G);
-        1: 1359:  return 0;
-        -: 1360:}
+        -:    1:/*EOF*/
+        -:    2:/*EOF*/
+        -:    3:/*EOF*/
+        -:    4:/*EOF*/
+        -:    5:/*EOF*/
+        -:    6:/*EOF*/
+        -:    7:/*EOF*/
+        -:    8:/*EOF*/
+        -:    9:/*EOF*/
+        -:   10:/*EOF*/
+        -:   11:/*EOF*/
+        -:   12:/*EOF*/
+        -:   13:/*EOF*/
+        -:   14:/*EOF*/
+        -:   15:/*EOF*/
+        -:   16:/*EOF*/
+        -:   17:/*EOF*/
+        -:   18:/*EOF*/
+        -:   19:/*EOF*/
+        -:   20:/*EOF*/
+        -:   21:/*EOF*/
+        -:   22:/*EOF*/
+        -:   23:/*EOF*/
+        -:   24:/*EOF*/
+        -:   25:/*EOF*/
+        -:   26:/*EOF*/
+        -:   27:/*EOF*/
+        -:   28:/*EOF*/
+        -:   29:/*EOF*/
+        -:   30:/*EOF*/
+        -:   31:/*EOF*/
+        -:   32:/*EOF*/
+        -:   33:/*EOF*/
+        -:   34:/*EOF*/
+        -:   35:/*EOF*/
+        -:   36:/*EOF*/
+        -:   37:/*EOF*/
+        -:   38:/*EOF*/
+        -:   39:/*EOF*/
+        -:   40:/*EOF*/
+        -:   41:/*EOF*/
+        -:   42:/*EOF*/
+        -:   43:/*EOF*/
+        -:   44:/*EOF*/
+        -:   45:/*EOF*/
+        -:   46:/*EOF*/
+        -:   47:/*EOF*/
+        -:   48:/*EOF*/
+        -:   49:/*EOF*/
+        -:   50:/*EOF*/
+        -:   51:/*EOF*/
+        -:   52:/*EOF*/
+        -:   53:/*EOF*/
+        -:   54:/*EOF*/
+        -:   55:/*EOF*/
+        -:   56:/*EOF*/
+        -:   57:/*EOF*/
+        -:   58:/*EOF*/
+        -:   59:/*EOF*/
+        -:   60:/*EOF*/
+        -:   61:/*EOF*/
+        -:   62:/*EOF*/
+        -:   63:/*EOF*/
+        -:   64:/*EOF*/
+        -:   65:/*EOF*/
+        -:   66:/*EOF*/
+        -:   67:/*EOF*/
+        -:   68:/*EOF*/
+        -:   69:/*EOF*/
+        -:   70:/*EOF*/
+        -:   71:/*EOF*/
+        -:   72:/*EOF*/
+        -:   73:/*EOF*/
+        -:   74:/*EOF*/
+        -:   75:/*EOF*/
+        -:   76:/*EOF*/
+        -:   77:/*EOF*/
+        -:   78:/*EOF*/
+        -:   79:/*EOF*/
+        -:   80:/*EOF*/
+        -:   81:/*EOF*/
+        -:   82:/*EOF*/
+        -:   83:/*EOF*/
+        -:   84:/*EOF*/
+        -:   85:/*EOF*/
+        -:   86:/*EOF*/
+        -:   87:/*EOF*/
+        -:   88:/*EOF*/
+        -:   89:/*EOF*/
+        -:   90:/*EOF*/
+        -:   91:/*EOF*/
+        -:   92:/*EOF*/
+        -:   93:/*EOF*/
+        -:   94:/*EOF*/
+        -:   95:/*EOF*/
+        -:   96:/*EOF*/
+        -:   97:/*EOF*/
+        -:   98:/*EOF*/
+        -:   99:/*EOF*/
+        -:  100:/*EOF*/
+        -:  101:/*EOF*/
+        -:  102:/*EOF*/
+        -:  103:/*EOF*/
+        -:  104:/*EOF*/
+        -:  105:/*EOF*/
+        -:  106:/*EOF*/
+        -:  107:/*EOF*/
+        -:  108:/*EOF*/
+        -:  109:/*EOF*/
+        -:  110:/*EOF*/
+        -:  111:/*EOF*/
+        -:  112:/*EOF*/
+        -:  113:/*EOF*/
+        -:  114:/*EOF*/
+        -:  115:/*EOF*/
+        -:  116:/*EOF*/
+        -:  117:/*EOF*/
+        -:  118:/*EOF*/
+        -:  119:/*EOF*/
+        -:  120:/*EOF*/
+        -:  121:/*EOF*/
+        -:  122:/*EOF*/
+        -:  123:/*EOF*/
+        -:  124:/*EOF*/
+        -:  125:/*EOF*/
+        -:  126:/*EOF*/
+        -:  127:/*EOF*/
+        -:  128:/*EOF*/
+        -:  129:/*EOF*/
+        -:  130:/*EOF*/
+        -:  131:/*EOF*/
+        -:  132:/*EOF*/
+        -:  133:/*EOF*/
+        -:  134:/*EOF*/
+        -:  135:/*EOF*/
+        -:  136:/*EOF*/
+        -:  137:/*EOF*/
+        -:  138:/*EOF*/
+        -:  139:/*EOF*/
+        -:  140:/*EOF*/
+        -:  141:/*EOF*/
+        -:  142:/*EOF*/
+        -:  143:/*EOF*/
+        -:  144:/*EOF*/
+        -:  145:/*EOF*/
+        -:  146:/*EOF*/
+        -:  147:/*EOF*/
+        -:  148:/*EOF*/
+        -:  149:/*EOF*/
+        -:  150:/*EOF*/
+        -:  151:/*EOF*/
+        -:  152:/*EOF*/
+        -:  153:/*EOF*/
+        -:  154:/*EOF*/
+        -:  155:/*EOF*/
+        -:  156:/*EOF*/
+        -:  157:/*EOF*/
+        -:  158:/*EOF*/
+        -:  159:/*EOF*/
+        -:  160:/*EOF*/
+        -:  161:/*EOF*/
+        -:  162:/*EOF*/
+        2:  163:/*EOF*/
+        -:  164:/*EOF*/
+        -:  165:/*EOF*/
+        2:  166:/*EOF*/
+        4:  167:/*EOF*/
+        2:  168:/*EOF*/
+        2:  169:/*EOF*/
+        -:  170:/*EOF*/
+    #####:  171:/*EOF*/
+        -:  172:/*EOF*/
+        -:  173:/*EOF*/
+    #####:  174:/*EOF*/
+        -:  175:/*EOF*/
+        -:  176:/*EOF*/
+        1:  177:/*EOF*/
+        -:  178:/*EOF*/
+        1:  179:/*EOF*/
+        -:  180:/*EOF*/
+        1:  181:/*EOF*/
+        3:  182:/*EOF*/
+        1:  183:/*EOF*/
+    #####:  184:/*EOF*/
+        -:  185:/*EOF*/
+        1:  186:/*EOF*/
+        -:  187:/*EOF*/
+        1:  188:/*EOF*/
+        -:  189:/*EOF*/
+        -:  190:/*EOF*/
+        -:  191:/*EOF*/
+        1:  192:/*EOF*/
+        -:  193:/*EOF*/
+        -:  194:/*EOF*/
+        -:  195:/*EOF*/
+        -:  196:/*EOF*/
+        1:  197:/*EOF*/
+        1:  198:/*EOF*/
+        3:  199:/*EOF*/
+        1:  200:/*EOF*/
+        1:  201:/*EOF*/
+        3:  202:/*EOF*/
+        1:  203:/*EOF*/
+        -:  204:/*EOF*/
+        1:  205:/*EOF*/
+        -:  206:/*EOF*/
+        -:  207:/*EOF*/
+    #####:  208:/*EOF*/
+    #####:  209:/*EOF*/
+    #####:  210:/*EOF*/
+    #####:  211:/*EOF*/
+    #####:  212:/*EOF*/
+    #####:  213:/*EOF*/
+    #####:  214:/*EOF*/
+        -:  215:/*EOF*/
+    #####:  216:/*EOF*/
+    #####:  217:/*EOF*/
+    #####:  218:/*EOF*/
+        -:  219:/*EOF*/
+    #####:  220:/*EOF*/
+    #####:  221:/*EOF*/
+    #####:  222:/*EOF*/
+        -:  223:/*EOF*/
+        -:  224:/*EOF*/
+        -:  225:/*EOF*/
+        -:  226:/*EOF*/
+        1:  227:/*EOF*/
+        -:  228:/*EOF*/
+        1:  229:/*EOF*/
+        -:  230:/*EOF*/
+        -:  231:/*EOF*/
+        1:  232:/*EOF*/
+    #####:  233:/*EOF*/
+    #####:  234:/*EOF*/
+    #####:  235:/*EOF*/
+    #####:  236:/*EOF*/
+        -:  237:/*EOF*/
+    #####:  238:/*EOF*/
+    #####:  239:/*EOF*/
+    #####:  240:/*EOF*/
+    #####:  241:/*EOF*/
+    #####:  242:/*EOF*/
+        -:  243:/*EOF*/
+    #####:  244:/*EOF*/
+        -:  245:/*EOF*/
+    #####:  246:/*EOF*/
+        -:  247:/*EOF*/
+        -:  248:/*EOF*/
+        1:  249:/*EOF*/
+        -:  250:/*EOF*/
+        -:  251:/*EOF*/
+        -:  252:/*EOF*/
+        1:  253:/*EOF*/
+        -:  254:/*EOF*/
+        -:  255:/*EOF*/
+        -:  256:/*EOF*/
+        -:  257:/*EOF*/
+        -:  258:/*EOF*/
+        1:  259:/*EOF*/
+    #####:  260:/*EOF*/
+    #####:  261:/*EOF*/
+        -:  262:/*EOF*/
+    #####:  263:/*EOF*/
+        -:  264:/*EOF*/
+        -:  265:/*EOF*/
+    #####:  266:/*EOF*/
+    #####:  267:/*EOF*/
+    #####:  268:/*EOF*/
+    #####:  269:/*EOF*/
+    #####:  270:/*EOF*/
+    #####:  271:/*EOF*/
+    #####:  272:/*EOF*/
+    #####:  273:/*EOF*/
+    #####:  274:/*EOF*/
+    #####:  275:/*EOF*/
+    #####:  276:/*EOF*/
+    #####:  277:/*EOF*/
+        -:  278:/*EOF*/
+        -:  279:/*EOF*/
+    #####:  280:/*EOF*/
+    #####:  281:/*EOF*/
+    #####:  282:/*EOF*/
+    #####:  283:/*EOF*/
+        -:  284:/*EOF*/
+    #####:  285:/*EOF*/
+        -:  286:/*EOF*/
+    #####:  287:/*EOF*/
+        -:  288:/*EOF*/
+        -:  289:/*EOF*/
+        -:  290:/*EOF*/
+        -:  291:/*EOF*/
+        1:  292:/*EOF*/
+        -:  293:/*EOF*/
+        1:  294:/*EOF*/
+        1:  295:/*EOF*/
+        -:  296:/*EOF*/
+        -:  297:/*EOF*/
+        -:  298:/*EOF*/
+        2:  299:/*EOF*/
+        -:  300:/*EOF*/
+        2:  301:/*EOF*/
+        -:  302:/*EOF*/
+        2:  303:/*EOF*/
+        2:  304:/*EOF*/
+        2:  305:/*EOF*/
+        2:  306:/*EOF*/
+       56:  307:/*EOF*/
+       52:  308:/*EOF*/
+       52:  309:/*EOF*/
+        -:  310:/*EOF*/
+        2:  311:/*EOF*/
+        -:  312:/*EOF*/
+        -:  313:/*EOF*/
+        -:  314:/*EOF*/
+        -:  315:/*EOF*/
+        1:  316:/*EOF*/
+        -:  317:/*EOF*/
+        -:  318:/*EOF*/
+        1:  319:/*EOF*/
+        1:  320:/*EOF*/
+    #####:  321:/*EOF*/
+        -:  322:/*EOF*/
+        -:  323:/*EOF*/
+        -:  324:/*EOF*/
+        1:  325:/*EOF*/
+        1:  326:/*EOF*/
+        -:  327:/*EOF*/
+        1:  328:/*EOF*/
+        -:  329:/*EOF*/
+        -:  330:/*EOF*/
+        -:  331:/*EOF*/
+        2:  332:/*EOF*/
+        -:  333:/*EOF*/
+        -:  334:/*EOF*/
+        2:  335:/*EOF*/
+        6:  336:/*EOF*/
+        2:  337:/*EOF*/
+        2:  338:/*EOF*/
+        2:  339:/*EOF*/
+        2:  340:/*EOF*/
+        -:  341:/*EOF*/
+        2:  342:/*EOF*/
+    #####:  343:/*EOF*/
+    #####:  344:/*EOF*/
+    #####:  345:/*EOF*/
+        -:  346:/*EOF*/
+        2:  347:/*EOF*/
+    #####:  348:/*EOF*/
+    #####:  349:/*EOF*/
+    #####:  350:/*EOF*/
+        -:  351:/*EOF*/
+        2:  352:/*EOF*/
+    #####:  353:/*EOF*/
+    #####:  354:/*EOF*/
+        -:  355:/*EOF*/
+        2:  356:/*EOF*/
+        -:  357:/*EOF*/
+        -:  358:/*EOF*/
+    #####:  359:/*EOF*/
+        -:  360:/*EOF*/
+        -:  361:/*EOF*/
+        2:  362:/*EOF*/
+        2:  363:/*EOF*/
+        -:  364:/*EOF*/
+    #####:  365:/*EOF*/
+        -:  366:/*EOF*/
+        2:  367:/*EOF*/
+        -:  368:/*EOF*/
+        -:  369:/*EOF*/
+        -:  370:/*EOF*/
+        2:  371:/*EOF*/
+        -:  372:/*EOF*/
+        -:  373:/*EOF*/
+        -:  374:/*EOF*/
+        -:  375:/*EOF*/
+        -:  376:/*EOF*/
+        2:  377:/*EOF*/
+        2:  378:/*EOF*/
+        -:  379:/*EOF*/
+        2:  380:/*EOF*/
+        2:  381:/*EOF*/
+        2:  382:/*EOF*/
+        2:  383:/*EOF*/
+        2:  384:/*EOF*/
+        2:  385:/*EOF*/
+        2:  386:/*EOF*/
+        2:  387:/*EOF*/
+        2:  388:/*EOF*/
+        2:  389:/*EOF*/
+        2:  390:/*EOF*/
+        -:  391:/*EOF*/
+        2:  392:/*EOF*/
+        2:  393:/*EOF*/
+        2:  394:/*EOF*/
+        2:  395:/*EOF*/
+        -:  396:/*EOF*/
+    #####:  397:/*EOF*/
+    #####:  398:/*EOF*/
+    #####:  399:/*EOF*/
+        -:  400:/*EOF*/
+    #####:  401:/*EOF*/
+    #####:  402:/*EOF*/
+    #####:  403:/*EOF*/
+        -:  404:/*EOF*/
+        -:  405:/*EOF*/
+        2:  406:/*EOF*/
+        -:  407:/*EOF*/
+        2:  408:/*EOF*/
+        2:  409:/*EOF*/
+    #####:  410:/*EOF*/
+        -:  411:/*EOF*/
+        2:  412:/*EOF*/
+        2:  413:/*EOF*/
+        2:  414:/*EOF*/
+        2:  415:/*EOF*/
+        2:  416:/*EOF*/
+        -:  417:/*EOF*/
+        2:  418:/*EOF*/
+        -:  419:/*EOF*/
+        -:  420:/*EOF*/
+        2:  421:/*EOF*/
+        -:  422:/*EOF*/
+        -:  423:/*EOF*/
+        -:  424:/*EOF*/
+        -:  425:/*EOF*/
+        2:  426:/*EOF*/
+        2:  427:/*EOF*/
+        -:  428:/*EOF*/
+        2:  429:/*EOF*/
+        6:  430:/*EOF*/
+        2:  431:/*EOF*/
+        -:  432:/*EOF*/
+        -:  433:/*EOF*/
+        2:  434:/*EOF*/
+        2:  435:/*EOF*/
+        2:  436:/*EOF*/
+        2:  437:/*EOF*/
+        2:  438:/*EOF*/
+        2:  439:/*EOF*/
+        2:  440:/*EOF*/
+        2:  441:/*EOF*/
+        2:  442:/*EOF*/
+        2:  443:/*EOF*/
+        -:  444:/*EOF*/
+    #####:  445:/*EOF*/
+    #####:  446:/*EOF*/
+    #####:  447:/*EOF*/
+        -:  448:/*EOF*/
+    #####:  449:/*EOF*/
+    #####:  450:/*EOF*/
+    #####:  451:/*EOF*/
+        -:  452:/*EOF*/
+        -:  453:/*EOF*/
+        -:  454:/*EOF*/
+        2:  455:/*EOF*/
+        -:  456:/*EOF*/
+        -:  457:/*EOF*/
+        2:  458:/*EOF*/
+        -:  459:/*EOF*/
+        -:  460:/*EOF*/
+        -:  461:/*EOF*/
+        -:  462:/*EOF*/
+        1:  463:/*EOF*/
+        1:  464:/*EOF*/
+        -:  465:/*EOF*/
+        -:  466:/*EOF*/
+        1:  467:/*EOF*/
+        3:  468:/*EOF*/
+        5:  469:/*EOF*/
+        4:  470:/*EOF*/
+        1:  471:/*EOF*/
+        6:  472:/*EOF*/
+        4:  473:/*EOF*/
+        -:  474:/*EOF*/
+        1:  475:/*EOF*/
+        -:  476:/*EOF*/
+        -:  477:/*EOF*/
+        1:  478:/*EOF*/
+        1:  479:/*EOF*/
+        1:  480:/*EOF*/
+        1:  481:/*EOF*/
+        1:  482:/*EOF*/
+        1:  483:/*EOF*/
+        1:  484:/*EOF*/
+        1:  485:/*EOF*/
+        1:  486:/*EOF*/
+        1:  487:/*EOF*/
+        -:  488:/*EOF*/
+    #####:  489:/*EOF*/
+    #####:  490:/*EOF*/
+    #####:  491:/*EOF*/
+        -:  492:/*EOF*/
+    #####:  493:/*EOF*/
+    #####:  494:/*EOF*/
+    #####:  495:/*EOF*/
+        -:  496:/*EOF*/
+        -:  497:/*EOF*/
+        -:  498:/*EOF*/
+        -:  499:/*EOF*/
+        -:  500:/*EOF*/
+        1:  501:/*EOF*/
+        -:  502:/*EOF*/
+        -:  503:/*EOF*/
+        1:  504:/*EOF*/
+        -:  505:/*EOF*/
+        -:  506:/*EOF*/
+        -:  507:/*EOF*/
+        -:  508:/*EOF*/
+    #####:  509:/*EOF*/
+    #####:  510:/*EOF*/
+        -:  511:/*EOF*/
+        -:  512:/*EOF*/
+    #####:  513:/*EOF*/
+    #####:  514:/*EOF*/
+    #####:  515:/*EOF*/
+    #####:  516:/*EOF*/
+    #####:  517:/*EOF*/
+    #####:  518:/*EOF*/
+        -:  519:/*EOF*/
+        -:  520:/*EOF*/
+    #####:  521:/*EOF*/
+    #####:  522:/*EOF*/
+    #####:  523:/*EOF*/
+    #####:  524:/*EOF*/
+    #####:  525:/*EOF*/
+    #####:  526:/*EOF*/
+    #####:  527:/*EOF*/
+    #####:  528:/*EOF*/
+    #####:  529:/*EOF*/
+    #####:  530:/*EOF*/
+        -:  531:/*EOF*/
+    #####:  532:/*EOF*/
+    #####:  533:/*EOF*/
+    #####:  534:/*EOF*/
+        -:  535:/*EOF*/
+    #####:  536:/*EOF*/
+    #####:  537:/*EOF*/
+    #####:  538:/*EOF*/
+        -:  539:/*EOF*/
+        -:  540:/*EOF*/
+        -:  541:/*EOF*/
+    #####:  542:/*EOF*/
+        -:  543:/*EOF*/
+    #####:  544:/*EOF*/
+        -:  545:/*EOF*/
+        -:  546:/*EOF*/
+    #####:  547:/*EOF*/
+        -:  548:/*EOF*/
+        -:  549:/*EOF*/
+    #####:  550:/*EOF*/
+        -:  551:/*EOF*/
+        -:  552:/*EOF*/
+        -:  553:/*EOF*/
+        6:  554:/*EOF*/
+        6:  555:/*EOF*/
+        -:  556:/*EOF*/
+        6:  557:/*EOF*/
+        6:  558:/*EOF*/
+        6:  559:/*EOF*/
+        2:  560:/*EOF*/
+        -:  561:/*EOF*/
+        -:  562:/*EOF*/
+        2:  563:/*EOF*/
+        2:  564:/*EOF*/
+        2:  565:/*EOF*/
+        2:  566:/*EOF*/
+        2:  567:/*EOF*/
+        2:  568:/*EOF*/
+        2:  569:/*EOF*/
+        2:  570:/*EOF*/
+        2:  571:/*EOF*/
+        2:  572:/*EOF*/
+        -:  573:/*EOF*/
+    #####:  574:/*EOF*/
+    #####:  575:/*EOF*/
+    #####:  576:/*EOF*/
+        -:  577:/*EOF*/
+    #####:  578:/*EOF*/
+    #####:  579:/*EOF*/
+    #####:  580:/*EOF*/
+        -:  581:/*EOF*/
+        -:  582:/*EOF*/
+        2:  583:/*EOF*/
+        -:  584:/*EOF*/
+        -:  585:/*EOF*/
+        -:  586:/*EOF*/
+        6:  587:/*EOF*/
+        -:  588:/*EOF*/
+        -:  589:/*EOF*/
+        -:  590:/*EOF*/
+        4:  591:/*EOF*/
+        4:  592:/*EOF*/
+        3:  593:/*EOF*/
+        -:  594:/*EOF*/
+        -:  595:/*EOF*/
+        -:  596:/*EOF*/
+        1:  597:/*EOF*/
+        -:  598:/*EOF*/
+        -:  599:/*EOF*/
+        -:  600:/*EOF*/
+        -:  601:/*EOF*/
+        4:  602:/*EOF*/
+        -:  603:/*EOF*/
+        -:  604:/*EOF*/
+        -:  605:/*EOF*/
+        -:  606:/*EOF*/
+        4:  607:/*EOF*/
+        4:  608:/*EOF*/
+        4:  609:/*EOF*/
+        4:  610:/*EOF*/
+        2:  611:/*EOF*/
+        6:  612:/*EOF*/
+        2:  613:/*EOF*/
+        2:  614:/*EOF*/
+        2:  615:/*EOF*/
+        -:  616:/*EOF*/
+        2:  617:/*EOF*/
+        -:  618:/*EOF*/
+        4:  619:/*EOF*/
+    #####:  620:/*EOF*/
+    #####:  621:/*EOF*/
+        -:  622:/*EOF*/
+        4:  623:/*EOF*/
+        1:  624:/*EOF*/
+        1:  625:/*EOF*/
+        -:  626:/*EOF*/
+        4:  627:/*EOF*/
+        3:  628:/*EOF*/
+        -:  629:/*EOF*/
+        4:  630:/*EOF*/
+    #####:  631:/*EOF*/
+        -:  632:/*EOF*/
+        4:  633:/*EOF*/
+        4:  634:/*EOF*/
+        -:  635:/*EOF*/
+        4:  636:/*EOF*/
+        -:  637:/*EOF*/
+        -:  638:/*EOF*/
+        -:  639:/*EOF*/
+       20:  640:/*EOF*/
+       20:  641:/*EOF*/
+        -:  642:/*EOF*/
+        -:  643:/*EOF*/
+       20:  644:/*EOF*/
+       20:  645:/*EOF*/
+      182:  646:/*EOF*/
+      154:  647:/*EOF*/
+      324:  648:/*EOF*/
+        -:  649:/*EOF*/
+       16:  650:/*EOF*/
+       16:  651:/*EOF*/
+       16:  652:/*EOF*/
+       16:  653:/*EOF*/
+       14:  654:/*EOF*/
+       14:  655:/*EOF*/
+       14:  656:/*EOF*/
+        -:  657:/*EOF*/
+        2:  658:/*EOF*/
+        4:  659:/*EOF*/
+    #####:  660:/*EOF*/
+        -:  661:/*EOF*/
+        2:  662:/*EOF*/
+        2:  663:/*EOF*/
+        2:  664:/*EOF*/
+        -:  665:/*EOF*/
+        -:  666:/*EOF*/
+       16:  667:/*EOF*/
+       16:  668:/*EOF*/
+        -:  669:/*EOF*/
+      154:  670:/*EOF*/
+        -:  671:/*EOF*/
+        -:  672:/*EOF*/
+       20:  673:/*EOF*/
+        -:  674:/*EOF*/
+        -:  675:/*EOF*/
+        -:  676:/*EOF*/
+        1:  677:/*EOF*/
+        -:  678:/*EOF*/
+        -:  679:/*EOF*/
+        -:  680:/*EOF*/
+        -:  681:/*EOF*/
+        1:  682:/*EOF*/
+       27:  683:/*EOF*/
+       26:  684:/*EOF*/
+       54:  685:/*EOF*/
+        2:  686:/*EOF*/
+        2:  687:/*EOF*/
+        -:  688:/*EOF*/
+        -:  689:/*EOF*/
+        1:  690:/*EOF*/
+        1:  691:/*EOF*/
+        1:  692:/*EOF*/
+        1:  693:/*EOF*/
+        -:  694:/*EOF*/
+        1:  695:/*EOF*/
+        -:  696:/*EOF*/
+        -:  697:/*EOF*/
+        2:  698:/*EOF*/
+        2:  699:/*EOF*/
+        -:  700:/*EOF*/
+        -:  701:/*EOF*/
+        2:  702:/*EOF*/
+        2:  703:/*EOF*/
+       56:  704:/*EOF*/
+       52:  705:/*EOF*/
+        3:  706:/*EOF*/
+        3:  707:/*EOF*/
+       10:  708:/*EOF*/
+        4:  709:/*EOF*/
+        4:  710:/*EOF*/
+        4:  711:/*EOF*/
+        4:  712:/*EOF*/
+        -:  713:/*EOF*/
+        -:  714:/*EOF*/
+        -:  715:/*EOF*/
+       49:  716:/*EOF*/
+        -:  717:/*EOF*/
+       52:  718:/*EOF*/
+        -:  719:/*EOF*/
+        -:  720:/*EOF*/
+    #####:  721:/*EOF*/
+        -:  722:/*EOF*/
+        2:  723:/*EOF*/
+        -:  724:/*EOF*/
+        -:  725:/*EOF*/
+       10:  726:/*EOF*/
+        -:  727:/*EOF*/
+        -:  728:/*EOF*/
+       10:  729:/*EOF*/
+       10:  730:/*EOF*/
+       18:  731:/*EOF*/
+        6:  732:/*EOF*/
+        6:  733:/*EOF*/
+        6:  734:/*EOF*/
+        -:  735:/*EOF*/
+        -:  736:/*EOF*/
+        -:  737:/*EOF*/
+        4:  738:/*EOF*/
+        -:  739:/*EOF*/
+       10:  740:/*EOF*/
+        -:  741:/*EOF*/
+        -:  742:/*EOF*/
+       12:  743:/*EOF*/
+        -:  744:/*EOF*/
+        -:  745:/*EOF*/
+       12:  746:/*EOF*/
+       12:  747:/*EOF*/
+        4:  748:/*EOF*/
+        -:  749:/*EOF*/
+        -:  750:/*EOF*/
+        8:  751:/*EOF*/
+       26:  752:/*EOF*/
+       10:  753:/*EOF*/
+       10:  754:/*EOF*/
+        -:  755:/*EOF*/
+        8:  756:/*EOF*/
+        -:  757:/*EOF*/
+       12:  758:/*EOF*/
+        -:  759:/*EOF*/
+        -:  760:/*EOF*/
+        -:  761:/*EOF*/
+       14:  762:/*EOF*/
+        -:  763:/*EOF*/
+       14:  764:/*EOF*/
+        -:  765:/*EOF*/
+        -:  766:/*EOF*/
+       14:  767:/*EOF*/
+       14:  768:/*EOF*/
+       45:  769:/*EOF*/
+       17:  770:/*EOF*/
+       12:  771:/*EOF*/
+       12:  772:/*EOF*/
+        -:  773:/*EOF*/
+       17:  774:/*EOF*/
+        -:  775:/*EOF*/
+       14:  776:/*EOF*/
+        -:  777:/*EOF*/
+       12:  778:/*EOF*/
+        -:  779:/*EOF*/
+        -:  780:/*EOF*/
+        -:  781:/*EOF*/
+        2:  782:/*EOF*/
+        -:  783:/*EOF*/
+        -:  784:/*EOF*/
+        -:  785:/*EOF*/
+        -:  786:/*EOF*/
+        -:  787:/*EOF*/
+        4:  788:/*EOF*/
+        -:  789:/*EOF*/
+        4:  790:/*EOF*/
+        -:  791:/*EOF*/
+        -:  792:/*EOF*/
+        -:  793:/*EOF*/
+        4:  794:/*EOF*/
+        4:  795:/*EOF*/
+        4:  796:/*EOF*/
+        -:  797:/*EOF*/
+        4:  798:/*EOF*/
+        4:  799:/*EOF*/
+       12:  800:/*EOF*/
+        4:  801:/*EOF*/
+        4:  802:/*EOF*/
+        4:  803:/*EOF*/
+        -:  804:/*EOF*/
+        4:  805:/*EOF*/
+        -:  806:/*EOF*/
+        4:  807:/*EOF*/
+        -:  808:/*EOF*/
+        4:  809:/*EOF*/
+        -:  810:/*EOF*/
+        -:  811:/*EOF*/
+        -:  812:/*EOF*/
+    #####:  813:/*EOF*/
+        -:  814:/*EOF*/
+        -:  815:/*EOF*/
+        -:  816:/*EOF*/
+        -:  817:/*EOF*/
+        6:  818:/*EOF*/
+        -:  819:/*EOF*/
+        -:  820:/*EOF*/
+        -:  821:/*EOF*/
+        6:  822:/*EOF*/
+        6:  823:/*EOF*/
+        6:  824:/*EOF*/
+       18:  825:/*EOF*/
+        6:  826:/*EOF*/
+        6:  827:/*EOF*/
+        6:  828:/*EOF*/
+        6:  829:/*EOF*/
+        -:  830:/*EOF*/
+        6:  831:/*EOF*/
+    #####:  832:/*EOF*/
+    #####:  833:/*EOF*/
+    #####:  834:/*EOF*/
+        -:  835:/*EOF*/
+        6:  836:/*EOF*/
+    #####:  837:/*EOF*/
+    #####:  838:/*EOF*/
+    #####:  839:/*EOF*/
+        -:  840:/*EOF*/
+        6:  841:/*EOF*/
+        6:  842:/*EOF*/
+        -:  843:/*EOF*/
+        -:  844:/*EOF*/
+    #####:  845:/*EOF*/
+        -:  846:/*EOF*/
+        -:  847:/*EOF*/
+        6:  848:/*EOF*/
+        3:  849:/*EOF*/
+        -:  850:/*EOF*/
+        -:  851:/*EOF*/
+    #####:  852:/*EOF*/
+        -:  853:/*EOF*/
+        6:  854:/*EOF*/
+        -:  855:/*EOF*/
+        -:  856:/*EOF*/
+        6:  857:/*EOF*/
+        -:  858:/*EOF*/
+        -:  859:/*EOF*/
+        -:  860:/*EOF*/
+        6:  861:/*EOF*/
+        -:  862:/*EOF*/
+        6:  863:/*EOF*/
+        6:  864:/*EOF*/
+        6:  865:/*EOF*/
+        6:  866:/*EOF*/
+        6:  867:/*EOF*/
+        6:  868:/*EOF*/
+        6:  869:/*EOF*/
+        6:  870:/*EOF*/
+        -:  871:/*EOF*/
+        -:  872:/*EOF*/
+    #####:  873:/*EOF*/
+    #####:  874:/*EOF*/
+    #####:  875:/*EOF*/
+        -:  876:/*EOF*/
+    #####:  877:/*EOF*/
+    #####:  878:/*EOF*/
+    #####:  879:/*EOF*/
+        -:  880:/*EOF*/
+        -:  881:/*EOF*/
+        6:  882:/*EOF*/
+        6:  883:/*EOF*/
+        3:  884:/*EOF*/
+        -:  885:/*EOF*/
+        -:  886:/*EOF*/
+    #####:  887:/*EOF*/
+        -:  888:/*EOF*/
+        6:  889:/*EOF*/
+        -:  890:/*EOF*/
+        -:  891:/*EOF*/
+        -:  892:/*EOF*/
+       38:  893:/*EOF*/
+       38:  894:/*EOF*/
+        -:  895:/*EOF*/
+      572:  896:/*EOF*/
+      496:  897:/*EOF*/
+       38:  898:/*EOF*/
+       38:  899:/*EOF*/
+        -:  900:/*EOF*/
+        -:  901:/*EOF*/
+      458:  902:/*EOF*/
+        -:  903:/*EOF*/
+        -:  904:/*EOF*/
+       38:  905:/*EOF*/
+        -:  906:/*EOF*/
+        -:  907:/*EOF*/
+        -:  908:/*EOF*/
+        -:  909:/*EOF*/
+    #####:  910:/*EOF*/
+        -:  911:/*EOF*/
+        -:  912:/*EOF*/
+        -:  913:/*EOF*/
+    #####:  914:/*EOF*/
+    #####:  915:/*EOF*/
+    #####:  916:/*EOF*/
+    #####:  917:/*EOF*/
+    #####:  918:/*EOF*/
+    #####:  919:/*EOF*/
+    #####:  920:/*EOF*/
+        -:  921:/*EOF*/
+    #####:  922:/*EOF*/
+        -:  923:/*EOF*/
+    #####:  924:/*EOF*/
+        -:  925:/*EOF*/
+        -:  926:/*EOF*/
+        -:  927:/*EOF*/
+        -:  928:/*EOF*/
+    #####:  929:/*EOF*/
+    #####:  930:/*EOF*/
+        -:  931:/*EOF*/
+    #####:  932:/*EOF*/
+        -:  933:/*EOF*/
+        -:  934:/*EOF*/
+        -:  935:/*EOF*/
+        -:  936:/*EOF*/
+    #####:  937:/*EOF*/
+    #####:  938:/*EOF*/
+        -:  939:/*EOF*/
+    #####:  940:/*EOF*/
+        -:  941:/*EOF*/
+        -:  942:/*EOF*/
+        -:  943:/*EOF*/
+        -:  944:/*EOF*/
+    #####:  945:/*EOF*/
+    #####:  946:/*EOF*/
+        -:  947:/*EOF*/
+    #####:  948:/*EOF*/
+        -:  949:/*EOF*/
+        -:  950:/*EOF*/
+        -:  951:/*EOF*/
+        -:  952:/*EOF*/
+        7:  953:/*EOF*/
+        7:  954:/*EOF*/
+        -:  955:/*EOF*/
+        7:  956:/*EOF*/
+        7:  957:/*EOF*/
+        -:  958:/*EOF*/
+        -:  959:/*EOF*/
+        -:  960:/*EOF*/
+       23:  961:/*EOF*/
+        9:  962:/*EOF*/
+        9:  963:/*EOF*/
+        9:  964:/*EOF*/
+        9:  965:/*EOF*/
+        9:  966:/*EOF*/
+        2:  967:/*EOF*/
+        2:  968:/*EOF*/
+        -:  969:/*EOF*/
+        -:  970:/*EOF*/
+        7:  971:/*EOF*/
+       23:  972:/*EOF*/
+        9:  973:/*EOF*/
+        9:  974:/*EOF*/
+        9:  975:/*EOF*/
+        9:  976:/*EOF*/
+        9:  977:/*EOF*/
+        9:  978:/*EOF*/
+        9:  979:/*EOF*/
+        9:  980:/*EOF*/
+        9:  981:/*EOF*/
+        9:  982:/*EOF*/
+        9:  983:/*EOF*/
+        9:  984:/*EOF*/
+        9:  985:/*EOF*/
+        -:  986:/*EOF*/
+        1:  987:/*EOF*/
+        1:  988:/*EOF*/
+        1:  989:/*EOF*/
+        1:  990:/*EOF*/
+        1:  991:/*EOF*/
+        3:  992:/*EOF*/
+        1:  993:/*EOF*/
+        1:  994:/*EOF*/
+        1:  995:/*EOF*/
+        -:  996:/*EOF*/
+        1:  997:/*EOF*/
+        1:  998:/*EOF*/
+        -:  999:/*EOF*/
+        1: 1000:/*EOF*/
+        -: 1001:/*EOF*/
+        -: 1002:/*EOF*/
+        1: 1003:/*EOF*/
+        1: 1004:/*EOF*/
+        1: 1005:/*EOF*/
+        -: 1006:/*EOF*/
+        1: 1007:/*EOF*/
+        1: 1008:/*EOF*/
+        -: 1009:/*EOF*/
+        -: 1010:/*EOF*/
+        1: 1011:/*EOF*/
+        1: 1012:/*EOF*/
+        1: 1013:/*EOF*/
+        -: 1014:/*EOF*/
+        1: 1015:/*EOF*/
+        1: 1016:/*EOF*/
+        -: 1017:/*EOF*/
+        -: 1018:/*EOF*/
+        1: 1019:/*EOF*/
+        1: 1020:/*EOF*/
+        1: 1021:/*EOF*/
+        -: 1022:/*EOF*/
+        1: 1023:/*EOF*/
+        1: 1024:/*EOF*/
+        -: 1025:/*EOF*/
+        -: 1026:/*EOF*/
+        1: 1027:/*EOF*/
+        7: 1028:/*EOF*/
+        5: 1029:/*EOF*/
+        5: 1030:/*EOF*/
+        5: 1031:/*EOF*/
+        5: 1032:/*EOF*/
+        5: 1033:/*EOF*/
+        5: 1034:/*EOF*/
+        5: 1035:/*EOF*/
+        5: 1036:/*EOF*/
+        5: 1037:/*EOF*/
+        4: 1038:/*EOF*/
+        4: 1039:/*EOF*/
+        4: 1040:/*EOF*/
+        4: 1041:/*EOF*/
+        4: 1042:/*EOF*/
+        4: 1043:/*EOF*/
+        2: 1044:/*EOF*/
+        2: 1045:/*EOF*/
+        2: 1046:/*EOF*/
+        -: 1047:/*EOF*/
+        4: 1048:/*EOF*/
+        1: 1049:/*EOF*/
+        1: 1050:/*EOF*/
+        -: 1051:/*EOF*/
+        4: 1052:/*EOF*/
+        1: 1053:/*EOF*/
+        1: 1054:/*EOF*/
+        2: 1055:/*EOF*/
+    #####: 1056:/*EOF*/
+    #####: 1057:/*EOF*/
+        -: 1058:/*EOF*/
+        -: 1059:/*EOF*/
+        -: 1060:/*EOF*/
+        -: 1061:/*EOF*/
+    #####: 1062:/*EOF*/
+    #####: 1063:/*EOF*/
+        -: 1064:/*EOF*/
+        -: 1065:/*EOF*/
+        -: 1066:/*EOF*/
+        1: 1067:/*EOF*/
+        1: 1068:/*EOF*/
+        -: 1069:/*EOF*/
+        1: 1070:/*EOF*/
+        1: 1071:/*EOF*/
+        1: 1072:/*EOF*/
+        -: 1073:/*EOF*/
+        2: 1074:/*EOF*/
+        2: 1075:/*EOF*/
+       10: 1076:/*EOF*/
+        6: 1077:/*EOF*/
+        6: 1078:/*EOF*/
+        6: 1079:/*EOF*/
+        6: 1080:/*EOF*/
+        6: 1081:/*EOF*/
+        6: 1082:/*EOF*/
+        6: 1083:/*EOF*/
+        6: 1084:/*EOF*/
+        6: 1085:/*EOF*/
+        6: 1086:/*EOF*/
+       12: 1087:/*EOF*/
+    #####: 1088:/*EOF*/
+        -: 1089:/*EOF*/
+        6: 1090:/*EOF*/
+        6: 1091:/*EOF*/
+        -: 1092:/*EOF*/
+        2: 1093:/*EOF*/
+        2: 1094:/*EOF*/
+        2: 1095:/*EOF*/
+        -: 1096:/*EOF*/
+        -: 1097:/*EOF*/
+        1: 1098:/*EOF*/
+        1: 1099:/*EOF*/
+        1: 1100:/*EOF*/
+        1: 1101:/*EOF*/
+        1: 1102:/*EOF*/
+        -: 1103:/*EOF*/
+        -: 1104:/*EOF*/
+        1: 1105:/*EOF*/
+        1: 1106:/*EOF*/
+        1: 1107:/*EOF*/
+        1: 1108:/*EOF*/
+        1: 1109:/*EOF*/
+        1: 1110:/*EOF*/
+        1: 1111:/*EOF*/
+        -: 1112:/*EOF*/
+        -: 1113:/*EOF*/
+        1: 1114:/*EOF*/
+        1: 1115:/*EOF*/
+        1: 1116:/*EOF*/
+        1: 1117:/*EOF*/
+        1: 1118:/*EOF*/
+        1: 1119:/*EOF*/
+        1: 1120:/*EOF*/
+        1: 1121:/*EOF*/
+        1: 1122:/*EOF*/
+        -: 1123:/*EOF*/
+        1: 1124:/*EOF*/
+        1: 1125:/*EOF*/
+        -: 1126:/*EOF*/
+        -: 1127:/*EOF*/
+        1: 1128:/*EOF*/
+        1: 1129:/*EOF*/
+        1: 1130:/*EOF*/
+        1: 1131:/*EOF*/
+        1: 1132:/*EOF*/
+        1: 1133:/*EOF*/
+        1: 1134:/*EOF*/
+        -: 1135:/*EOF*/
+        1: 1136:/*EOF*/
+        1: 1137:/*EOF*/
+        -: 1138:/*EOF*/
+        -: 1139:/*EOF*/
+        -: 1140:/*EOF*/
+        2: 1141:/*EOF*/
+        -: 1142:/*EOF*/
+        -: 1143:/*EOF*/
+        7: 1144:/*EOF*/
+        7: 1145:/*EOF*/
+        -: 1146:/*EOF*/
+        -: 1147:/*EOF*/
+        -: 1148:/*EOF*/
+        -: 1149:/*EOF*/
+        3: 1150:/*EOF*/
+        -: 1151:/*EOF*/
+        3: 1152:/*EOF*/
+        -: 1153:/*EOF*/
+        -: 1154:/*EOF*/
+        -: 1155:/*EOF*/
+        3: 1156:/*EOF*/
+        3: 1157:/*EOF*/
+        3: 1158:/*EOF*/
+        3: 1159:/*EOF*/
+        3: 1160:/*EOF*/
+        3: 1161:/*EOF*/
+        3: 1162:/*EOF*/
+        3: 1163:/*EOF*/
+        3: 1164:/*EOF*/
+        3: 1165:/*EOF*/
+        3: 1166:/*EOF*/
+        3: 1167:/*EOF*/
+        3: 1168:/*EOF*/
+        3: 1169:/*EOF*/
+        3: 1170:/*EOF*/
+        3: 1171:/*EOF*/
+        -: 1172:/*EOF*/
+        -: 1173:/*EOF*/
+        3: 1174:/*EOF*/
+        3: 1175:/*EOF*/
+        3: 1176:/*EOF*/
+        -: 1177:/*EOF*/
+       81: 1178:/*EOF*/
+       78: 1179:/*EOF*/
+        -: 1180:/*EOF*/
+        3: 1181:/*EOF*/
+        3: 1182:/*EOF*/
+        3: 1183:/*EOF*/
+        -: 1184:/*EOF*/
+        -: 1185:/*EOF*/
+    #####: 1186:/*EOF*/
+    #####: 1187:/*EOF*/
+    #####: 1188:/*EOF*/
+        -: 1189:/*EOF*/
+    #####: 1190:/*EOF*/
+    #####: 1191:/*EOF*/
+    #####: 1192:/*EOF*/
+    #####: 1193:/*EOF*/
+        -: 1194:/*EOF*/
+        -: 1195:/*EOF*/
+        3: 1196:/*EOF*/
+        -: 1197:/*EOF*/
+        3: 1198:/*EOF*/
+        3: 1199:/*EOF*/
+        -: 1200:/*EOF*/
+        -: 1201:/*EOF*/
+        -: 1202:/*EOF*/
+        -: 1203:/*EOF*/
+        -: 1204:/*EOF*/
+        1: 1205:/*EOF*/
+        1: 1206:/*EOF*/
+        -: 1207:/*EOF*/
+        -: 1208:/*EOF*/
+        -: 1209:/*EOF*/
+        1: 1210:/*EOF*/
+        1: 1211:/*EOF*/
+        1: 1212:/*EOF*/
+        1: 1213:/*EOF*/
+        1: 1214:/*EOF*/
+        1: 1215:/*EOF*/
+        1: 1216:/*EOF*/
+        -: 1217:/*EOF*/
+        -: 1218:/*EOF*/
+        1: 1219:/*EOF*/
+        1: 1220:/*EOF*/
+    #####: 1221:/*EOF*/
+        -: 1222:/*EOF*/
+    #####: 1223:/*EOF*/
+    #####: 1224:/*EOF*/
+        -: 1225:/*EOF*/
+    #####: 1226:/*EOF*/
+    #####: 1227:/*EOF*/
+    #####: 1228:/*EOF*/
+        -: 1229:/*EOF*/
+        -: 1230:/*EOF*/
+        1: 1231:/*EOF*/
+        2: 1232:/*EOF*/
+    #####: 1233:/*EOF*/
+        -: 1234:/*EOF*/
+        1: 1235:/*EOF*/
+        1: 1236:/*EOF*/
+        1: 1237:/*EOF*/
+        1: 1238:/*EOF*/
+        -: 1239:/*EOF*/
+        -: 1240:/*EOF*/
+        1: 1241:/*EOF*/
+        -: 1242:/*EOF*/
+        1: 1243:/*EOF*/
+        -: 1244:/*EOF*/
+        -: 1245:/*EOF*/
+        -: 1246:/*EOF*/
+        1: 1247:/*EOF*/
+        1: 1248:/*EOF*/
+        -: 1249:/*EOF*/
+       16: 1250:/*EOF*/
+       14: 1251:/*EOF*/
+       14: 1252:/*EOF*/
+       14: 1253:/*EOF*/
+       14: 1254:/*EOF*/
+       14: 1255:/*EOF*/
+       14: 1256:/*EOF*/
+       14: 1257:/*EOF*/
+       14: 1258:/*EOF*/
+       14: 1259:/*EOF*/
+       14: 1260:/*EOF*/
+        -: 1261:/*EOF*/
+        3: 1262:/*EOF*/
+        3: 1263:/*EOF*/
+        -: 1264:/*EOF*/
+        -: 1265:/*EOF*/
+        7: 1266:/*EOF*/
+        7: 1267:/*EOF*/
+        -: 1268:/*EOF*/
+        -: 1269:/*EOF*/
+        2: 1270:/*EOF*/
+        2: 1271:/*EOF*/
+        -: 1272:/*EOF*/
+        -: 1273:/*EOF*/
+        1: 1274:/*EOF*/
+        1: 1275:/*EOF*/
+        -: 1276:/*EOF*/
+        -: 1277:/*EOF*/
+        1: 1278:/*EOF*/
+        1: 1279:/*EOF*/
+        -: 1280:/*EOF*/
+        1: 1281:/*EOF*/
+        -: 1282:/*EOF*/
+        -: 1283:/*EOF*/
+        1: 1284:/*EOF*/
+        1: 1285:/*EOF*/
+        1: 1286:/*EOF*/
