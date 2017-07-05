@@ -1,27 +1,24 @@
 IDIR =../Include
-CXX=g++
+CXX = g++
 CXXFLAGS=-I$(IDIR) -g -D_TEST -ftest-coverage -fprofile-arcs
 
-ODIR=../OBJ
-LDIR=../LIB
+ODIR=../obj
+LDIR=../lib
 
-LIBS= -lgtest -lpthread -lgtest_main --coverage -lgcov
+LIBS= -lgtest -lpthread -lgtest_main --coverage -lgcov -lncurses -lmenu -lform -Wno-write-strings
 
-_DEPS= Grafo.h
-DEPS= $(patsubst %,$(IDIR)/%,$(_DEPS))
+_DEPS= GrafoInterface.h
+DEPS = $(patsubst %,$(IDIR)/%,$(_DEPS))
 
-<<<<<<< HEAD:src/Makefile~
-_OBJ= Main.o MyNetwork.o 
-=======
-_OBJ= main.o RedeSocial.o
->>>>>>> d3f9b51c76b3a26945c96b1531d69491ace5ecc2:SRC/Makefile
-OBJ= $(patsubst %,$(ODIR)/%,$(_OBJ))
+_OBJ= Main.o GrafoInterface.o 
+OBJ = $(patsubst %,$(ODIR)/%,$(_OBJ))
 
 $(ODIR)/%.o: %.c $(DEPS)
-	$(CXX) -c -o $@ $< $(CXXFLAGS) $(LIBS)
+	$(CXX) $(CXXFLAGS) -c -o $@ $< $(LIBS)
 
 main: $(OBJ)
-	$(CXX) -o $@ $^ $(CXXFLAGS) $(LIBS)
+	$(CXX) $(CXXFLAGS) -o $@ $^ $(LIBS)
+	cppcheck --enable=warning Main.c Grafo.c ../Include/GrafoInterface.h
 
 .PHONY: clean
 
