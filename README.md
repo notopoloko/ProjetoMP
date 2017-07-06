@@ -7,7 +7,7 @@ Ele utiliza a biblioteca ncurses que precisa estar instalada no computador host
 
 O programa deve ser compilado através do make, incluso na pasta SRC.
 
-Caso se deseje realizar os teste, deve se utilizar a diretiva -D_TESTE, que leva o programa a executar a plataforma de testes, construída com gtest.
+Para testar o código e a biblioteca é necessário dar make na pasta SRC, será gerado um executavel "main". Para executar os testes use o comando : ./main,esse comando executa a plataforma de testes, construída com gtest.
 
 Caso não se utilize essa diretiva, o programa irá executar normalmente, permitindo que o usuário utilize o programa.
 
