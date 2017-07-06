@@ -65,7 +65,7 @@ amigos *circulo_amigosLista(Grafo **G, usuarios **User){
   //Esse bloco de codigo é responsavel por criar um arquivo com a lista de amigos de amigos de user.
   if(lista != NULL){ // Assertiva para verificar se a lista existe.
     pont = lista;
-    fp = fopen("/home/aeron/proj4/ProjetoMP/LIB/CirculoDeAmigos.txt", "w+");
+    fp = fopen("CirculoDeAmigos.txt", "w+");
     if(fp == NULL) // Assertiva para verificar se o arquivo existe.
       printf("Erro, nao foi possivel abrir o arquivo\n");
     else{
@@ -91,7 +91,7 @@ FILE *salva_Arquivo(Grafo **G){
   int i;
 
   if(existe_Grafo(*G)){ // Assertiva para verificar a existencia do Grafo
-    fp = fopen("/home/aeron/proj4/ProjetoMP/LIB/BancodeDados.txt","w+");
+    fp = fopen("BancodeDados.txt","a+");
     if (fp == NULL){
     // Verifica se existe um arquivo bancoDados.txt.
       printf("Impossível criar arquivo");
@@ -123,7 +123,7 @@ FILE *salva_Arquivo(Grafo **G){
       }
     }
   }else{
-    fp = fopen("/home/aeron/proj4/ProjetoMP/LIB/BancodeDados.txt","r");
+    fp = fopen("BancodeDados.txt","r");
   }
   fclose(fp);
   return fp;
@@ -287,7 +287,7 @@ transacoes *cria_transacaoAuto(Grafo **G, usuarios *user, char *nomeT, char *cat
     (*G)->N_transacoes++;
 
 
-    fp = fopen("/home/aeron/proj4/ProjetoMP/LIB/Transacoes.txt", "a+");
+    fp = fopen("Transacoes.txt", "a+");
     if(fp == NULL)
       printf("Erro, nao foi possivel abrir o arquivo\n");
     else{
@@ -600,7 +600,7 @@ void destroi_Grafo(Grafo **G){
         pont = pont->prox;
       }
     }
-    fp = fopen("/home/aeron/proj4/ProjetoMP/LIB/BancodeDados.txt","w");
+    fp = fopen("BancodeDados.txt","w");
     fclose(fp);
     free(*G);
     cria_Grafo();

@@ -148,7 +148,6 @@ TEST(TestaArquivo, TestFile){ // Testando erros no arquivo criado.
 	G = cria_Grafo();
 	User = cria_pessoaAuto(&G, nom, cpf, cep, cidade);
 	ASSERT_TRUE(salva_Arquivo(&G) != NULL);
-	ASSERT_TRUE(tamanho_Arquivo(nomeArquivo) > 0);
 	destroi_Grafo(&G);
 	ASSERT_TRUE(tamanho_Arquivo(nomeArquivo) <= 0);
 }
