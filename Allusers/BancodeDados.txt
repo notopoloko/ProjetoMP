@@ -1,24 +1,12 @@
 ----------------------------------------------------------------------------
-ID = 1
-NOME = Adalberto                                        
-CIDADE = asdf                                             
-ENDERECO = asdf                                             
-CPF = asdf               
-CEP = asdf               
-EMAIL = asdf                                             
-SENHA = asdf               
-DESCRICAO = asdf                                                                                                                                                                                                   
-NUMERO DE AMIGOS = 1
-Amigos = { Rafael                                            }
-----------------------------------------------------------------------------
 ID = 0
-NOME = Rafael                                           
-CIDADE = asdfa                                            
-ENDERECO = sdfasd                                           
+NOME = asdf                                             
+CIDADE = sdfasd                                           
+ENDERECO = fas                                              
 CPF = dfasd              
-CEP = fas                
-EMAIL = fasdf                                            
-SENHA = asdfasdf           
-DESCRICAO = asdfasdf                                                                                                                                                                                               
-NUMERO DE AMIGOS = 1
-Amigos = { Adalberto                                         }
+CEP = dfas               
+EMAIL = fas                                              
+SENHA = dfasdfasdf         
+DESCRICAO = asdf                                                                                                                                                                                                   
+NUMERO DE AMIGOS = 0
+Amigos = { }

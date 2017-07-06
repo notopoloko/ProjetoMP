@@ -66,7 +66,7 @@ bool eh_amigo(usuarios *User, usuarios *User2){
 
   pont = verifica_amizades(&(User));
   while(pont != NULL){
-    if(pont->idAmigo == (User2)->id){
+    if(!strcmp(pont->nomeAmigo, User2->nome)){
       encontrado = true;
     }
     pont = pont->proxAmigo;
@@ -131,6 +131,8 @@ Grafo *cria_Grafo(){//checada
 
   G = (Grafo *)malloc(sizeof(Grafo));
   G->N_usuarios = 0;
+  G->listaT = NULL;
+  G->N_transacoes = 0;
   while(i < 26){
     G->listaAdj[i] = NULL;
     i++;
@@ -189,7 +191,7 @@ Grafo *cria_Grafo(){//checada
   return Tr;
 }*/
 
-transacoes *cria_transacaoAuto(Grafo **G, usuarios *user, char *nomeT, char *categoriaT, float val){
+transacoes *cria_transacaoAuto(Grafo **G, usuarios *user, char *nomeT, char *categoriaT, char* value){
   struct transacoes *Tr, *pont;
   FILE *fp;
 
@@ -197,9 +199,9 @@ transacoes *cria_transacaoAuto(Grafo **G, usuarios *user, char *nomeT, char *cat
     Tr = (transacoes*)malloc(sizeof(transacoes));
     strcpy(Tr->categoria, categoriaT);
     strcpy(Tr->objeto, nomeT);
+    strcpy(Tr->valor, value);
     Tr->idT = (*G)->N_transacoes;
     Tr->criador = user;
-    Tr->valor = val;
     Tr->proxT = NULL;
     Tr->antT = NULL;
     if((*G)->listaT == NULL){
@@ -217,16 +219,14 @@ transacoes *cria_transacaoAuto(Grafo **G, usuarios *user, char *nomeT, char *cat
     }
     (*G)->N_transacoes++;
 
-
-    fp = fopen("../Allusers/Transacoes.txt", "a+");
-    if(fp == NULL)
-      printf("Erro, nao foi possivel abrir o arquivo\n");
+    fp = fopen("../Allusers/Transacoes.txt", "a");
+    if(fp == NULL)printw("Erro, nao foi possivel abrir o arquivo\n");
     else{
       fprintf(fp, "Id = %d\n", Tr->idT);
       fprintf(fp, "Nome = %s\n", Tr->objeto);
       fprintf(fp, "Categoria = %s\n", Tr->categoria);
       fprintf(fp, "Criador = %s\n", Tr->criador->nome);
-      fprintf(fp, "Valor = %.2f\n\n", Tr->valor);
+      fprintf(fp, "Valor = %s\n\n", Tr->valor);
     }
     fclose(fp);
   }
@@ -238,11 +238,11 @@ transacoes *procura_categoria(Grafo **G, char *categoriaT){
 
   pont = (*G)->listaT;
   while(pont != NULL){
-    if(strcmp(pont->categoria, categoriaT) == 0){
+    if(!strcmp(pont->categoria, categoriaT)){
       Tr = (transacoes*)malloc(sizeof(transacoes));
       Tr->idT = pont->idT;
       Tr->criador = pont->criador;
-      Tr->valor = pont->valor;
+      strcpy(Tr->valor, pont->valor);
       strcpy(Tr->categoria, pont->categoria);
       strcpy(Tr->objeto, pont->objeto);
 
@@ -284,7 +284,7 @@ transacoes *procura_nomeT(Grafo **G, char *categoriaT, char *nomeT){
           Tr = (transacoes*)malloc(sizeof(transacoes));
           Tr->idT = pont->idT;
           Tr->criador = pont->criador;
-          Tr->valor = pont->valor;
+          strcpy(Tr->valor, pont->valor);
           strcpy(Tr->categoria, pont->categoria);
           strcpy(Tr->objeto, pont->objeto);
           if(listadeTransacoes == NULL){
@@ -325,7 +325,7 @@ transacoes *procura_transacaoDeAmigos(Grafo **G, usuarios *User, char *categoria
           Tr = (transacoes*)malloc(sizeof(transacoes));
           Tr->idT = pont->idT;
           Tr->criador = pont->criador;
-          Tr->valor = pont->valor;
+          strcpy(Tr->valor, pont->valor);
           strcpy(Tr->categoria, pont->categoria);
           strcpy(Tr->objeto, pont->objeto);
           if(listadeTransacoes == NULL){
@@ -347,7 +347,7 @@ transacoes *procura_transacaoDeAmigos(Grafo **G, usuarios *User, char *categoria
       pont = pont->proxT;
     }
   }else{
-    printf("Categoria nao encontrada\n");
+    return NULL;
   }
 
   return listadeTransacoes;
@@ -421,9 +421,11 @@ void exclui_usuario(Grafo **G, usuarios **User){
   int letra;
   struct amigos *amigo, *pont;
   struct usuarios *User2;
+  transacoes *pont1;
 
   if((*User) != NULL){ //Assertiva para testar existencia de um usuario.
     letra = verifica_letra((*User)->nome[0]);
+    pont1 = (*G)->listaT;
     amigo = (verifica_amizades(&(*User)));
     if(amigo != NULL){ //Assertiva para testar se um usuario tem amizades.
       pont = amigo;
@@ -439,8 +441,7 @@ void exclui_usuario(Grafo **G, usuarios **User){
       (*User)->prox->ant = (*User)->ant;
       free((*User));
       (*User) = NULL;
-    }
-    else{
+    }else{
       if((*User)->ant == NULL && (*User)->prox != NULL){
         (*User)->prox->ant = NULL;
         ((*G)->listaAdj[letra]) = (*User)->prox;
@@ -450,6 +451,11 @@ void exclui_usuario(Grafo **G, usuarios **User){
         ((*G)->listaAdj[letra]) = NULL;
         free((*User));
       }
+    }
+    while(pont1!=NULL){
+      if(pont1->criador == (*User));
+      exclui_transacao(G,&pont1);
+      pont1=pont1->proxT;
     }
   }
 } 
@@ -491,6 +497,7 @@ amigos *verifica_amizades(usuarios **User){
 //Funcao destroi_Grafo --- Recebe como Parametro um Grafo(G) e libera cada espaço de memoria alocado dinamicamente.
 void destroi_Grafo(Grafo **G){
   int i;
+  transacoes *tran,*tran1;
 
   if(existe_Grafo(*G)){
     for(i = 0; i < 26; i++){
@@ -499,6 +506,13 @@ void destroi_Grafo(Grafo **G){
       }
     }
     (*G)->N_usuarios = 0;
+    tran = (*G)->listaT;
+    tran1 = tran;
+    while(tran1 != NULL){
+      tran = tran->proxT;
+      free(tran1);
+      tran1 = tran;
+    }
     free(*G);
   }
 }
@@ -579,7 +593,7 @@ usuarios *procura_nome(Grafo *G, char *nom){
 //Retorna um usuario ou NULL caso não encontre o usuario.
 
  //Funcao excluir_amigo --- Recebe como Parametros um Grafo(G) e um usuario.
-void excluir_amigo(Grafo **G, usuarios **User, usuarios **User1, int cons){
+int excluir_amigo(Grafo **G, usuarios **User, usuarios **User1, int cons){
   int letra;
   struct amigos *pont;
 
@@ -614,10 +628,11 @@ void excluir_amigo(Grafo **G, usuarios **User, usuarios **User1, int cons){
     }
     if(cons == 0){
       excluir_amigo(&(*G), &(*User1), &(*User), 1);
+      return 1;
     }
-  }else{
-      printf("Usuario sem amizades para exclusão\n");
-  }
+
+  }else return 0;
+  return 0;
 }
 
  //Funcao adiciona_amigos --- Recebe como Parametros um Grafo(G) e dois usuarios.
@@ -783,7 +798,7 @@ int cria_pessoa(Grafo *G, usuarios *user){//checada
   usuarios *pont;
 
   user->id = G->N_usuarios;
-
+  user->avaliacao=0;
   letra = verifica_letra(user->nome[0]);
   if((G->listaAdj[letra]) == NULL){
 
@@ -900,7 +915,7 @@ int cria_pessoa_interface(Grafo *G, char *nom){
   mvprintw(LINES - 2, 0, "Use as setas para para trocar entre os campos. Para terminar digite ENTER. Pressione F2 para cancelar");
   mvprintw(4,9,"Nome:");
   mvprintw(6,9,"Cidade:");
-  mvprintw(8,9,"Endereço:");
+  mvprintw(8,8,"Endereço:");
   mvprintw(10,9,"Cep:");
   mvprintw(12,9,"CPF:");
   mvprintw(14,9,"E-mail:");
@@ -1197,7 +1212,7 @@ int login_user_interface(Grafo *g, char *nom){
         strcpy(nom,name);
         senha[19] = '\0';
         if(test_string(name)||test_string(senha)){
-          mvprintw(LINES - 4, 0, "Preencha os campos");
+          mvprintw(LINES - 3, 0, "Preencha os campos  ");
           break;
         }
         check = check_user(g,name,senha);
@@ -1206,7 +1221,7 @@ int login_user_interface(Grafo *g, char *nom){
             mvprintw(LINES - 3, 0, "Nao há esse usuario");
             break;
           case 1:
-            mvprintw(LINES - 3, 0, "Senha incorreta   ");
+            mvprintw(LINES - 3, 0, "Senha incorreta    ");
             break;
         }
         if(check == 2){
@@ -1245,7 +1260,7 @@ int check_user(Grafo* G, char *name, char *senha){
 
 int logged_user_interface(Grafo *g,char *name){
     ITEM **itens;
-    int ch,width;
+    int ch;
     MENU *menu;
     int numero,i;
     char *choices[] = {"Editar suas informacoes", "Excluir conta", "Procurar Transacao","Adicionar Transacao","Adicionar amigos","Ver amigos","Sair",(char *)NULL};
@@ -1263,11 +1278,11 @@ int logged_user_interface(Grafo *g,char *name){
     set_menu_mark(menu, "  - ");
     menu_opts_off(menu, O_SHOWDESC);
     set_menu_format(menu,numero,1);
-    width = strlen("BEM-VINDO");
     mvprintw(LINES/4-7,COLS/4-20,"Ola, %s",name);
     mvprintw(LINES/4-5,COLS/4-20, "BEM-VINDO");
     set_menu_sub(menu,derwin(stdscr,7,38,LINES/4-2,COLS/4-25));
     post_menu(menu);
+    mvprintw(LINES - 2, 0, "Use as setas para para trocar entre os campos. Para ir digite ENTER.");
     refresh();
     if(!(user = procura_nome(g,name))){
       printw("Nao achei");
@@ -1277,11 +1292,9 @@ int logged_user_interface(Grafo *g,char *name){
     while(ch = getch()){
         switch(ch){
             case KEY_DOWN:
-                mvprintw(LINES - 2, 0, "Use as setas para para trocar entre os campos. Para ir digite ENTER.");
                 menu_driver(menu, REQ_DOWN_ITEM);
                 break;
             case KEY_UP:
-                mvprintw(LINES - 2, 0, "Use as setas para para trocar entre os campos. Para ir digite ENTER.");
                 menu_driver(menu, REQ_UP_ITEM);
                 break;
             case 10:
@@ -1315,9 +1328,17 @@ int logged_user_interface(Grafo *g,char *name){
                     return 2;
                 }else if(!strcmp("Adicionar amigos",item_name(current_item(menu)))){
                   adiciona_amigos_interface(g,user);
+                  mvprintw(LINES - 2, 0, "Use as setas para para trocar entre os campos. Para ir digite ENTER.");
                   break;
                 }else if(!strcmp("Ver amigos",item_name(current_item(menu)))){
                   if(!ver_amigos_interface(g,user))mvprintw(LINES-3,1,"Vc nao tem amigos ainda");
+                  mvprintw(LINES - 2, 0, "Use as setas para para trocar entre os campos. Para ir digite ENTER.");
+                  break;
+                }else if(!strcmp("Adicionar Transacao",item_name(current_item(menu)))){
+                  add_trans_interface(g,user);
+                  break;
+                }else if(!strcmp("Procurar Transacao",item_name(current_item(menu)))){
+                  procura_transacao_interface(g,user);
                   break;
                 }
         }
@@ -1375,14 +1396,14 @@ int edit_user_interface(Grafo *g,usuarios *user,char *nom){
 
   wrefresh(my_form_win);
   mvprintw(LINES - 2, 0, "Use as setas para para trocar entre os campos. Para terminar digite ENTER. Pressione F2 para cancelar");
-  mvwprintw(my_form_win,4,2,"Nome:");
-  mvwprintw(my_form_win,6,2,"Cidade:");
-  mvwprintw(my_form_win,8,2,"Endereço:");
-  mvwprintw(my_form_win,10,2,"Cep:");
-  mvwprintw(my_form_win,12,2,"CPF:");
-  mvwprintw(my_form_win,14,2,"E-mail:");
-  mvwprintw(my_form_win,16,2,"Senha:");
-  mvwprintw(my_form_win,18,2,"Descreva vc:");
+  mvwprintw(my_form_win,5,2,"Nome:");
+  mvwprintw(my_form_win,7,2,"Cidade:");
+  mvwprintw(my_form_win,9,2,"Endereço:");
+  mvwprintw(my_form_win,11,2,"Cep:");
+  mvwprintw(my_form_win,13,2,"CPF:");
+  mvwprintw(my_form_win,15,2,"E-mail:");
+  mvwprintw(my_form_win,17,2,"Senha:");
+  mvwprintw(my_form_win,19,2,"Descreva vc:");
   refresh();
   while((ch = wgetch(my_form_win))!=KEY_F(2)){
     switch(ch){
@@ -1497,6 +1518,7 @@ int adiciona_amigos_interface(Grafo *g, usuarios *user){
         break;
       case KEY_BACKSPACE:
         form_driver(my_form,REQ_DEL_PREV);
+        break;
       case 10:
         form_driver(my_form,REQ_NEXT_FIELD);
         nome = field_buffer(field[0],0);
@@ -1504,8 +1526,10 @@ int adiciona_amigos_interface(Grafo *g, usuarios *user){
         if(test_string(nome)){
           mvwprintw(my_form_win,2,1,"Preencha o campo  ");
           break;
-        }
-        if(!(user1 = procura_nome(g,nome))){
+        }else if(!strcmp(user->nome,nome)){
+          mvwprintw(my_form_win,2,1,"Eh vc, jovem     ");
+          break;
+        }else if(!(user1 = procura_nome(g,nome))){
           mvwprintw(my_form_win,2,1,"Nao localizado   ");
           break;
         }else{
@@ -1554,7 +1578,7 @@ int ver_amigos_interface(Grafo *g,usuarios *user){
   char **nomes,name[50];
   usuarios *user1;
 
-  if(migos = verifica_amizades(&user))nomes = (char**)malloc(user->numeroAmigos*sizeof(char*));
+  if(migos = verifica_amizades(&user)) nomes = (char**)malloc(user->numeroAmigos*sizeof(char*));
   else return 0;
   pont = migos;
   for(i=0;pont != NULL;i++){
@@ -1576,6 +1600,7 @@ int ver_amigos_interface(Grafo *g,usuarios *user){
 
   box(my_menu_win,0,0);
   post_menu(my_menu);
+  mvwprintw(my_menu_win,LINES/2-2,1,"Use as setas para alternar entre os nomes e pressione ENTER. Saia com F2");
   wrefresh(my_menu_win);
 
   while((c = wgetch(my_menu_win))!=KEY_F(2)){
@@ -1594,7 +1619,19 @@ int ver_amigos_interface(Grafo *g,usuarios *user){
         mvwprintw(my_menu_win,6,60,"ENDERECO = %s",user1->endereco);
         mvwprintw(my_menu_win,8,60,"EMAIL = %s",user1->email);
         mvwprintw(my_menu_win,10,60,"CIDADE = %s",user1->cidade);
-
+        wrefresh(my_menu_win);
+        if(options_friend_interface(g,user,user1)){
+          unpost_menu(my_menu);
+          free_menu(my_menu);
+          for(i=0;i<user->numeroAmigos;i++)free_item(my_items[i]);
+          free(nomes);
+          free(my_items);
+          wclear(my_menu_win);
+          wrefresh(my_menu_win);
+          delwin(my_menu_win);
+          return 1;
+        }
+        break;
     }
     wrefresh(my_menu_win);
   }
@@ -1602,8 +1639,551 @@ int ver_amigos_interface(Grafo *g,usuarios *user){
   free_menu(my_menu);
   for(i=0;i<user->numeroAmigos;i++)free_item(my_items[i]);
   free(nomes);
+  free(my_items);
   wclear(my_menu_win);
   wrefresh(my_menu_win);
+  delwin(my_menu_win);
+  return 1;
+}
+
+int options_friend_interface(Grafo *g, usuarios *user,usuarios *user1){
+  ITEM **my_items;
+  int c;
+  MENU *my_menu;
+  WINDOW *my_menu_win;
+
+  if(!(my_items = (ITEM **)calloc(4,sizeof(ITEM *)))){
+    printw("Houve um erro de alocação de memoria");
+    return 0;
+  }
+  my_items[0] = new_item("Excluir amigo","Excluir amigo");
+  my_items[1] = new_item("Ver transacoes","Ver transacoes");
+  my_items[2] = new_item("Sair","Sair");
+  my_items[3] = NULL;
+
+  my_menu = new_menu((ITEM **)my_items);
+  menu_opts_off(my_menu, O_SHOWDESC);
+  my_menu_win = newwin(5,20,3*LINES/4+2,COLS/2);
+
+  keypad(my_menu_win,true);
+
+  set_menu_win(my_menu,my_menu_win);
+  set_menu_sub(my_menu,derwin(my_menu_win,4,15,3,1));
+
+  post_menu(my_menu);
+  wrefresh(my_menu_win);
+  while(c = wgetch(my_menu_win)){
+    switch(c){
+      case KEY_DOWN:
+        menu_driver(my_menu, REQ_DOWN_ITEM);
+        break;
+      case KEY_UP:
+        menu_driver(my_menu, REQ_UP_ITEM);
+        break;
+      case 10:
+        if(!strcmp("Sair", item_name(current_item(my_menu)))){
+          unpost_menu(my_menu);
+          free_menu(my_menu);
+          free_item(my_items[0]);
+          free_item(my_items[1]);
+          free_item(my_items[2]);
+          free(my_items);
+          wclear(my_menu_win);
+          wrefresh(my_menu_win);
+          delwin(my_menu_win);
+          return 0;
+        }else if(!strcmp("Excluir amigo", item_name(current_item(my_menu)))){
+          if(excluir_amigo(&g,&user,&user1,0)){
+            unpost_menu(my_menu);
+            free_menu(my_menu);
+            free_item(my_items[0]);
+            free_item(my_items[1]);
+            free_item(my_items[2]);
+            free(my_items);
+            wclear(my_menu_win);
+            wrefresh(my_menu_win);
+            delwin(my_menu_win);
+            return 1;
+          }else printw("Nao foi excluido por algum motivo");
+        }else if(!strcmp("Ver transacoes", item_name(current_item(my_menu)))){
+          ver_transa_interface(g,user,user1->nome);
+          break;
+        }
+    }
+  }
+}
+
+int ver_transa_interface(Grafo *g, usuarios *user,char *nome){
+  int c,rows,cols;
+  WINDOW *my_menu_win;
+  FIELD *field[2];
+  FORM *my_form;
+  char *categ;
+
+  field[0] = new_field(1,30,2,2,0,0);
+  field[1] = NULL;
+
+  init_pair(1,COLOR_WHITE, COLOR_BLUE);
+  set_field_back(field[0],COLOR_PAIR(1));
+  set_field_fore(field[0],COLOR_PAIR(1));
+
+  field_opts_off(field[0],O_AUTOSKIP);
+
+  my_form = new_form(field);
+  scale_form(my_form,&rows,&cols);
+  my_menu_win = newwin(LINES/2-1,COLS/2+5,1,COLS/2-5);
+
+  keypad(my_menu_win,true);
+  set_form_win(my_form, my_menu_win);
+  set_form_sub(my_form,derwin(my_menu_win, rows,cols,2,2));
+
+  box(my_menu_win,0,0);
+  post_form(my_form);
+  mvwprintw(my_menu_win,1,1,"Digite a categoria e F2 para voltar:");
+  wrefresh(my_menu_win);
+  while((c = wgetch(my_menu_win))!=KEY_F(2)){
+    switch(c){
+      case KEY_LEFT:
+        form_driver(my_form,REQ_LEFT_CHAR);
+        break;
+      case KEY_RIGHT:
+        form_driver(my_form,REQ_RIGHT_CHAR);
+        break;
+      case 10:
+        form_driver(my_form,REQ_NEXT_FIELD);
+        categ = field_buffer(field[0],0);
+        categ[29] = '\0';
+        if(!show_trans_interface(g,user,categ,nome))mvwprintw(my_menu_win,2,1,"Nao ha transacoes nessa categoria para esse usuario");
+        break;
+      case KEY_BACKSPACE:
+        form_driver(my_form,REQ_DEL_PREV);
+        break;
+      default:
+        form_driver(my_form, c);
+        break;
+    }
+  }
+  unpost_form(my_form);
+  free_form(my_form);
+  free_field(field[0]);
+  wclear(my_menu_win);
+  wrefresh(my_menu_win);
+  delwin(my_menu_win);
+  return 0;
+}
+
+int add_trans_interface(Grafo *g, usuarios *user){
+  FIELD *field[4];
+  FORM *my_form;
+  WINDOW *my_form_win;
+  int ch, rows, cols;
+  char *categ,*obj,*value;
+
+  field[0] = new_field(1,50,2,20,0,0);
+  field[1] = new_field(1,30,4,20,0,0);
+  field[2] = new_field(1,10,6,20,0,0);
+  field[3] = NULL;
+
+  init_pair(1,COLOR_WHITE, COLOR_BLUE);
+  set_field_back(field[0],COLOR_PAIR(1));
+  set_field_fore(field[0],COLOR_PAIR(1));
+
+  set_field_back(field[1],COLOR_PAIR(1));
+  set_field_fore(field[1],COLOR_PAIR(1));
+
+  set_field_back(field[2],COLOR_PAIR(1));
+  set_field_fore(field[2],COLOR_PAIR(1));
+
+  my_form = new_form(field);
+  form_opts_off(my_form, O_BS_OVERLOAD);
+  scale_form(my_form,&rows,&cols);
+
+  my_form_win = newwin(rows+10,cols+4,1,COLS/2-5);
+  keypad(my_form_win,true);
+
+  set_form_win(my_form, my_form_win);
+  set_form_sub(my_form,derwin(my_form_win,rows,cols,2,2));
+
+  box(my_form_win,0,0);
+  post_form(my_form);
+  mvwprintw(my_form_win,1,1,"Adicione as informacoes da sua transacao ou pressione F2 para sair");
+  mvwprintw(my_form_win,4,1,"Digite o objeto = ");
+  mvwprintw(my_form_win,6,1,"Digite a categoria = ");
+  mvwprintw(my_form_win,8,1,"Digite o valor = ");
+  wrefresh(my_form_win);
+  while((ch = wgetch(my_form_win))!=KEY_F(2)){
+    switch(ch){
+      case KEY_UP:
+        form_driver(my_form, REQ_PREV_FIELD);
+        break;
+      case KEY_DOWN:
+        form_driver(my_form, REQ_NEXT_FIELD);
+        break;
+      case KEY_BACKSPACE:
+        form_driver(my_form,REQ_DEL_PREV);
+        break;
+      case KEY_LEFT:
+        form_driver(my_form,REQ_LEFT_CHAR);
+        break;
+      case KEY_RIGHT:
+        form_driver(my_form,REQ_RIGHT_CHAR);
+        break;
+      case 10:
+        form_driver(my_form, REQ_NEXT_FIELD);
+        obj = field_buffer(field[0],0);
+        obj[49] = '\0';
+        categ = field_buffer(field[1],0);
+        categ[29] = '\0';
+        value = field_buffer(field[2],0);
+        value[9] = '\0';
+        if(test_string(categ)||test_string(obj)||test_string(value)){
+          mvwprintw(my_form_win, 10,2,"Preencha os campos para criar sua transacao");
+          break;
+        }
+        cria_transacaoAuto(&g,user,obj,categ,value);
+        unpost_form(my_form);
+        free_form(my_form);
+        free_field(field[0]);
+        free_field(field[1]);
+        free_field(field[2]);
+        wclear(my_form_win);
+        wrefresh(my_form_win);
+        delwin(my_form_win);
+        return 0;
+      default:
+        form_driver(my_form, ch);
+    }
+    wrefresh(my_form_win);
+  }
+  unpost_form(my_form);
+  free_form(my_form);
+  free_field(field[0]);
+  free_field(field[1]);
+  free_field(field[2]);
+  wclear(my_form_win);
+  wrefresh(my_form_win);
+  delwin(my_form_win);
+  return 0;
+}
+
+int show_trans_interface(Grafo *g,usuarios *user,char *categ, char *nome){
+  ITEM **my_items;
+  int c,cont=0,i=0;
+  MENU *my_menu;
+  WINDOW *my_menu_win;
+  transacoes *tran,*pont,*tran1[20];
+
+  for(i=0;i<19;i++)tran1[i] = NULL;
+  i=0;
+  tran = procura_categoria(&g,categ);
+  pont = tran;
+  my_menu_win = newwin(10,61,LINES/4-2,COLS/2);
+  while(pont != NULL){
+    if(!strcmp(nome, pont->criador->nome)){
+      tran1[i] = pont;
+      i++;
+    }
+    pont = pont->proxT;
+  }
+
+  if(tran1[0] == NULL){
+    return 0;
+  }
+  for(i=0;tran1[i] != NULL;i++){
+    cont++;
+  }
+  my_items = (ITEM **)calloc(cont+1,sizeof(ITEM*));
+  for(i=0;i<cont;i++){
+    my_items[i] = new_item(tran1[i]->objeto,tran1[i]->valor);
+  }
+  my_items[cont] = NULL;
+  my_menu = new_menu((ITEM **)my_items);
+  menu_opts_on(my_menu,O_SHOWDESC);
+
+  keypad(my_menu_win,true);
+  set_menu_win(my_menu, my_menu_win);
+  set_menu_sub(my_menu,derwin(my_menu_win,6,60,1,1));
+  set_menu_format(my_menu,5,1);
+
+  post_menu(my_menu);
+  wrefresh(my_menu_win);
+
+  while((c = wgetch(my_menu_win)) != KEY_F(2)){
+    switch(c){
+      case KEY_UP:
+        menu_driver(my_menu,REQ_UP_ITEM);
+        break;
+      case KEY_DOWN:
+        menu_driver(my_menu,REQ_DOWN_ITEM);
+        break;
+    }
+    wrefresh(my_menu_win);
+  }
+  unpost_menu(my_menu);
+  free_menu(my_menu);
+  wclear(my_menu_win);
+  wrefresh(my_menu_win);
+  for(i=0;i<cont;i++)free_item(my_items[i]);
+  delwin(my_menu_win);
+  return 1;
+}
+
+int procura_transacao_interface(Grafo *g, usuarios *user){
+ ITEM **my_items;
+ int c;
+ MENU *my_menu;
+ WINDOW *my_menu_win;
+ int n_choices,i;
+ char *choices[] = {"Procurar transacao","Confirmar transacao","Avaliar transacao","Sair",(char*)NULL,};
+
+ n_choices = ARRAY_SIZE(choices);
+ my_items = (ITEM **)calloc(n_choices,sizeof(ITEM*));
+ for(i=0;i<n_choices;i++)my_items[i]=new_item(choices[i],choices[i]);
+
+  my_menu = new_menu((ITEM **)my_items);
+  menu_opts_off(my_menu,O_SHOWDESC);
+  my_menu_win = newwin(10,40,LINES/2,2);
+  keypad(my_menu_win,true);
+
+  set_menu_win(my_menu,my_menu_win);
+  set_menu_sub(my_menu, derwin(my_menu_win,4,35,3,3));
+
+  box(my_menu_win,0,0);
+
+  post_menu(my_menu);
+  wrefresh(my_menu_win);
+
+  while(c=wgetch(my_menu_win)){
+    switch(c){
+      case KEY_UP:
+        menu_driver(my_menu, REQ_UP_ITEM);
+        break;
+      case KEY_DOWN:
+        menu_driver(my_menu, REQ_DOWN_ITEM);
+        break;
+      case 10:
+        if(!strcmp("Sair",item_name(current_item(my_menu)))){
+          unpost_menu(my_menu);
+          free_menu(my_menu);
+          for(i=0;i<n_choices;i++)free_item(my_items[i]);
+          wclear(my_menu_win);
+          wrefresh(my_menu_win);
+          delwin(my_menu_win);
+          return 0;
+        }else if (!strcmp("Procurar transacao",item_name(current_item(my_menu)))){
+          procura_interface(g,user);
+        }
+        break;
+    }
+  }
+}
+
+int procura_interface(Grafo *g,usuarios *user){
+  FIELD *field[3];
+  FORM *my_form;
+  WINDOW *my_form_win;
+  int ch,rows,cols;
+  char *categ, *obj;
+
+  init_pair(1,COLOR_WHITE,COLOR_BLUE);
+
+  field[0] = new_field(1,30,2,11,0,0);
+  field[1] = new_field(1,50,4,11,0,0);
+  field[2] = NULL;
+
+  set_field_back(field[0],COLOR_PAIR(1));
+  set_field_fore(field[0],COLOR_PAIR(1));
+  field_opts_off(field[0],O_AUTOSKIP);
+
+  set_field_back(field[1],COLOR_PAIR(1));
+  set_field_fore(field[1],COLOR_PAIR(1));
+  field_opts_off(field[1],O_AUTOSKIP);
+
+  my_form = new_form(field);
+  scale_form(my_form,&rows,&cols);
+  my_form_win = newwin(LINES-3,COLS/2,1,COLS/2);
+  keypad(my_form_win,true);
+
+  set_form_win(my_form,my_form_win);
+  set_form_sub(my_form,derwin(my_form_win,rows,cols,2,2));
+
+  box(my_form_win,0,0);
+  post_form(my_form);
+  mvwprintw(my_form_win,1,1,"Digite abaixo. pressione ENTER para buscar ou F2 para cancelar");
+  mvwprintw(my_form_win,4,1,"Categoria =");
+  mvwprintw(my_form_win,6,1,"Objeto =");
+  wrefresh(my_form_win);
+  while((ch = wgetch(my_form_win))!=KEY_F(2)){
+    switch(ch){
+      case KEY_DOWN:
+        form_driver(my_form,REQ_NEXT_FIELD);
+        break;
+      case KEY_LEFT:
+        form_driver(my_form,REQ_LEFT_CHAR);
+        break;
+      case KEY_RIGHT:
+        form_driver(my_form,REQ_RIGHT_CHAR);
+        break;
+      case KEY_UP:
+        form_driver(my_form,REQ_PREV_FIELD);
+        break;
+      case KEY_BACKSPACE:
+        form_driver(my_form,REQ_DEL_PREV);
+      case 10:
+        form_driver(my_form,REQ_NEXT_FIELD);
+        categ = field_buffer(field[0],0);
+        categ[29]='\0';
+        obj = field_buffer(field[1],0);
+        obj[49]='\0';
+        if(test_string(categ)){
+          mvwprintw(my_form_win,2,1,"Preencha o campo da categoria pelo menos");
+          break;
+        }if(test_string(obj)){
+          if(!procura_categoria_interface(g,user,categ))mvwprintw(my_form_win,2,1,"Nao ha transacoes nessa categoria       ");
+          break;
+        }else{
+          procura_nomeT_interface(g,user,categ,obj);
+          break;
+        }
+      default:
+        form_driver(my_form,ch);
+        break;
+    }
+  }
+  unpost_form(my_form);
+  free_form(my_form);
+  free_field(field[0]);
+  free_field(field[1]);
+  wclear(my_form_win);
+  wrefresh(my_form_win);
+  delwin(my_form_win);
+}
+
+int procura_nomeT_interface(Grafo *g, usuarios *user, char *categ, char *obj){
+    ITEM **my_items;
+  int c,cont=0,i=0,pos=0;
+  MENU *my_menu;
+  WINDOW *my_menu_win;
+  transacoes *tran,*pont;
+
+  tran = procura_nomeT(&g,categ,obj);
+  if(tran == NULL){
+    return 0;
+  }
+  pont = tran;
+  my_menu_win = newwin(28,62,LINES/4,COLS/2+2);
+
+  while(pont!=NULL){
+    cont++;
+    pont=pont->proxT;
+  }
+  pont = tran;
+  my_items = (ITEM **)calloc(cont+1,sizeof(ITEM*));
+  for(i=0;i<cont;i++){
+    my_items[i] = new_item(pont->objeto,pont->valor);
+    pont=pont->proxT;
+  }
+  my_items[cont] = NULL;
+  my_menu = new_menu((ITEM **)my_items);
+  menu_opts_on(my_menu,O_SHOWDESC);
+
+  keypad(my_menu_win,true);
+  set_menu_win(my_menu, my_menu_win);
+  set_menu_sub(my_menu,derwin(my_menu_win,6,60,1,1));
+  set_menu_format(my_menu,8,1);
+
+  box(my_menu_win,0,0);
+  post_menu(my_menu);
+  wrefresh(my_menu_win);
+  pont = tran;
+  while((c = wgetch(my_menu_win)) != KEY_F(2)){
+    switch(c){
+      case KEY_UP:
+        if(pos!=0)pos--;
+        menu_driver(my_menu,REQ_UP_ITEM);
+        break;
+      case KEY_DOWN:
+        if(pos!=cont-1)pos++;
+        menu_driver(my_menu,REQ_DOWN_ITEM);
+        break;
+      case 10:
+        for(i=0;i<pos;i++)pont= pont->proxT;
+        mvwprintw(my_menu_win,20,1,"Criador = %s",pont->criador->nome);
+        pont = tran;
+        break;
+    }
+    wrefresh(my_menu_win);
+  }
+  unpost_menu(my_menu);
+  free_menu(my_menu);
+  wclear(my_menu_win);
+  wrefresh(my_menu_win);
+  for(i=0;i<cont;i++)free_item(my_items[i]);
+  delwin(my_menu_win);
+  return 1;
+}
+
+
+int procura_categoria_interface(Grafo *g, usuarios *user, char *categ){
+  ITEM **my_items;
+  int c,cont=0,i=0,pos=0;
+  MENU *my_menu;
+  WINDOW *my_menu_win;
+  transacoes *tran,*pont;
+
+  tran = procura_categoria(&g,categ);
+  if(tran == NULL){
+    return 0;
+  }
+  pont = tran;
+  my_menu_win = newwin(28,62,LINES/4,COLS/2+2);
+
+  while(pont!=NULL){
+    cont++;
+    pont=pont->proxT;
+  }
+  pont = tran;
+  my_items = (ITEM **)calloc(cont+1,sizeof(ITEM*));
+  for(i=0;i<cont;i++){
+    my_items[i] = new_item(pont->objeto,pont->valor);
+    pont=pont->proxT;
+  }
+  my_items[cont] = NULL;
+  my_menu = new_menu((ITEM **)my_items);
+  menu_opts_on(my_menu,O_SHOWDESC);
+
+  keypad(my_menu_win,true);
+  set_menu_win(my_menu, my_menu_win);
+  set_menu_sub(my_menu,derwin(my_menu_win,6,60,1,1));
+  set_menu_format(my_menu,8,1);
+
+  box(my_menu_win,0,0);
+  post_menu(my_menu);
+  wrefresh(my_menu_win);
+  pont = tran;
+  while((c = wgetch(my_menu_win)) != KEY_F(2)){
+    switch(c){
+      case KEY_UP:
+        if(pos!=0)pos--;
+        menu_driver(my_menu,REQ_UP_ITEM);
+        break;
+      case KEY_DOWN:
+        if(pos!=cont-1)pos++;
+        menu_driver(my_menu,REQ_DOWN_ITEM);
+        break;
+      case 10:
+        for(i=0;i<pos;i++)pont= pont->proxT;
+        mvwprintw(my_menu_win,20,1,"Criador = %s",pont->criador->nome);
+        pont = tran;
+        break;
+    }
+    wrefresh(my_menu_win);
+  }
+  unpost_menu(my_menu);
+  free_menu(my_menu);
+  wclear(my_menu_win);
+  wrefresh(my_menu_win);
+  for(i=0;i<cont;i++)free_item(my_items[i]);
   delwin(my_menu_win);
   return 1;
 }

@@ -10,9 +10,9 @@
 
 //Estrutura com uma string com o nome do objeto(objeto), um inteiro (id), e o criador da transação(criador).
 typedef struct transacoes{
-  char objeto[100];
-  char categoria[100];
-  float valor;  
+  char objeto[50];
+  char categoria[30];
+  char valor[10];  
   int idT;
 
   struct transacoes *proxT, *antT;
@@ -61,7 +61,7 @@ Grafo *cria_Grafo();
 
 transacoes *cria_transacao(Grafo **G, usuarios *user);
 
-transacoes *cria_transacaoAuto(Grafo **G, usuarios *user, char *nomeT, char *categoriaT, float val);
+transacoes *cria_transacaoAuto(Grafo **G, usuarios *user, char *nomeT, char *categoriaT, char *value);
 
 transacoes *procura_categoria(Grafo **G, char *categoriaT);
 
@@ -95,7 +95,7 @@ void destroi_Grafo(Grafo **G);
 
 void exclui_usuario(Grafo **G, usuarios **User);
 
-void excluir_amigo(Grafo **G, usuarios **User, usuarios **User1, int cons);
+int excluir_amigo(Grafo **G, usuarios **User, usuarios **User1, int cons);
 
 //Funcao existe_Grafo --- Recebe como Parametro um Grafo(G) e retorna um valor verdadeiro,caso o grafo exista, e falso, caso nao exista grafo.
 bool existe_Grafo(Grafo *G);
@@ -128,3 +128,19 @@ int edit_user_interface(Grafo*, usuarios*,char*);
 int adiciona_amigos_interface(Grafo *,usuarios*);
 
 int ver_amigos_interface(Grafo*,usuarios*);
+
+int options_friend_interface(Grafo*, usuarios*,usuarios*);
+
+int ver_transa_interface(Grafo*,usuarios*,char*);
+
+int add_trans_interface(Grafo*,usuarios*);
+
+int show_trans_interface(Grafo*,usuarios*,char*,char*);
+
+int procura_transacao_interface(Grafo*,usuarios*);
+
+int procura_interface(Grafo*,usuarios*);
+
+int procura_categoria_interface(Grafo*,usuarios*,char*);
+
+int procura_nomeT_interface(Grafo*,usuarios*,char*,char*);

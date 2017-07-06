@@ -1,16 +1,16 @@
-IDIR =../Include
+IDIR =../include
 CXX = g++
 CXXFLAGS=-I$(IDIR) -g -D_TEST -ftest-coverage -fprofile-arcs
 
-ODIR=../obj
+ODIR=obj
 LDIR=../lib
 
 LIBS= -lgtest -lpthread -lgtest_main --coverage -lgcov -lncurses -lmenu -lform -Wno-write-strings
 
-_DEPS= GrafoInterface.h
+_DEPS= Grafo.h
 DEPS = $(patsubst %,$(IDIR)/%,$(_DEPS))
 
-_OBJ= Main.o GrafoInterface.o 
+_OBJ= Main.o Grafo.o 
 OBJ = $(patsubst %,$(ODIR)/%,$(_OBJ))
 
 $(ODIR)/%.o: %.c $(DEPS)
@@ -18,7 +18,7 @@ $(ODIR)/%.o: %.c $(DEPS)
 
 main: $(OBJ)
 	$(CXX) $(CXXFLAGS) -o $@ $^ $(LIBS)
-	cppcheck --enable=warning Main.c Grafo.c ../Include/GrafoInterface.h
+	cppcheck --enable=warning Main.c Grafo.c ../include/Grafo.h
 
 .PHONY: clean
 
